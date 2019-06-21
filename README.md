@@ -19,13 +19,15 @@
     1. SmartMeterSimulator를 위한 보안 경고 창이 나타나면 이 솔루션의 모든 프로젝트에 관해 물어보기를 선택 취소한 다음 확인을 선택합니다. 
     1. 이 시점에서 솔루션을 빌드하려고 할 경우 많은 오류가 발생합니다. 이는 의도적입니다. 본 과정에서 이러한 빌드 오류를 수정합니다.
 
-## Lab 1: Azure IoT Hub - Basic 
-
 
 ## Lab 2: Azure IoT Edge - Basic
 
+[Ubuntu + Azure IoT Edge Lab](lab2-edge-basic.md)
 
 ## Lab 3: Azure IoT Edge - Advanced 
 
+[Windows + Azure IoT Edge -Advanced Lab](lab3-edge-advanced.md)
 
 ## Lab 4: Azure IoT Edge - Intelligent
+
+[Building Intelligent Edge Device](lab4-edge-intelligent.md)
