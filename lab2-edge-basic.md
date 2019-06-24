@@ -9,7 +9,7 @@
 3. Windows Server 2019에 Azure IoT Edge 런타임 설치
 4. Azure 마켓플레이스에 있는 모듈 설치하기
 
-## Prerequisites
+## 사전준비
 
 - Azure 구독  
 

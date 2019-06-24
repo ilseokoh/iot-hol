@@ -24,9 +24,9 @@
 
 [Windows Server 2019 + Azure IoT Edge Lab](lab2-edge-basic.md)
 
-## Lab 3: Azure IoT Edge - Advanced 
+## Lab 3: Azure IoT Edge - Advanced
 
-[Windows + Azure IoT Edge -Advanced Lab](lab3-edge-advanced.md)
+[Ubuntu + Azure IoT Edge -Advanced Lab](lab3-edge-advanced.md)
 
 ## Lab 4: Azure IoT Edge - Intelligent
 
