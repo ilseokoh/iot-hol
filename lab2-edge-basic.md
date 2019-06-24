@@ -1,105 +1,132 @@
-# Windows Server IoT 2019 + Azure IoT Edge (45 Min)
+# Windows Server 2019 + Azure IoT Edge (45분)
 
-In many use cases, a Windows Server IoT 2019 can be used an IoT edge gateway that connects local devices and sensors to cloud services and apps. In this lab, we're going to walk you through how to turn a Windows Server IoT 2019 into an IoT edge gateway. We will use virtual machines in this lab, however, the same steps described in this article can be applied to a physical machine.  
+많은 경우 Windows Server 2019 서버가 IoT Edge 게이트웨이 역할을 하면서 로컬의 디바이스와 센서들을 클라우드에 연결 할 수 있습니다. 이번 실습에서는 Windows 2019 가상컴퓨터에 IoT Edge를 설치해서 모듈을 배포해보겠습니다. 특히 Azure 마켓플레이스에 등록된 IoT Edge 모듈을 사용하는 방법도 살펴보겠습니다.
 
-In this lab you learn how to:
+이번 실습을 통해서 
 
-1. Create an IoT Hub
-2. Create an IoT Edge device in your IoT hub
-3. Install and start the IoT Edge runtime on a Windows Server IoT 2019
-4. Deploy a module to a Windows Server IoT 2019 from Marketplace
+1. Azure IoT Hub 만들기
+2. IoT Hub에 Azure IoT Edge 디바이스 생성
+3. Windows Server 2019에 Azure IoT Edge 런타임 설치
+4. Azure 마켓플레이스에 있는 모듈 설치하기
 
 ## Prerequisites
 
-- Azure Subscription  
+- Azure 구독  
 
-  If you don't have an active Azure subscription, refer to [Lab 0](Lab0.md) to redeem your Azure pass, or create a [free account](https://azure.microsoft.com/free) before you begin
+  구독이 없으면 [무료 체험계정 만들기](https://azure.microsoft.com/ko-kr/free/)
   
-- Windows Server 2019, which can be a physical or virtual machine  
 
-## Step 1 : Create an instance of IoT Hub
+## Step 0 : Windows Server 2019 가상머신 만들기 
 
-In this step, we will create an instance of Azure IoT Hub using [Azure Portal](https://portal.azure.com)
+Azure IoT Edge가 작동될 Windows Server 2019 가상머신을 Azure에 만듭니다.
 
-### Step 1.1 : Login to [Azure Portal](https://portal.azure.com)
+### Step 0-1 : Azure에 로그인 
 
-Open a browser and navigate to [http://portal.azure.com](http://portal.azure.com), then follow sign in prompt to sign in to your Azure account
+[Azure 포탈](https://portal.azure.com)에 로그인합니다.
 
-### Step 1.2 : Create an instance of Azure IoT Hub
+### Step 0-2 : Windows Server 2019 새로 만들기
 
-Select **Create a resource** -> **Internet of Things** -> **IoT Hub**
+포탈의 왼쪽 위에 "리소스 만들기" 선택하고 Windows Server로 검색해서 Windows Server를 선택합니다.
+
+![리소스 만들기](images/WinServer-Lab/new-vm.jpg)
+
+소프트웨어 플랜을 Windows Server 2019 Datacenter로 선택하고 만들기를 선택합니다. 
+
+![Windows Server 2019 Datacenter](images/WinServer-Lab/new-windows-2019.jpg)
+
+### Step 0-3 : 가상머신 만들기
+
+가상머신 만들기 문서를 따라서 진행합니다. 
+
+[가상머신 만들기](https://docs.microsoft.com/ko-kr/azure/virtual-machines/windows/quick-create-portal#create-virtual-machine) 내용을 참조하여 Windows Server 2019 가상머신을 만듭니다.
+
+### Step 0-4 : 가상머신에 연결
+
+RDP를 활용해서 가상머신에 연결해 봅니다. 
+
+[가상머신에 연결](https://docs.microsoft.com/ko-kr/azure/virtual-machines/windows/quick-create-portal#connect-to-virtual-machine)
+
+## Step 1 : IoT Hub 만들기
+
+[Azure 포탈](https://portal.azure.com)에서 Azure IoT Hub를 만듭니다. 
+
+### Step 1.1 : [Azure 포탈](https://portal.azure.com)에 로그인
+
+웹브라우저로 [http://portal.azure.com](http://portal.azure.com)에 접속한 후 로그인 합니다. 
+
+### Step 1.2 : Azure IoT Hub 만들기
+
+**Create a resource** -> **Internet of Things** -> **IoT Hub** 를 선택합니다. 
 
 ![CreateIoTHub](images/IoTHub-Lab/CreateIoTHub.png)
 
-### Step 1.3 : Create IoT Hub
+### Step 1.3 : IoT Hub 생성
 
-There are 4 required parameters you must provide in order to create a new instance of IoT Hub.
+4가지 파라미터를 입력하여 IoT Hub를 생성합니다. 
 
-| Data           | Description                              | Example                  |
+| 파라미터        | 설명                                     | 예                       |
 | -------------- | ---------------------------------------- | ------------------------ |
-| Subscription   | Subscription to use for the new IoT Hub  | Visual Studio Enterprise |
-| Resource Group | Create a new Resource Group for this lab | IoTBootCamp2019          |
-| Region         | Data center region nearest to you        | West US                  |
-| IoT Hub Name   | Provide a name that is globally unique   | MsIoTBootCamp1234        |
+| 구독           | Subscription to use for the new IoT Hub  | Azure Free Account       |
+| Resource Group | Create a new Resource Group for this lab | IoTHOLGroup              |
+| 지역           | Data center region nearest to you        | Korea Central            |
+| IoT Hub 이름   | Provide a name that is globally unique   | MsIoTBootCamp1234        |
 
-1. Provide these information to create an instance of IoT Hub  
-    Make sure to use your own Subscription, Resource Group Name, Region, and unique IoT Hub Name.
-2. Confirm the uniqueness of IoT Hub name with green check mark.  
-3. Click **Next: Size and scale>>**
+1. 4가지 값을 입력하여 IoT Hub를 만듭니다. 
+2. IoT Hub 이름은 유일해야 합니다. 녹색 체크박스 확인  
+3. **Next: Size and scale>>** 선택
 
 ![CreateIoTHub2](images/IoTHub-Lab/CreateIoTHub2.png)
 
-### Step 1.4 : Select Size and Scale
+### Step 1.4 : Size and Scale 선택
 
-IoT Hub support multiple scale and size, hence pricing.  Each tier has different quota.  It's important to select the right tier for your solution in real scenario to avoid hitting quotas.
+IoT Hub는 가격과 관련된 Scale과 크기가 있습니다. 각 Scale tier는 서로 다른 한도와 기능제약을 가지고 있습니다. 실제 시나리오에 맡는 크기와 Scale을 선택해야 합니다.
 
-For this lab, please select `F1: Free tier for Pricing and scale tier`, then click **Review + create**
+여기에서는 무료를 선택하고 `F1: Free tier for Pricing and scale tier` **Review + create** 를 클릭합니다.
 
 > [!NOTE]  
-> Only one `F1 (Free) tier` is available per subscription.  If you already have F1 Hub, you will not able to create 2nd free Hub.
+> 무료 IoT Hub는 구독당 하나만 만들수 있습니다. 이미 F1 IoT Hub를 가지고 있다면 Standard 1 (S1)을 선택합니다. 
 
 ![CreateIoTHub3](images/IoTHub-Lab/CreateIoTHub3.png)
 
-Reference : [https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-scaling](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-scaling)
+참조 : [https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-scaling](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-scaling)
 
-### Step 1.5 : Start IoT Hub Deployment
+### Step 1.5 : IoT Hub 생성 시작
 
-Click **Create** button to start creating the new IoT Hub instance.  
+**Create** 버튼을 눌러 IoT Hub 인스턴스를 생성합니다. 
 
 ![CreateIoTHub4](images/IoTHub-Lab/CreateIoTHub4.png)
 
-### Step 1.6 : Wait for the Deployment process
+### Step 1.6 : 배포가 완료될 때까지 대기
 
-Wait until your deployment completes.
+배포가 완료될 때까지 기다립니다. 
 
 ![CreateIoTHub5](images/IoTHub-Lab/CreateIoTHub5.png)
 
 > [!TIP]  
-> You can also check deployment progress in `Notifications`  
+> `Notifications` 알림창을 통해서도 배포 진행상황을 확인 할 수 있습니다. 
 >  
 > ![CreateIoTHub6](images/IoTHub-Lab/CreateIoTHub6.png)
->  
-> You may want to **Pin to dashboard** for later use
 
-## Step 2 : Register a new Azure IoT Edge device
 
-In this step, we will create `Azure IoT Edge Device` for Windows Server IoT 2019
+## Step 2 : 새로운 Azire IoT Edge 디바이스 등록
 
-### Step 2.1 : Open the IoT Hub page
+이번엔 Windows Server 2019 가상머신을 위한 새로운 Azure IOT Edge Device를 등록합니다. 
 
-Go to the IoT Hub you just created by clicking `Go to resource` button
+### Step 2.1 : 생성한 IoT Hub에 들어갑니다. 
+
+`Go to resource` 버튼을 눌러 IoT Hub에 들어갑니다. 
 
 ![CreateIoTEdge1.png](images/IoTHub-Lab/CreateIoTEdge1.png)
 
-### Step 2.2 : Open IoT Edge View
+### Step 2.2 : IoT Edge 메뉴
 
-Navigate to `IoT Edge` view
+IoT Edge 메뉴를 선택합니다
 
 ![CreateIoTEdge2.png](images/IoTHub-Lab/CreateIoTEdge2.png)
 
-### Step 2.3 : Add an IoT Edge device
+### Step 2.3 : IoT Edge 디바이스 추가
 
-Add a new IoT Edge device for Windows Server IoT 2019
+새로운 IoT Edge 디바이스를 추가합니다. 
 
 Click **Add an IoT Edge device**  
 
@@ -107,119 +134,97 @@ Click **Add an IoT Edge device**
 
 ### Step 2.4 : Device ID
 
-Device ID is used to identify the IoT Edge device (Windows Server IoT 2019).  
+디바이스 아이디는 IoT Edge 디바이스를 구분하는 ID로 사용됩니다. 
 
-1. Provide a unique name  
-  e.g. IoTBootCampServer2019-1
+1. 유일한 이름을 사용합니다.   
+  e.g. IoTHOLWindows2019-1
 
-1. Click **Save** to create a new IoT Edge device
+1. **Save** 클릭
 
 ![CreateIoTEdge4.png](images/IoTHub-Lab/CreateIoTEdge4.png)
 
-### Step 2.5 : Confirm the new IoT Edge device
+### Step 2.5 : 새로운 IoT Edge 디바이스 확인
 
-Confirm the new IoT Edge device is created.
-
-- If you do not see the new IoT Edge device, click **Refresh**
-- Confirm the new IoT Edge device is listed
+새로운 IoT Edge 디바이스를 **Refresh** 버튼을 눌러 확인합니다. 
 
 ![CreateIoTEdge5.png](images/IoTHub-Lab/CreateIoTEdge5.png)
 
 ## Step 3 : Connection string
 
-When you're ready to set up your physical device, you'll need a connection string which links your physical device with its identity in IoT hub.  
+IoT Edge 디바이스를 IoT Hub에 연결하려면 **Connection String**이 필요합니다. 디바이스 Connection String은 IoT Hub가 디바이스를 인증하는데 사용됩니다. 
 
-Device Connection String is used to authenticate to validate device identify so that only known/trusted devices can connect to your IoT Hub.
-
-In this step, we will retrieve (Copy) the connection string for later use.
+향후 사용을 위해서 복사해 놓습니다. 
 
 Reference : [https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/](https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/)
 
-### Step 3.1 : Device details view
+### Step 3.1 : 디방이스 상세 보기
 
-From the **IoT Edge** page in Azure Portal, click on the IoT Edge device to open **Device Details** page.
+**IoT Edge** 메뉴에서 디바이스 이름을 클릭하면 **Device Details** 페이지를 통해 IoT Edge 디바이스의 상세 정보를 볼 수 있습니다.
 
 > [!TIP]  
-> Two Connection Strings are available for every device
+> 각 디바이스마다 두개의 Connection String을 제공합니다. 
 
 ![CreateIoTEdge6.png](images/IoTHub-Lab/CreateIoTEdge6.png)
 
-### Step 3.2 : Copy Connection String  
+### Step 3.2 : Connection String 복사
 
-Copy the value of either **Connection string (primary key)** or **Connection string (secondary key)**
+Connection String 두개 중에 하나를 복사해 둡니다. 
 
-1. Click on **Copy button** ![Copy](images/IoTHub-Lab/Copy-Icon.png) to copy into clipboard  
+1. **Copy button** ![Copy](images/IoTHub-Lab/Copy-Icon.png) 을 누르면 클립보드에 복사됩니다.
   ![CreateIoTEdge7.png](images/IoTHub-Lab/CreateIoTEdge7.png)
-1. Paste and save to a text file for later use
+1. 텍스트 파일에 복사해 둡니다.
 
-## Step 4 : Connect to your Windows Server on a virtual machine
+## Step 4 : Windows Server 가상머신에 연결하기
 
 > [!IMPORTANT]  
-> Instructors will provide Hostname and/or IP Address of Windows Server 2019 VM
+> Step 0에서 Windows Server 가상머신 만들때 ID/비밀번호를 알고 있어야 합니다.
 
-Connect to Windows Server IoT 2019 to configure the connection to your IoT Hub.
+IoT Hub연결을 위한 설정을 위해 Windows Server 2019에 원격 데스크톱을 이용해서 접속합니다.
 
-In this lab, we will use Remote Desktop to configure Windows Server IoT 2019
+### Step 4.1 : Remote Desktop을 이용하여 접속
 
-### Windows Server IoT 2019 VM Credential
+1. Step 0에서 만든 가상머신 속성 페이지에서 **Connect** 버튼을 눌러 다운로드 합니다. 다운로드한 파일을 실행해서 RDP에 접속합니다. 
 
-```bash  
-User Name : iotbootcamp  
-Password  : bootcamp  
-```
+![접속 정보 다운로드](images/WinServer-Lab/portal-quick-start-9.png)
 
-### Step 4.1 : Open Remote Desktop Connection app
+## Step 5 : IoT Edge 런타임 설정
 
-1. On the Windows 10 Dev machine, start **Remote Desktop Connection** app
+이번엔 Widnows Server 2019에 Azure IoT Edge 런타임을 설치하고 설정해 보겠습니다. 
 
-> [!TIP]  
-> you can type RDP from Window's search, then select then Remote Desktop Connection app
+### Step 5.1 : PowerShell 을 관리자 모드로 실행
 
-1. Enter Server Name or IP Address for your Server 2019
-1. Click **Connect**
-1. Login to your server using the credential mentioned [above](#windows-server-iot-2019-vm-credential)
-
-![Server2019-1](images/IoTHub-Lab/ConnectToServer1.png)
-
-## Step 5 : Set up IoT Edge Runtime
-
-In this step, we will install (Deploy) and configure Azure IoT Edge Runtime to your Windows Server IoT 2019
-
-### Step 5.1 : Open a Powershell as an Administrator
-
-Please make sure to start Powershell as an **Administrator**
+PowerShell을 반드시 관리자 모드**Administrator**로 실행해야 합니다. 
 
 ![PowerShellAdmin](images/WinServer-Lab/PowerShellAdmin.png)
 
-### Step 5.2 : Deploy IoT Edge Runtime
+### Step 5.2 : Azure IoT Edge 런타임 설치
 
-The cmdlet checks whether your Windows machine is on a supported version, turns on the containers feature, and then downloads the moby runtime and the IoT Edge runtime.  
+아래 명령을 실행하면 Moby 런타임과 IoT Edge 런타임이 다운로드되고 컨테이너 기능이 활성화 됩니다. PowerShell 창에서 **Deploy-IoTEdge** 명령을 실행합니다.
 
-Run the **Deploy-IoTEdge** powershell cmdlet
 
 ```powershell
 . {Invoke-WebRequest -useb aka.ms/iotedge-win} | Invoke-Expression; Deploy-IoTEdge -ContainerOs Windows
 ```
 
-### Step 5.3 : Initialize IoT Edge Runtime  
+### Step 5.3 : IoT Edge 런타임 초기화
 
-The cmdlet initializes the finish the IoT Edge installation.  For IoT Edge Runtime to initialize, it needs `Connection String` from [Step 3.2 : Copy Connection String](#step-32--copy-connection-string)
+아래 명령을 통해 IoT Edge를 초기화 합니다. 이전 단계에서 복사해 놓은  `Connection String`을 사용합니다. 
 
 ```powershell
 . {Invoke-WebRequest -useb aka.ms/iotedge-win} | Invoke-Expression; Initialize-IoTEdge -ContainerOs Windows
 ```
 
-### Step 5.4 : Provide the device connection string
+### Step 5.4 : 디바이스 Connection String을 입력합니다.
 
-Provide the connection string from [Step 3.2 : Copy Connection String](#step-32--copy-connection-string)
+3.2 단계에서 복사해 놓은 Connection String을 붙여 넣습니다. 
 
 Example :
 
 ![IoTEdge-Installation](images/WinServer-Lab/IotEdge-Installation.png)
 
-### Step 5.5 : Verify Azure IoT Edge Runtime Status
+### Step 5.5 : 런타임의 실행을 확인
 
-Run the Get-Service command to confirm IoT Edge runtime is installed and running
+**Get-Service** 명령을 이용하여 Azure IoT Edge 런타임이 정상 실행중임을 확인 합니다.
 
 ```powershell
 Get-Service iotedge
@@ -227,57 +232,53 @@ Get-Service iotedge
 
 ![edge-running](images/WinServer-Lab/EdgeRunning.png)
 
-## Step 6 : Deploy Simulated Temperature Sensor from Marketplace to Windows Server
+## Step 6 : 'Simulated Temperature Sensor'를 마켓플레이스에서 Windows Server로 배포하기
 
-IoT Edge is used to connect devices and sensors to cloud. In this lab, we're going to use an existing simulator from Azure Marketplace
+Azure 마켓플레이스에는 마이크로소프트가 검증해 놓은 엔터프라이즈 환경에서 사용할 수 있는 다양한 Azure의 애플리케이션과 서비스가 있는 온라인 마켓입니다.  여기에는 미리 많들어 놓은 여러가지 [IoT Edge 모듈](https://aka.ms/iot-edge-marketplace)을 찾아볼 수 있습니다. 이중에서 온도센서 시뮬레이터를 사용해 보겠습니다. 
 
-Azure Marketplace is an online applications and services marketplace where you can browse through a wide range of enterprise applications and solutions that are certified and optimized to run on Azure, including [IoT Edge modules](https://azuremarketplace.microsoft.com/marketplace/apps/category/internet-of-things?page=1&subcategories=iot-edge-modules).
+### Step 6.1 :  Azure IoT Edge 마켓플레이스 열기
 
-### Step 6.1 : Open Azure IoT Edge Market Place
-
-From Azure portal, navigate to Marketplace or type Marketplace at the Search bar and select Marketplace
+Azure 포탈에서도 마켓플레이스를 제공합니다. 
 
 ![MarketPlace](images/IoTHub-Lab/SearchMarketPlace.png)
 
-### Step 6.2 : Locate **Simulated Temperature Sensor**  
+### Step 6.2 : **Simulated Temperature Sensor** 검색
 
-Within Marketplace, select **Get Started**, type in *simulated* at the search bar, then select **Simulated Temperature Sensor**
+마켓플레이스에서 *simulated* 를 입력하여 검색한 후 **Simulated Temperature Sensor**를 클릭 합니다. 
 
 ![SearchSimTempSensor1](images/IoTHub-Lab/SearchSimTempSensor1.png)
 
-### Step 6.3 : Create Simulated Temperature Sensor module
+### Step 6.3 : Simulated Temperature Sensor 모듈 생성
 
-Click **Create** to start the wizard
+**Create**를 클릭합니다.
 
 ![CreateSimTempSensor](images/IoTHub-Lab/CreateSimTempSensor.png)
 
-### Step 6.4 : Select the target IoT Edge device
+### Step 6.4 : IoT Edge 디바이스를 선택
 
-In this step, you need to specify to which device, you would like to deploy the Simulated Temperature Sensor IoT Edge Module.
+이 단계에서는 어떤 디바이스에 모듈을 배포할지 선택합니다. 이전에 만든 IoT Edge 디바이스를 선택합니다. 
 
 | Parameter            | Description                                                                                                    | Example                 |
 | -------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| Subscription         | Select your subscription                                                                                       | MSNSubscription         |
-| IoT Hub              | Select your IoT Hub to which the target device created in [the previous step](#step-24--device-id) is attached | MsIoTBootCamp1234       |
-| IoT Edge Device Name | Select the target IoT Edge Device created in [the previous step](#step-24--device-id)                          | IoTBootCampServer2019-1 |
+| 구독         | Select your subscription                                                                                       | Azure Free Account         |
+| IoT Hub              | Select your IoT Hub to which the target device created in [the previous step](#step-24--device-id) is attached | IoTHOLHub       |
+| IoT Edge Device 이름 | Select the target IoT Edge Device created in [the previous step](#step-24--device-id)                          | IoTHOLServer2019-1 |
 
-Click **Create** to move to the next step
+ **Create** 를 클릭하여 다음 단계로 넘어갑니다. 
 
 ![SimTempSensor1](images/IoTHub-Lab/SimulatedTempSensor1.png)
 
-### Step 6.5 : Add Modules
+### Step 6.5 : 모듈 추가
 
-In some cases, you may need to provide additional parameters.  
+어떤경우에는 추가적인 정보를 제공하기도 합니다.
 
-Click **Next** with default settings
+**Next** 을 클릭하여 넘어갑니다.
 
 ![SimTempSensor2](images/IoTHub-Lab/SimulatedTempSensor2.png)
 
-### Step 6.6 : Specify Routes
+### Step 6.6 : 라우팅 설정
 
-You may configure message route to/from IoT Edge modules.
-
-All messages are routed to IoT Hub ($upstream) by default
+IoT Edge 모듈에서 나가고 들어오는 메시지에 대한 라우팅 설정을 해줄 수 있습니다. 여기에서는 모든 메시지를 클라우드 ($upstream)로 보내도록 설정합니다.
 
 ```json
 {
@@ -288,23 +289,23 @@ All messages are routed to IoT Hub ($upstream) by default
 }
 ```
 
-Click **Next** with default settings
+ **Next** 을 클릭하여 넘어갑니다.
 
 Reference : [https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes](https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#declare-routes)
 
-### Step 6.7 : Submit deployment request
+### Step 6.7 : 배포를 전송
 
-Click **Submit** to deploy the temperature simulator to the Windows Server
+**Submit** 버튼을 눌러 temperature simulator를 IoT Edge 디바이스(Windows Server 2019)에 배포합니다. 
 
 ![SimTempSensor3](images/IoTHub-Lab/SimulatedTempSensor3.png)
 
-## Step 7 : Confirm Temperature Simulator Module Deployment  
+## Step 7 : Temperature Simulator 모듈 배포 확인
 
- The simulated temperature sensor module generates environment data that you can use for testing later. The simulated sensor is monitoring both a machine and the environment around the machine. For example, this sensor might be in a server room, on a factory floor, or on a wind turbine. The message includes ambient temperature and humidity, machine temperature and pressure, and a timestamp
+ simulated temperature sensor 모듈은 테스트를 위한 온도데이터를 생성합니다. 이런 센서는 서버실, 공장, 풍력발전기 등에 설치 되어 온도, 습도, 압력 등의 값을 발생 시킵니다. 
 
-### Step 7.1 : Confirm the module is deployed and running
+### Step 7.1 : 모듈 배포 및 작동 확인 
 
-Confirm that the module deployed from the cloud is running on your IoT Edge device.
+모듈이 클라우드로 부터 IoT Hub를 통해 디바이스까지 배포가 되었는지 확인 합니다. 
 
 ```powershell
 iotedge list
@@ -312,9 +313,9 @@ iotedge list
 
 ![View three modules on your device](./images/WinServer-Lab/iotedge-list-2.png)
 
-### Step 7.2 : Confirm messages are being sent
+### Step 7.2 : 메시지 전송 확인
 
-View the messages being sent from the temperature sensor module to the cloud.
+온도센서에서 클라우드로 보내는 메시지를 모듈 로그를 통해서 확인합니다. 
 
 ```powershell
 iotedge logs SimulatedTemperatureSensor -f
@@ -322,30 +323,26 @@ iotedge logs SimulatedTemperatureSensor -f
 
    ![View the data from your module](./images/WinServer-Lab/iotedge-logs.png)
 
-### Step 7.3 : Confirm the messages are received by IoT Hub
+### Step 7.3 : IoT Hub에서 메시지 수신 확인 
 
-In this step, we will use Device Explorer to view messages received by IoT Hub.
+이번에는 **Device Explorer**를 통해서 IoT Hub가 받은 메시지를 확인해 보겠습니다. **Device Explorer**는 현재 Windows OS에서만 작동합니다. 
 
-In order to access IoT Hub, you will need **Connection String** to your IoT Hub.  
-This is different from **Connection String** for your IoT Edge device.  (Sometimes referred to as Device Connection String)
+IoT Hub에 접근하기 위해서는 다시 **Connection String**이 필요합니다. 이번에는 IoT Hub Connection String입니다. Device Connection String과 헷갈리면 안됩니다.
 
-1. Start Device Explorer  
-    > [!TIP]  
-    > Open Device Explorer from the shortcut on your desktop  
-  
+1. Device Explorer 실행
     ![DeviceExplorer1](images/WinServer-Lab/DeviceExplorer1.png)
 1. **Shared Access Policies**  
-    Open Shared Access Policies page in Azure Portal to retrieve **Connection String** for your IoT Hub  
-1. View **iothubowner**  
-    Open iothubowner to retrieve the connection string  
+    Shared Access Policies 메뉴를 클릭합니다.  
+1. **iothubowner** 클릭
+    iothubowner를 클릭합니다. 
     ![DeviceExplorer2](images/WinServer-Lab/DeviceExplorer2.png)
-1. Copy Connection String  
+1. Connection String 복사
     ![DeviceExplorer3](images/WinServer-Lab/DeviceExplorer3.png)
-1. Enter Connection String to Device Explorer
-1. Click **Update**  
+1. Device Explorer에 Connection String를 복사하여 입력
+1. **Update** 클릭
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer4.png)
-1. Open **Data** tab
-1. Select Device ID of your Windows Server IoT 2019
-1. Click **Monitor**
-1. Confirm Messages are received  
+1. **Data** 탭 선택
+1. Windows Server 2019의 Device ID를 선택
+1. **Monitor** 클릭
+1. 메시지 수식 확인
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer5.png)
