@@ -151,16 +151,16 @@ $ chmod +x check-config.sh
 $ ./check-config.sh
 ```
 
-### Step 4.6 : Azure IoT Edge 보안 디먼 설치
+### Step 4.6 : Azure IoT Edge 보안 데몬 설치
 
 ```bash
 $ sudo apt-get update
 $ sudo apt-get install iotedge
 ```
 
-### Step 4.7 : Azure IoT Edge 보안 디먼 구성 - 수동구성 
+### Step 4.7 : Azure IoT Edge 보안 데몬 구성 - 수동구성
 
-디먼은 /etc/iotedge/config.yaml에 있는 구성 파일을 사용하여 구성할 수 있습니다. 이 파일은 기본적으로 쓰기 금지되어 있습니다 편집하려면 관리자 권한이 필요합니다. 
+데몬은 /etc/iotedge/config.yaml에 있는 구성 파일을 사용하여 구성할 수 있습니다. 이 파일은 기본적으로 쓰기 금지되어 있습니다 편집하려면 관리자 권한이 필요합니다. 
 
 VSCode에서 복사해 놓은 디바이스 Connection String을 YAML파일에 입력해줍니다. 
 

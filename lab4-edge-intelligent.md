@@ -1,45 +1,44 @@
 
-# Building Intelligent Edge Device
+# Intelligent Edge 디바이스 개발
 
-In this Hands on Lab, we will create following scenarios
+이번 실습은 아래와 같은 내용으로 진행됩니다.
 
-- Setup Azure IoT Edge Runtime Environment
-- Clone, edit, and compile Azure IoT Edge Module
-- Deploy the Azure IoT Edge Module
-- Control the Azure IoT Ede Module from Cloud
+- Azure IoT Edge Runtime 설치
+- Azure IoT Edge 모듈을 클론, 수정, 컴파일
+- Azure IoT Edge Module의 배포
+- 클라우드에서 Azure IoT Ede Module을 관리
 
-## Prerequisites
+## 사전 준비
 
-In order to complete this lab, this instruction assumes you are familiar with :
+이번 실습을 완료하기 위해서는 아래와 같은 내용을 알고 계시면 좋습니다.
 
-- Basics of Azure IoT Hub
-- Operating and navigate [Azure Portal](http://portal.azure.com)
-- Operating and navigating **Windows 10 UI**
-- Operating and navigating **Visual Studio Code UI**
-- Operating and navigating **Ubuntu 18.04 UI**, Terminal (bash or any console shell), and text editor such as gedit, vi, or nano editor
+- Azure IoT Hub의 기본
+- [Azure Portal](http://portal.azure.com)의 사용
+- **Visual Studio Code**의 사용
+- **Ubuntu 18.04**, 터미널 (bash or any console shell), text editor such as gedit, vi, 또는 nano 에디터
 
-## Overview of this hands on lab (HOL)
+## 실습 단계
 
-This HOL consists of 10 major steps and 1 optional step.  
+이번 실습은 총 10단계의 과정과 1개의 옵션과정으로 이루어져 있습니다. Lab 3을 수행하셨다면 이미 만들어져 있는 경우가 있습니다. 그럴 경우 다음 단계로 넘어가면 됩니다. 
 
-- [Step 1:](#step-1--azure-iot-hub) Setup the Azure IoT Hub
-- [Step 2:](#step-2--azure-iot-edge-device) Setup the Azure IoT Edge device in the IoT Hub
-- [Step 3:](#step-3--azure-iot-edge-runtime-environment) Connect to the target device (Ubuntu 18.04 Virtual Machine)
-- [Step 4:](#step-4--clone-source-code) Clone Sample Source Code from Azure Devops
-- [Step 5:](#step-5--azure-container-registry) Setup the Azure Container Registry (ACR)
-- [Step 6:](#step-6--modify-sample-code) Modify Sample Source Code
+- [Step 1:](#step-1--azure-iot-hub) Azure IoT Hub 만들기
+- [Step 2:](#step-2--azure-iot-edge-device) IoT Hub에 Azure IoT Edge 디바이스 설정
+- [Step 3:](#step-3--azure-iot-edge-runtime-environment) 디바이스(Ubuntu 18.04 가상머신)에 접속
+- [Step 4:](#step-5--azure-container-registry) Azure Container Registry (ACR) 만들기
+- [Step 5:](#step-4--clone-source-code) 샘플 코드 클론
+- [Step 6:](#step-6--modify-sample-code) 샘플 코드 수정
 - [Step 7:](#step-7--build-and-push-container-image) Build and Push IoT Edge module without AI
-- [Step 8:](#step-8--deploy-module) Deploy the container
-- [Step 9:](#step-9--module-twin) Module Twin
-- [Step 10:](#step-10--add-ai-inference-to-yolomodule) Add AI Inference to YoloModule
+- [Step 8:](#step-8--deploy-module) 컨테이너 배포
+- [Step 9:](#step-9--module-twin) 모듈 트위(Module Twin)
+- [Step 10:](#step-10--add-ai-inference-to-yolomodule) AI 추가 (Add AI Inference to YoloModule)
 - [Step 11:](#step-11--optional-full-yolo-v3-model) (Optional) Full Yolo v3 Model
 
-## Development Environment (DevEnv)
+## 개발환경 (DevEnv)
 
-In this lab, laptops / Surface Pro are pre-configured with following software/tools
+이번 실습을 위해서는 개발 PC에 아래와 같은 툴이 설치되어야 합니다.
 
-- A PC to install and run Windows 10
-- Windows 10 IoT  
+- Windows 10 PC
+- (Windows 10 IoT)
 - [Visual Studio Code (VSCode)](https://code.visualstudio.com/)
 - VSCode Extensions
   - [Azure Account Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account)
@@ -47,219 +46,113 @@ In this lab, laptops / Surface Pro are pre-configured with following software/to
   - [Docker Extension](https://marketplace.visualstudio.com/items?itemName=PeterJausovec.vscode-docker)
   - [Azure IoT Toolkit Extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-toolkit)
 - Git tool(s)  
-  [Git command line](https://git-scm.com/) tool as well as [Github Desktop](https://desktop.github.com/) are pre-installed in DevEnv
+  [Git command line](https://git-scm.com/) tool
 - [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows)
-- [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
 - [Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/)
 
-### Windows 10 Credential
+## Target Device: Azure 가상머신 - Ubuntu 18.04
 
-```bash  
-User Name    : iotbootcamp  
-Password     : bootcamp  
-```
-
-## Target Device
-
-Hyper-V Virtual Machines are pre-configured with following settings/software/tools
-
-- A Server Machine running Ubuntu VM  
-  For this lab, VMs are running with following resources
-  - 3 Virtual Processors
-  - 8GB RAM
-  - 20GB Virtual Hard Drive
-- Ubuntu 18.04
-- SSH Server
-- VNC Server
-
-> [!IMPORTANT]  
->  
-> Instructors will provide Hostname and/or IP Address of Ubuntu VM  
-> VM hostnames are in **Ubuntu-[number on your badge]
-
-### Ubuntu VM Credential
-
-```bash  
-User Name    : iotbootcamp  
-Password     : bootcamp  
-VNC Password : bootcamp
-```
+Lab 3에서 이미 Ubuntu 가상 머신을 만들었다면 그대로 사용하면 됩니다.
+아직 Ubuntu 가상머신이 없다면 [Lab 3 - Step 0: Ubuntu 가상머신 만들기](../lab3-edge-advanced.md#step-0-ubuntu-가상머신-만들기)를 참조해서 만들어주세요.
 
 ## Sample Code / Module
 
-### Module Functionality
+### 모듈 기능
 
-The sample code provides three major functionalities.  
+샘플코드틑 3가지 기능을 가지고 있습니다.
 
 - Video Stream  
-  The modules will read video stream from one of following sources  
+  모듈은 아래 소스중에 하나에서 비디오 스트림을 입력 받습니다.
   - YouTube Video  
   - RTSP IP Camera  
   - Webcam  
-      Not applicable for this Hands on Lab
+      본 실습에서는 사용하지 못함.
 
 - AI Inference  
-  The module can run Computer Vision AI Inference.  
-  This module uses Yolo (You Only Look Once) v3 pre-trained model.
+  모듈에서 Computer Vision AI 가 작동됩니다.
+  모듈에서는 Yolo (You Only Look Once) v3 pre-trained model을 사용합니다. 
 
 - Web Server  
-  The module runs a small web server functionality so you can see the video stream
+  작은 웹서버를 통해서 영상을 볼 수 있습니다.
 
-### Controlling/Managing the Module  
+### 모듈의 컨트롤과 관리
 
-There are two ways you can manage/controlling the module  
+모듈을 컨트롤하고 관리하는 방법은 두가지가 있습니다.
 
-- Deployment Manifest  
-  You can control the start up time setting(s) of the module via `createOption` parameter in the Deployment Manifest.
+- Manifest를 통한 배포
+  Deployment Manifest 파일의 `createOption` 파라미터 값을 설정하여 시작 시점에 모듈을 셋팅할 수 있습니다.
 
-- Device Twin  
-  You can change settings through Module Twin after the container started running.  
+- 모듈 트윈 (Module Twin)  
+  컨테이너가 시작된 후에는 모듈 트윈의 설정값을 변경하면서 모듈을 셋팅할 수 있습니다.
   - VideoSource  
-    Source of video stream/capture source
+    비디오 스트림 소스
 
   - ConfidenceLevel  
-    Confidence Level threshold.  The module ignores any inference results below this threshold.
+    Confidence Level threshold. 모듈은 이 설정값 이하의 결과에 대해서는 무시합니다.
 
   - Verbose  
-    Logging verbosity.  For debugging
+    Logging verbosity.  디버깅 용
 
   > [!TIP]  
-  > You can also pre-configure Module Twin `desired` setting in the Deployment Manifest
+  > 모듈 트윈의 `desired` 설정을 통해서도 설정을 변경할 수 있습니다.
 
 ## Step 1 : Azure IoT Hub  
 
-Using the **Windows 10 DevEnv**, create an IoT Hub if you do not have one.  
+IoT Hub가 아직 없다면 IoT Hub를 만듭니다.  
 
 > [!TIP]  
-> Pick your favorite tool to create a new IoT Hub
+> 선호하는 툴을 이용해서 만들 수 있습니다. 
 
 | Tool   | Link                                                                                                                     |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-| Portal | [Create an IoT hub using the Azure portal](articles/iot-hub/iot-hub-create-through-portal.md)                            |
-| AZ CLI | [Create an IoT hub using the Azure CLI](articles/iot-hub/iot-hub-create-using-cli.md)                                    |
-| VSCode | [Create an IoT hub using the Azure IoT Tools for Visual Studio Code](articles/iot-hub/iot-hub-create-use-iot-toolkit.md) |
+| Portal | [Create an IoT hub using the Azure portal](https://docs.microsoft.com/ko-kr/azure/iot-hub/iot-hub-create-through-portal)                            |
+| AZ CLI | [Create an IoT hub using the Azure CLI](https://docs.microsoft.com/ko-kr/azure/iot-hub/iot-hub-create-using-cli)                                    |
+| VSCode | [Create an IoT hub using the Azure IoT Tools for Visual Studio Code](https://docs.microsoft.com/ko-kr/azure/iot-hub/iot-hub-create-use-iot-toolkit) |
 
-## Step 2 : Azure IoT Edge Device
+## Step 2 : Azure IoT Edge 디바이스
 
-Using the **Windows 10 DevEnv**, create an IoT Edge Device in the IoT Hub from [Step 1](#step-1--prepare-azure-iot-hub).  
+IoT Edge 디바이스를 Step 1에서 만든 IoT Hub에 만듭니다.  
 
 > [!TIP]  
-> Pick your favorite tool to create a new Azure IoT Edge device.
+> 선호하는 툴을 이용해서 IoT Edge 디바이스를 만드세요.
 
 | Tool   | Link                                                                                                               |
 | ------ | ------------------------------------------------------------------------------------------------------------------ |
-| Portal | [Register a new Azure IoT Edge device from the Azure portal](articles/iot-edge/how-to-register-device-portal.md)   |
-| AZ CLI | [Register a new Azure IoT Edge device with Azure CLI](articles/iot-edge/how-to-register-device-cli.md)             |
-| VSCode | [Register a new Azure IoT Edge device from Visual Studio Code](articles/iot-edge/how-to-register-device-vscode.md) |
+| Portal | [Register a new Azure IoT Edge device from the Azure portal](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-register-device-portal)   |
+| AZ CLI | [Register a new Azure IoT Edge device with Azure CLI](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-register-device-cli)             |
+| VSCode | [Register a new Azure IoT Edge device from Visual Studio Code](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-register-device-vscode) |
 
-Please verify you can see the Azure IoT Edge Device in VSCode `Azure IoT Hub Devices` pane in the left bottom corner of VSCode UI.
+Visual Studio Code의 왼쪽 하단의 Azure IoT Hub 탭에서 새로만든 Edge 디바이스를 확인해주세요. 
 
 ![VSCode](images/IntelligentEdge/VSCode02.png)
 
-## Step 3 : Azure IoT Edge Runtime Environment
+## Step 3 : Azure IoT Edge 런타임
 
-Installing the Azure IoT Edge Runtime to the Hyper-V VM is x steps.
+### Step 3.1 : Connect to Ubuntu 가상머신(amd64)에 Azure IoT Edge 런타임 설치
 
-1. Connect to Ubuntu console via SSH or VNC (Linux version of Remote Desktop)  
-2. Download and install libraries and the Azure IoT Edge runtime modules  
-3. Configure the Azure IoT Edge runtime to authenticate and connect to the IoT Hub from [Step 1](#step-1--prepare-azure-iot-hub)  
+Lab 3을 진행하셨다면 이미 설치되어 있는 런타임을 쓰면됩니다. 
+새로운 Ubuntu 가상머신에 설치를 해야 한다면 [Lab 3 - Step 4 : Ubuntu에 Azure IoT Edge 런타임 설치하기](../lab3-edge-advanced.md#step-4--ubuntu에-azure-iot-edge-런타임-설치하기)를 참조해서 만들어주세요.
 
-### Step 3.1 : Connect to Ubuntu VM  
+### Step 3.2 : connection 검증
 
-In order to install the Azure IoT Edge runtime you need a console access.  
-The target Ubuntu installation is pre-configured to accept 2 options:
-
-> [!NOTE]  
-> Instructors will provide you Host Name and/or IP Address of VMs for your use.  
->  
-> Your Ubuntu VM's Host Name is Ubuntu-[Number]
-
-- Connect with SSH
-- Connect with VNC Viewer
-
-> [!TIP]  
-> Feel Free to install your favorite SSH client and/or VNC Client software to the DevEnv
-
-#### Option 1 : SSH
-
-1. Start Putty on **Windows 10 DevEnv**
-1. Enter VM Host Name or IP Address
-
-    ![VNCViewer](images/IntelligentEdge/Putty1.png)
-
-1. Dismiss Security Warning Pop-up by clicking `Yes`  
-
-    ![VNCViewer](images/IntelligentEdge/Putty2.png)
-
-1. Login using following credential  
-
-    ```bash
-    **login as** : `iotbootcamp`  
-    **password** : `bootcamp`  
-    ```
-
-    ![VNCViewer](images/IntelligentEdge/Putty3.png)
-
-#### Option 2 : VNC
-
-If you choose VNC to control Ubuntu, please access Azure Portal so you can copy and paste data such as Connection String.  You **cannot** copy & paste between VNC session and your Windows.
-
-1. Start VNC Client on **Windows 10 DevEnv**  
-  ![VNCViewer](images/IntelligentEdge/VNC1.png)
-
-1. Enter VM Host Name or IP Address  
-  ![VNCViewer](images/IntelligentEdge/VNC2.png)
-
-1. Dismiss Security Warning Pop-up  
-  You may want to select `Don't warn me about this again on this computer.` checkbox.  
-  With this setting you do not have to see this warning again.  
-   ![VNCViewer](images/IntelligentEdge/VNC3.png)
-
-1. Enter Password `bootcamp`
-  You may want to select `Remember password` checkbox so you do not need to enter password again  
-  ![VNCViewer](images/IntelligentEdge/VNC4.png)
-
-1. You should see lock screen  
-  Hit `enter` or click with mouse to display login window  
-  ![VNCViewer](images/IntelligentEdge/VNC5.png)
-
-1. Enter Password `bootcamp`  
-  ![VNCViewer](images/IntelligentEdge/VNC6.png)
-
-1. You should see Ubuntu Desktop  
-  ![VNCViewer](images/IntelligentEdge/VNC7.png)
-
-1. Hit `ctrl + alt + t` to open **Terminal**  
-  ![VNCViewer](images/IntelligentEdge/VNC9.png)
-
-> [!TIP]  
-> Once you are connected, VNC Viewer remembers connections.  You can simply double click to connect again.  
-> ![VNCViewer](images/IntelligentEdge/VNC8.png)
-
-### Step 3.2 : Install the Azure IoT Edge runtime
-
-Please follow the steps describe in [Install the Azure IoT Edge runtime on Linux (x64)](articles/iot-edge/how-to-install-iot-edge-linux.md)
-
-### Step 3.3 : Verify connection
-
-Upon successful configuration and connection, the Azure IoT Edge runtime components `$edgeAgent` and `$edgeHub` should show **Connected** status (Green Icons) in VSCode.
+설정이 정상적으로 진행되었다면 Visual Studio Code에 녹색 아이콘(연결상태)을 확인 할 수 있습니다.
 
 ![VSCode](images/IntelligentEdge/VSCode03.png)
 
-## Step 4 : Clone Source Code
+## Step 4 : 소스코드 클론
 
-Clone the source code for the sample module from Azure Devops repo.  
-You may use `git` command line or `Git Desktop`.
+Azure DevOps 리파지토리에 있는 샘플 소스코드를 클론해서 가져옵니다.
+`git` 커멘드를 활용합니다.
 
 > [!NOTE]  
-> In this instruction, we will use `C:\Repo` folder.
+> 여기에서는 `C:\Repo` 폴더를 가정합니다.
 
-### Step 4.1 : Clone with Git command line
+### Step 4.1 : Git 커멘드로 클론
 
-1. On the **Windows 10 DevEnv laptop**, open `Command console` (or CMD) or `Powershell` console.
-1. Create a folder `C:\Repo`
-1. Navigate to `C:\Repo`
-1. Run `git clone` command
+1. 개발 PC에서 `Command console` (CMD)이나 `Powershell` 콘솔을 실행
+1. 폴더 생성 `C:\Repo`
+1. `C:\Repo`폴더로 이동
+1. `git clone` 커멘드 실행
 
 ```bash
 md C:\Repo
@@ -267,93 +160,78 @@ cd C:\Repo
 git clone https://cdsiotbootcamp.visualstudio.com/bootcamp2019/_git/IntelligentEdgeHOL
 ```
 
-### Step 4.2 : Clone Source Code
-
-Git Desktop provides GUI environment, which may be more convenient.
-
-> [!WARNING]  
-> Github Desktop requires you to login to Github with your Github account.  
-> If you do not have Github account, please use git command line described in the [previous step](#step-41--clone-with-git-command-line)
-
-1. Start Github Desktop on **Windows 10 DevEnv laptop**
-1. Sign in to Github using your Github account
-1. Clone the sample source code from `https://cdsiotbootcamp@dev.azure.com/cdsiotbootcamp/bootcamp2019/_git/IntelligentEdgeHOL`
-
-![GitDesktop](images/IntelligentEdge/GitDesktop.png)
-
 ## Step 5 : Azure Container Registry
 
-On the **Windows 10 DevEnv laptop**, create an instance of Azure Container Registry (ACR).  
-ACR is used to :
+Azure Container Registry (ACR)를 생성합니다. 
+ACR을 통해서
 
-- The DevEnv uploads (a.k.a. **Push**) container images  
-- The Azure IoT Edge runtime downloads (a.k.a. **Pull**) the Azure IoT Edge module(s) during module deployment
+- 개발 PC에서 만든 컨테이너 이미지를 Push  
+- Azure IoT Edge runtime 이 Azure IoT Edge module을 ACR에서 다운로드 합니다. 
 
 > [!TIP]  
 >  
-> - Pick your favorite tool to create a new ACR  
-> - Make sure to enable Admin Access  
-> - Copy/save Admin Credential for later use
+> - 선호하는 툴을 이용해서 생성  
+> - Admin Access 옵션을 선택합니다.
+> - Admin 로그인 정보를 확인합니다.
 
 | Tool   | Link                                                                                                                                           |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Portal | [Create a private container registry using the Azure portal](articles/container-registry/container-registry-get-started-portal.md)             |
-| AZ CLI | [Quickstart: Create a private container registry using the Azure CLI](articles/container-registry/container-registry-get-started-azure-cli.md) |
-| VSCode | [Create a private container registry using Azure PowerShell](articles/container-registry/container-registry-get-started-powershell.md)         |
+| Portal | [빠른 시작: Azure Portal을 사용하여 프라이빗 컨테이너 레지스트리 만들기](https://docs.microsoft.com/ko-kr/azure/container-registry/container-registry-get-started-portal)             |
+| AZ CLI | [빠른 시작: Azure CLI를 사용하여 프라이빗 컨테이너 레지스트리 만들기](https://docs.microsoft.com/ko-kr/azure/container-registry/container-registry-get-started-azure-cli) |
+| PowerShell | [빠른 시작: Azure PowerShell을 사용하여 프라이빗 컨테이너 레지스트리 만들기](https://docs.microsoft.com/ko-kr/azure/container-registry/container-registry-get-started-powershell)         |
 
-## Step 6 : Project Preparation
+## Step 6 : 프로젝트 준비
 
-Before we compile and build container, several settings have to be saved in the project.  
+컨테이너를 컴파일하고 빌드하기 전에 몇 가지 설정을 해야합니다.
 
-### Step 6.1 : Open Sample Code
+### Step 6.1 : 샘플 코드 열기
 
-1. Start VSCode On the **Windows 10 DevEnv laptop**, if you have not started yet  
+1. Visual Studio Code 실행Start VSCode On the **Windows 10 DevEnv laptop**, if you have not started yet  
 
-1. From `File` -> `Open Folder`  
+1. `File` -> `Open Folder`  
 
-1. Select `IntelligentEdgeHOL` folder you cloned the sample code in the [previous step](#step-4--clone-source-code)  
-    Example :  `C:\Repo\IntelligentEdgeHOL`
+1. `IntelligentEdgeHOL` 폴더 선택 (이전 단계에서 클론한 샘플 소스코드)   
+    예 :  `C:\Repo\IntelligentEdgeHOL`
   
     ![VSCode](images/IntelligentEdge/VSCode01.png)
 
-### Step 6.1 : Login to Azure
+### Step 6.1 : Azure 로그인
 
-This step is required so your can access IoT Hub and the Azure IoT Edge Devices in VSCode extension.
+VSCode 에서 Azure 로그인을 하고 IoT Hub에 연결합니다. 
 
-1. Open `Command Palette` in VSCode  
-  `ctrl + shift + p` or `[View] menu -> command palette`
-1. Type `sign` in command palette.  You should see `Azure : Sign in`  
-  Select `Azure : Sign in`  
+1. VSCode `Command Palette` 열기
+  단축키 `ctrl + shift + p` 또는 `[View] menu -> command palette`
+1. `sign` 을 입력하면  `Azure : Sign in` 메뉴가 보입니다.
+   `Azure : Sign in` 을 선택합니다.
   
   ![VSCode](images/IntelligentEdge/VSCode04.png)
 
-1. Complete the sign in process using browser
-  Browser should automatically open with Sign in page  
+1. 로그인 과정을 진행합니다. 브라우저가 자동으로 열립니다.
   
   ![VSCode](images/IntelligentEdge/VSCode05.png)
 
-### Step 6.2 : Retrieve ACR Credential
+### Step 6.2 : ACR 로그인 정보 가져오기
 
-ACR Credential is used to access registry to push and pull containers.  
+ACR에 컨테이너 이미지를 Push/Pull 하려면 ACR 로그인 정보가 필요합니다.
 
-#### Option 1 : Azure Portal  
+#### Option 1 : Azure 포탈  
 
-Retrieve ACR login credential in Azure Portal  
+Azure 포탈에서 확인 할 수 있습니다. 
 
 ![ACR](images/IntelligentEdge/ACR01.png)  
 
 #### Option 2 : AZ CLI  
 
-1. Open `Terminal` in VSCode  
+1. VSCode `Terminal`을 열고 
 
-1. In the Terminal, run `az acr credential show --name <ACR Name>` command to retrieve ACR Credential.  
+1. `az acr credential show --name <ACR Name>` 명령을 실행하면 정보를 얻을 수 있습니다.  
 
 > [!TIP]  
 >  
-> ACR Login Server Name is `<ACR Name>`.**azurecr.io**  
+> ACR 로그인 서버이름은 `<ACR Name>`.**azurecr.io**  입니다.
 >  
-> Example : ACR Name = myregistry  
-> Login Server : myregistry.azurecr.io
+> 예 : ACR Name = myregistry  
+> 로그인서버 : myregistry.azurecr.io
 
 ```bash
 PS C:\repo\bootcamp-labs> az acr credential show --name myregistry
@@ -372,23 +250,23 @@ PS C:\repo\bootcamp-labs> az acr credential show --name myregistry
 }
 ```
 
-### Step 6.3 : Login to ACR
+### Step 6.3 : ACR 로그인
 
-This step is required to push the containers to ACR from VSCode.  
+VSCode 에서 컨테이너 이미지를 Push 하기 위해서 ACR 로그인을 해야합니다.
 
-1. Open `Terminal` in VSCode  
+1. VSCode `Terminal` 열기
 
-  **ctrl + \`** or **[View] menu -> Terminal**
+  **ctrl + \`** 또는 **[View] menu -> Terminal**
 
   ![VSCode](images/IntelligentEdge/VSCode06.png)
 
-1. Run `docker` command to login to ACR  
+1. `docker` 명령으로 ACR 로그인
 
   ```bash
   docker login -u <ACR User Name> -p <ACR Password> <ACR Login Server>
   ```
 
-  Example:
+  예:
   
   ```bash
     PS C:\Repo\IntelligentEdgeHOL> docker login -u myregistry -p ABCDEFG1234567890!)^%ddrd myregistry.azurecr.io
@@ -396,17 +274,18 @@ This step is required to push the containers to ACR from VSCode.
     Login Succeeded
   ```
 
-### Step 6.4 : Edit `.env` file
+### Step 6.4 : `.env` 파일 수정
 
-This step is required for the module deployment.  The deployment manifest contains ACR credential so that the Azure IoT Edge runtime can access ACR to pull container(s)
-Update `.env` file for ACR Login credential
+이 과정은 모듈 배포와 관련 있습니다. deployment manifest 파일은 ACR의 로그인 정보를 포함합니다. 이 정보를 이용하여 Azure IoT Edge 런타임이 ACR에 로그인하여 컨테이너 이미지를 Pull 할 수 있습니다.  
 
-1. Select `.env` file from Explorer pane
-1. Update ACR Login Server, User Name, and Password from [step above](#step-62--retrieve-acr-credential)
+`.env` 파일에 ACR 로그인 정보를 업데이트 합니다. 
+
+1. `.env` 을 선택
+1. ACR Login Server, User Name, Password 이전 과정에서 얻은 정보 업데이트
 
   ![VSCode](images/IntelligentEdge/VSCode07.png)
 
-  Example :
+  예 :
   
   ```bash
   CONTAINER_REGISTRY_URL=bootcampfy19acr.azurecr.io
@@ -414,62 +293,62 @@ Update `.env` file for ACR Login credential
   CONTAINER_REGISTRY_PASSWORD=abcdefg1234567890
   ```
 
-### Step 6.5 : Video Source URL
+### Step 6.5 : Video 소스 URL
 
-1. Open Web Browser and navigate to [http://www.youtube.com](http://www.youtube.com)
-1. Select any video
-1. `Right Click` on the video window, and select `Copy video URL`  
+1. 웹브라우저를 열어서 [http://www.youtube.com](http://www.youtube.com)에 접속
+1. 비디오 선택
+1. 비디오 창에서 `Right Click`하여 `Copy video URL` 클릭
 
   > [!TIP]  
-  > Choose video that contains objects Yolo pre-trained model can recognize.  
-  > Please see [the list](#yolo-pre-trained-model) of objects Yolo re-trained model can recognize.
+  > Yolo pre-trained model이 인식할 수 있는 물건들이 나오는 영상을 골르면 좋습니다. 
+  > [오브젝트 리스트](#yolo-pre-trained-model)를 확인해보세요.
 
   ![Youtube](images/IntelligentEdge/Youtube01.png)
 
-  Example :
+  예 :
   
   ```bash
-  CONTAINER_VIDEO_SOURCE=https://www.youtube.com/watch?v=abcdEFGH
+  CONTAINER_VIDEO_SOURCE=https://www.youtube.com/watch?v=YZkp0qBBmpw
   ```
 
 ## Step 7 : Build and Push Container Image
 
-Let's build the module and the container and upload (Push) the container to ACR
+이제 컨테이너 이미지를 빌드하고 ACR에 업로드(push)해 봅시다.Let's build the module and the container and upload (Push) the container to ACR
 
-1. Make sure that your docker is running linux container
+1. docker가 linux container 모드로 작동해야 합니다. 
   
-  - Right click on Docker Icon in Task Tray  
+  -  Task Tray에서 Docker Icon을 오른쪽 클릭
   ![Docker1](images/IoTEnt-Lab/Docker1.png)
 
-  - Select **Switch to Linux Containers...**  
+  - **Switch to Linux Containers...**  선택
   
-  If the menu says **Switch to Windows Containers...**, Docker Desktop is already running Linux containers.
+  메뉴가 **Switch to Windows Containers...**라면 이미 Linux Containers 모드 입니다.
 
     ![Docker container](images/IntelligentEdge/switch-container.png)
 
-1. Select and right click on `deployment.template.json` in the Explorer pane
+1. VSCode 에서`deployment.template.json` 파일을 찾아서 오른쪽 클릭합니다.
 
-1. Click `Build and Push IoT Edge Solution`
+1. `Build and Push IoT Edge Solution` 선택
 
     ![Build and Push](images/IntelligentEdge/Step7-01.png)
 
-1. Wait until build and push completes
-  You can see the progress in the `terminal window`
+1. 빌드와 Push가 끝날때 까지 기다립니다. 
+  `terminal window`에서 진행상황을 체크합니다.
 
-1. Verify `deployment.amd64.json` is generated in `config` folder
+1. `config` 폴더가 생기고 그 안에 `deployment.amd64.json` 파일이 있는지 확인 합니다. 
 
     ![Build and Push](images/IntelligentEdge/Step7-02.png)
 
-## Step 8 : Deploy Module
+## Step 8 : 모듈 배포
 
-The first module *only reads video stream* and display in the web UI to confirm the module's basic functionalities.  
-In the later step, we will add AI Inference to the module.
+첫번째 모듈에서는 비디오 스트림을 읽어서 웹 UI에 표시하는 기본 기능만 들어 있습니다. 
+계속 진행하면 AI 기능을 모듈에 추가할 것입니다. 
 
-### Deployment Manifest
+### Manifest 배포
 
-Deployment Manifest describes followings:
+Deployment Manifest에는 이런 내용들이 들어 있습니다. 
 
-- Container Registry Credential
+- Container Registry 로그인 정보
 - Modules  
   - System Modules (`$edgeAgent` and `$edgeHub`)
   - Custom Modules
@@ -479,33 +358,33 @@ Deployment Manifest describes followings:
 - Initial Module Twin (Desired Property)
 - Message Routes
 
-There are multiple ways you can deploy modules
+모듈을 배포하는 방법은 여러가지가 있습니다. 
 
 | Tool   | Link                                                                                                       |
 | ------ | ---------------------------------------------------------------------------------------------------------- |
-| Portal | [Deploy Azure IoT Edge modules from the Azure portal](articles/iot-edge/how-to-deploy-modules-portal.md)   |
-| AZ CLI | [Deploy Azure IoT Edge modules with Azure CLI](articles/iot-edge/how-to-deploy-modules-cli.md)             |
-| VSCode | [Deploy Azure IoT Edge modules from Visual Studio Code](articles/iot-edge/how-to-deploy-modules-vscode.md) |
+| Portal | [Azure Portal에서 Azure IoT Edge 모듈 배포](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-deploy-modules-portal)   |
+| AZ CLI | [Azure CLI를 사용하여 Azure IoT Edge 모듈 배포](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-deploy-modules-cli)             |
+| VSCode | [Visual Studio Code에서 Azure IoT Edge 모듈 배포](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-deploy-modules-vscode) |
 
-More on [Deployment Manifest](articles/iot-edge/module-composition.md)
+[Deployment Manifest](https://docs.microsoft.com/ko-kr/azure/iot-edge/module-composition)에 대한 상세 정보
 
-### Step 8.1 : Deploy `YoloModule` without AI from VSCode
+### Step 8.1 : VSCode에서 AI 기능이 없는 `YoloModule` 배포
 
-Deploy `YoloModule` container from VSCode.  
+VSCode에서 `YoloModule` 컨테이너를 배포합니다. 
 
-1. Select and right click `deployment.amd64.json` in Explorer pane
+1. `deployment.amd64.json`에서 오른쪽 클릭
 
-1. Select `Create Deployment for Single Device`
+1. `Create Deployment for Single Device` 선택
 
     ![Deploy Module](images/IntelligentEdge/Step8-01.png)
 
-1. A selection window will appear on the top of VSCode window
+1. VSCode 상단에 디바이스 선택 윈도우 확인
 
-1. Check the progress by monitoring `edgeAgent` log  
+1. Ubuntu 디바이스에서 `edgeAgent` 로그를 살펴봅니다.  
 
-    > [!TIP]  **For Exam!**  
+    > [!TIP]
     >  
-    > Command line to see logs from a module
+    > 아래 명령으로 모듈의 로그를 확인 할 수 있습니다.
     >
     > `sudo docker logs -f edgeAgent`  
     > `sudo iotedge logs -f edgeAgent`  
@@ -515,7 +394,7 @@ Deploy `YoloModule` container from VSCode.
     >  
     > `sudo docker logs -f YoloModule --tail 100
   
-    Example output
+    출력 예제
 
     ```bash
     2019-05-15 01:34:09.314 +00:00 [INF] - Executing command: "Command Group: (
@@ -529,16 +408,16 @@ Deploy `YoloModule` container from VSCode.
     2019-05-15 01:34:15.666 +00:00 [INF] - Updated reported properties
     ```
 
-1. Verify `YoloModule` is deployed and running
+1. `YoloModule`의 배포와 실행 확인
 
-    > [!TIP]  **For Exam!**  
+    > [!TIP]
     >  
-    > Command to see the list of modules  
+    > 아래 명령으로 모듈 리스트를 볼 수 있습니다.
     >
     > `sudo iotedge list`  
     > `sudo docker ps`  
     >
-    > `-a` option will show non-running modules
+    > `-a` option 은 실행되지 않는 모듈을 표시합니다.
 
     ```bash
     iotbootcamp@Ubuntu201:~$ sudo iotedge list
@@ -556,21 +435,26 @@ Deploy `YoloModule` container from VSCode.
 
     > [!TIP]  
     >  
-    > VSCode also shows module status  
+    > VSCode에서도 모듈 상태를 확인 가능합니다.  
     > ![VSCode](images/IntelligentEdge/VSCode08.png)
 
-### Step 8.2 : Verify the deployment results
+### Step 8.2 : 배포결과 확인
 
-Confirm the module is working as expected by accessing the web server.
+웹브라우저를 통해서 모듈이 잘 작동하는지 확인 합니다. Confirm the module is working as expected by accessing the web server.
 
-1. Open the Web Server with IP Address or Ubuntu VM Host Name  
-  Example : [http://ubuntu201](http://ubuntu201) or
+1. Azure Portal에서 Ubuntu 가상머신의 Public IP를 확인합니다.
+  
+  ![Ubuntu IP](images/IntelligentEdge/ubuntu-ip.jpg)
 
-1. You should be able to see video stream
+1. 브라우저에서 접속 합니다. 
+
+  http://[Ubuntu 디바이스 IP]
+
+1. 비디오 스트림을 확인 할 수 있습니다.
 
     ![YouTube](images/IntelligentEdge/Youtube02.png)
 
-1. Check logs from `YoloModule`
+1. `YoloModule`의 로그를 확인 합니다.
 
     ```bash
     iotbootcamp@Ubuntu201:~$ sudo docker logs -f YoloModule --tail 50
@@ -612,47 +496,46 @@ Confirm the module is working as expected by accessing the web server.
     Download Complete
     ```
 
-### Step 9 : Module Twin
+### Step 9 : 모듈 트윈
 
-Let's change Youtube video through Module Twin.  
+모듈 트윈을 통해서 비디오 스트림 소스를 변경해 보겠습ㄴ디ㅏ. Let's change Youtube video through Module Twin.  
 
-1. In VSCode, `Azure IoT Hub Devices` window, expand the Azure IoT Edge Device until you see `YoloModule`
+1. VSCode의 `Azure IoT Hub Devices` 윈도우에서 `YoloModule` 모듈을 확인 합니다. 
 
-1. Select and right click on `YoloModule`
-1. Select `Edit Module Twin`
+1. `YoloModule`에서 오른쪽 클릭
+1. `Edit Module Twin`을 선택
 
     ![ModuleTwin](images/IntelligentEdge/ModuleTwin-01.png)
 
-1. In the editor window `azure-iot-module-twin.json` should open
+1. `azure-iot-module-twin.json`파일이 열림
 
-    > [!TIP]  **For Exam!**  
+    > [!TIP]
     >  
-    > You can show/hide side bar to get bigger editor window  
-    > `ctrl + B` or click button on the top left  
+    > `ctrl + B`를 눌러서 사이드바를 접에서 크게 볼 수 있습니다.
     >
     > ![SideBar](images/IntelligentEdge/ModuleTwin-02.png)  
 
-1. Edit `desired` -> `VideoSource` with URL for another video
+1. `desired` -> `VideoSource` 를 다른 비디오 URL로 변경합니다.
 
     ![ModuleTwin](images/IntelligentEdge/ModuleTwin-03.png)
 
-1. Right click on anywhere Editor widow, then select `Update Module Twin`
+1. 편집 윈도우 위에서 오른쪽 클릭하고 `Update Module Twin`를 선택합니다.
 
     ![ModuleTwin](images/IntelligentEdge/ModuleTwin-04.png)
 
-1. Depending on the size of video, it may take some time but new video should start playing in your browser
+1. 비디오 크기에 따라 새로운 비디오가 웹브라우저에 표시되기까지 시간이 걸릴 수 있습니다.
 
-## Step 10 : Add AI Inference to YoloModule
+## Step 10 : YoloModule 기능 추가
 
-We can send each frame from the video to AI for object detection inference.  For this lab, we prepared pre-trained [Yolo v3](https://pjreddie.com/darknet/yolo/) object detection model.  
-You can build your own Computer Vision model with [Cognitive Services Custom Vision](https://www.customvision.ai/).
+비디오의 각 프레임을 AI 에 보내 물체를 인식 할 수 있습니다. 이 실습을 위해 pre-trained [Yolo v3](https://pjreddie.com/darknet/yolo/) object detection model을 사용합니다.
+[Cognitive Services Custom Vision](https://www.customvision.ai/)를 사용해서 나만의 컴퓨터 비전 모델을 만들 수도 있습니다. 
 
-### Step 10.1 : Modify Source Code
+### Step 10.1 : Source Code 수정
 
-In the sample source code, AI inference code is disabled.  Please re-enable 2 code blocks.
+샘플 코드에서는 AI 기능이 꺼져 있습니다. 아래 코드를 다시 살려서 켜줍니다.
 
-- Open `VideoCapture.py` in VSCode
-- Look for code blocks with following comments  
+- VSCode에서 `VideoCapture.py` 파일 열기
+- 아래 코드 블록을 찾습니다.
 
     ```python
     '''***********************************************************
@@ -665,8 +548,8 @@ In the sample source code, AI inference code is disabled.  Please re-enable 2 co
     ***********************************************************'''
     ```
 
-- Remove `#` sign from the beginning of lines  
-  - Line 19 and 20  
+- 아래 코드에서 `#`을 제거합니다.
+  - Line 19,20  
     Imports AI Inference Class)
   - Line 69  
     Initialization of the class
@@ -675,53 +558,52 @@ In the sample source code, AI inference code is disabled.  Please re-enable 2 co
 
 > [!TIP]  
 >  
-> You can find the current line number in the right bottom corner of VSCode  
+> 라인번호는 VSCode 아래 상태바에서 확인 가능합니다.
 >  
 > ![VSCode](images/IntelligentEdge/VSCode09.png)
 
-### Step 10.2 : Update Module Tag
+### Step 10.2 : Module Tag 업데이트
 
-The name of Container module is consist of multiple parts.
+컨테이너 모듈 이름은 몇 가지 파트로 이뤄져 있습니다.The name of Container module is consist of multiple parts.
 
-1. Registry Address  
+1. 레지스트리 주소
   
-1. Container Name  
-  Example : YoloModule
+1. 컨테이너 이름  
+  예 : YoloModule
 
-1. Architecture or Platform  
-  Example : amd64, arm32
+1. 아키텍쳐 / 플랫폼  
+  예 : amd64, arm32
 
-1. Tag  
-  Typically used to specify version number.  
+1. 태그  
+  보통 버전 번호를 활용합니다.
 
-Example
+예
 
 ```bash
 myregistry.azurecr.io/yolomodule:Step10-amd64
 ```
 
-Update `Tag` in `.env` file to give an unique name
+`Tag`는 `.env` 파일에서 변경 할 수 있습니다.
 
-Example
+예
 
 ```bash
 CONTAINER_MODULE_VERSION=Step7-8
 
-to
+-->
 
 CONTAINER_MODULE_VERSION=Step10
 ```
 
-### Step 10.3 : Re-Build and deploy new YoloModule
+### Step 10.3 : 다시 빌드하고 배포
 
-Follow the same procedure in [Step 7](#step-7--build-and-push-container-image) and [Step 8](#step-8--deploy-module) to re-build and deploy the new module
+[Step 7](#step-7--build-and-push-container-image), [Step 8](#step-8--deploy-module) 을 반복하여 다시 빌드하고 배포합니다.module
 
-### Step 10.4 : Confirm the new module is deployed and running
+### Step 10.4 : 새로운 모듈이 배포 및 작동 확인
 
-Once the new module is deployed, refresh your browser to see the video.  Now YoloModule sends every frame to AI Inference.  
-AI Inference code sends frame for inference, then draws bounding box with label and confidence level.
+새로운 모듈이 배포되면 브라우저를 리프레시 합니다. 이제는 YoloModule이 각 프레임을 AI로 보내고 AI 모델은 confidence level 이상이면 박스를 그리고 라벨을 출력합니다.
 
-Example
+예
 
 ```bash
 iotbootcamp@Ubuntu201:~$ sudo iotedge list
@@ -733,23 +615,21 @@ YoloModule       running          Up a minute      bootcampfy19acr.azurecr.io/yo
 
 > [!TIP]  
 >  
-> Monitor deployment progress with logs from $edgeAgent  
-> Command : `iotedge logs edgeAgent`
+> 배포 상황을 알기 위해서는 $edgeAgent 로그를 살펴보면 됩니다.
+> 명령 : `iotedge logs edgeAgent`
 
 ![YouTube](images/IntelligentEdge/Youtube03.png)
 
-With AI running, observe followings
+AI가 실행되면
 
-- Frame Rate (FPS) goes down
-- Sometimes AI does not detect objects such as person
+- Frame Rate (FPS) 가 떨어집니다.
+- 때로는 AI 가 오브젝트를 놓치기도 합니다.
 
-Since we need to share hardware resources for this training, we are running Ubuntu VM with very limited resource.  
-As you can see below, running AI is very CPU intensive operation.  Therefore, we are running Yolo AI model called `Tiny Yolo`.  
-Tiny Yolo is light-weight version of Yolo model to run on Non-GPU/FPGA (or other hardware accelerator).
+실습에서는 Ubuntu 가상머신을 사용합니다. 시스템 모니터링을 보면 AI 모듈은 CPU를 많이 쓰는 작업임을 알 수 있습니다. 여기서 쓴 AI 모델을 `Tiny Yolo`이라고 부릅니다. Tiny Yolo는 GPU나 FPGA를 쓰지 않는(하드웨어 가속을 쓰지 않는) Yolo모델의 가벼운 버전입니다.
 
 ![SystemMonitor](images/IntelligentEdge/SystemMonitor.png)
 
-AI Inference can be disabled via Module Twin.  Change value of `Inference` to 0 (zero) to disable AI inference to see the difference.
+AI 기능은 모듈 트윈에서 `Inference` 를 0으로 설정해서 끌 수 있습니다. 
 
 ```json
     },
@@ -767,27 +647,26 @@ AI Inference can be disabled via Module Twin.  Change value of `Inference` to 0 
 
 ## Step 11 : (Optional) Full Yolo v3 Model
 
-Yolo v3 pre-trained model used in [Step 10](#step-10--add-ai-inference-to-yolomodule) is called Tiny-Yolo.  
-Full Yolo v3 model is available in `Yolo-Full` branch.
+[Step 10](#step-10--add-ai-inference-to-yolomodule)에서 사용한 Yolo v3 pre-trained model은 Tiny-Yolo 입니다. 
+Full Yolo v3 model `Yolo-Full` 브랜치에 있습니다. 
 
-1. Clone `Yolo-Full` branch  
-  Example : Clone to C:\Repo\YoloFull folder  
+1. `Yolo-Full` branch 를 클론합니다. 
 
   ```bash
   git clone https://cdsiotbootcamp.visualstudio.com/bootcamp2019/_git/IntelligentEdgeHOL -b Yolo-Full c:\Repo\YoloFull
   ```
 
-1. Edit `.env` file
-1. Build and Push container
-1. Deploy module
-1. Check result with browser
+1. `.env` 파일 수정
+1. 컨테이너 빌드 및 Push
+1. 모듈 배포
+1. 브라우저에서 확인
 
 > [!WARNING]  
-> Pre-trained Yolo v3 model file size is about 240MB.  Clone, push, and pull may take time.
+> Pre-trained Yolo v3 model 파일 사이즈는 240MB라서  Clone, push, pull 에 시간이 걸립니다.
 
-Notice that with Full AI Model, recognition rate is higher but runs slower (FPS)
+Full AI Model을 쓰면 오브젝트 인식률이 좋아지지만 FPS 가 낮아집니다. 
 
-## Yolo Pre-trained Model Object List
+## Yolo Pre-trained Model 오브젝트 리스트
 
 ```text
 person
