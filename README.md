@@ -10,14 +10,12 @@
     * [Docker Community Edition설치](https://docs.docker.com/docker-for-windows/install/)
     * [Visual Studio Code 설치](https://code.visualstudio.com/download)
     * Visual Studio Code 확장 설치
-      Azure IoT Edge
-      Azure IoT Hub Toolkit
-      Docker
+      * Azure IoT Edge
+      * Azure IoT Hub Toolkit
+      * Docker
     * [.NET Core 2.2 설치](https://dotnet.microsoft.com/download/dotnet-core/2.2)
 
-
-
- 
+![](images/IntelligentEdge/vscode-extension.png)
 
 
 ## Lab 2: Azure IoT Edge - Basic
