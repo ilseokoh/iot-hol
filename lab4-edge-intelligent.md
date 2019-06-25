@@ -627,7 +627,7 @@ AI가 실행되면
 
 실습에서는 Ubuntu 가상머신을 사용합니다. 시스템 모니터링을 보면 AI 모듈은 CPU를 많이 쓰는 작업임을 알 수 있습니다. 여기서 쓴 AI 모델을 `Tiny Yolo`이라고 부릅니다. Tiny Yolo는 GPU나 FPGA를 쓰지 않는(하드웨어 가속을 쓰지 않는) Yolo모델의 가벼운 버전입니다.
 
-![SystemMonitor](images/IntelligentEdge/SystemMonitor.png)
+![SystemMonitor](images/IntelligentEdge/cpu.jpg)
 
 AI 기능은 모듈 트윈에서 `Inference` 를 0으로 설정해서 끌 수 있습니다. 
 
@@ -642,8 +642,6 @@ AI 기능은 모듈 트윈에서 `Inference` 를 0으로 설정해서 끌 수 �
             "VideoSource": "",
             "$metadata": {
 ```
-
-![SystemMonitor](images/IntelligentEdge/SystemMonitor2.png)
 
 ## Step 11 : (Optional) Full Yolo v3 Model
 
