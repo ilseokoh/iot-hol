@@ -49,7 +49,7 @@ SSH를 활용해서 가상머신에 연결해 봅니다.
 
 ## Step 1: 새로운 Azure IoT Edge device 만들기
 
-이번 실습에서는 Visual Studio Code의 Azure 포탈 대신 Azure IoT Extension을 통해서 Azure IoT Edge 디바이스를 만들어보겠습니다. 
+이번엔 Visual Studio Code의 Azure 포탈 대신 Azure IoT Extension을 통해서 Azure IoT Edge 디바이스를 만들어보겠습니다. 
 
 ### Step 1.1 : IoT Hub 선택
 
@@ -95,7 +95,7 @@ VSCode의 Azure IoT Extension을 사용하여 IoT Hub에 연결할 수 있습니
 
 ## Step 3 : 디바이스 Connection String 복사
 
-Ubuntu 디바이스가 IoT Hub에 연결되기 위해서는 디바이스 Connection String이 필요합니다. 
+Ubuntu 디바이스가 IoT Hub에 연결되기 위해서는 `디바이스 Connection String`이 필요합니다. 
 
 1. **Azure IoT Hub Devices** 섹션의 새로 만든 디바이스에서 오른쪽 클릭을 합니다. 
 
@@ -145,6 +145,8 @@ $ sudo apt-get install moby-cli
 
 ### Step 4.5 : 모비 호환성을 위해 Linux 커널을 확인
 
+일부 오류가 보이는데 우선 무시하고 넘어갑니다.
+
 ```bash
 $ curl -sSL https://raw.githubusercontent.com/moby/moby/master/contrib/check-config.sh -o check-config.sh
 $ chmod +x check-config.sh
@@ -163,6 +165,7 @@ $ sudo apt-get install iotedge
 데몬은 /etc/iotedge/config.yaml에 있는 구성 파일을 사용하여 구성할 수 있습니다. 이 파일은 기본적으로 쓰기 금지되어 있습니다 편집하려면 관리자 권한이 필요합니다. 
 
 VSCode에서 복사해 놓은 디바이스 Connection String을 YAML파일에 입력해줍니다. 
+잘 사용하는 에디터를 이용해서 수정합니다. 
 
 ```bash
 $ sudo nano /etc/iotedge/config.yaml
@@ -191,6 +194,8 @@ $ sudo systemctl restart iotedge
 
 ### Step 4.9 : 서비스 상태 확인  
 
+systemctl 명령을 이용해서 서비스 실행상태를 확인합니다.
+
 ```bash
 $ systemctl status iotedge
 ● iotedge.service - Azure IoT Edge daemon
@@ -209,6 +214,8 @@ Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Creating
 lines 1-19/19 (END) 
 ```
 ### Step 4.10 : 실행중인 모듈 확인 
+
+iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 
 
 ```bash 
 $ sudo iotedge list
