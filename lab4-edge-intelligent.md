@@ -59,7 +59,7 @@ Lab 3에서 이미 Ubuntu 가상 머신을 만들었다면 그대로 사용하�
 
 ### 모듈 기능
 
-샘플코드틑 3가지 기능을 가지고 있습니다.
+샘플코드는 3가지 기능을 가지고 있습니다.
 
 - Video Stream  
   모듈은 아래 소스중에 하나에서 비디오 스트림을 입력 받습니다.
@@ -128,7 +128,7 @@ Visual Studio Code의 왼쪽 하단의 Azure IoT Hub 탭에서 새로만든 Edge
 
 ## Step 3 : Azure IoT Edge 런타임
 
-### Step 3.1 : Connect to Ubuntu 가상머신(amd64)에 Azure IoT Edge 런타임 설치
+### Step 3.1 : Ubuntu 가상머신(amd64)에 Azure IoT Edge 런타임 설치
 
 Lab 3을 진행하셨다면 이미 설치되어 있는 런타임을 쓰면됩니다. 
 새로운 Ubuntu 가상머신에 설치를 해야 한다면 [Lab 3 - Step 4 : Ubuntu에 Azure IoT Edge 런타임 설치하기](../lab3-edge-advanced.md#step-4--ubuntu에-azure-iot-edge-런타임-설치하기)를 참조해서 만들어주세요.
@@ -186,7 +186,7 @@ ACR을 통해서
 
 ### Step 6.1 : 샘플 코드 열기
 
-1. Visual Studio Code 실행Start VSCode On the **Windows 10 DevEnv laptop**, if you have not started yet  
+1. Visual Studio Code 실행 
 
 1. `File` -> `Open Folder`  
 
