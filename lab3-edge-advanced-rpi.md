@@ -5,47 +5,43 @@ Visual Studio Code (VSCode)는 개발자의 개발 속도를 향상시키는 파
 이번 실습을 통해서 
 
 - VSCode에서 IoT Edge 디바이스 생성
-- Ubuntu 에 Azure IoT Edge 런타임 설치 
+- 라즈베리파이에 Azure IoT Edge 런타임 설치 
 - Azure Container Registry (ACR) 만들기
 - Azure IoT Edge Module의 다운로드와 빌드
 
 ## 사전준비
 
-- [Visual Studio Code 설치](https://code.visualstudio.com/download)
-- Visual Studio 용 Azure IoT Hub Toolkit, Azure IoT Edge
-  ![Azure IoT Edge Extension](images/Register-device-vscode/extension.png)
 - Lab 2에서 만든 Azure IoT Hub
 - .Net Core 설치
     [https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer)
+- [Visual Studio Code 설치](https://code.visualstudio.com/download)
+- Visual Studio 용 Azure IoT Hub Toolkit, Azure IoT Edge
+  ![Azure IoT Edge Extension](images/Register-device-vscode/extension.png)
 
-## Step 0: Ubuntu 가상머신 만들기
 
-실습에서 Edge 디바이스로 사용될 Ubuntu 가상머신을 만듭니다. 
+## Step 0 : 라즈베리파이 실습용 기기 준비
 
-### Step 0-1 : Azure에 로그인
+Azure IoT Edge가 작동될 라즈베리파이 기기를 준비합니다. 라즈베리파이에는 Rasbian 리눅스가 설치되어 있어야 합니다. 설치 방법은 [Setting up your Raspberry Pi](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up)를 참조 바랍니다.
 
-[Azure 포탈](https://portal.azure.com)에 로그인합니다.
+### Step 0-1 : 라즈베리파이 IP 확인
 
-### Step 0-2 : Ubuntu 서버 새로 만들기
+라즈베리파이에 모니터와 키보드, 마우스를 연결하여 무선 네트워크를 연결하고 IP를 확인합니다.
 
-포탈의 왼쪽 위에 "리소스 만들기" 선택하고 Ubuntu로 검색해서
-Ubuntu Server 18.04 선택합니다.
+![WiFi 설정](images/rpi-lab/rpi-wifi-setup.png)
 
-![리소스 만들기](images/linux-lab/new-ubuntu.png)
+![IP 확인](images/rpi-lab/rpi-wifi-setup-ip.png)
 
-### Step 0-3 : 리눅스 가상머신 만들기
+### Step 0-2 : SSH 설정 및 접속
 
-가상머신 만들기 문서를 따라서 진행합니다. SSH 공개키에 익숙하지 않으면 암호를 선택하고 아이디와 비밀번호를 입력합니다. 
+라즈베리파이에 SSH를 연결할 수 있도록 설정합니다. 초기 아이디와 비밀번호는 pi/raspberry 입니다.
 
-[가상머신 만들기](https://docs.microsoft.com/ko-kr/azure/virtual-machines/linux/quick-create-portal#create-virtual-machine) 내용을 참조하여 Ubuntu 가상머신을 만듭니다.
+![SSH 설정](images/rpi-lab/raspberry_pi_configuration.png)
 
-### Step 0-4 : 가상머신에 SSH 연결
+[Putty](https://www.putty.org/) 등의 툴을 이용하여 SSH에 접속합니다.
 
-SSH를 활용해서 가상머신에 연결해 봅니다.
+![Putty로 SSH 연결](images/rpi-lab/putty.jpg)
 
-[가상머신에 연결](https://docs.microsoft.com/ko-kr/azure/virtual-machines/linux/quick-create-portal#connect-to-virtual-machine)
-
-[Putty를 사용하여 SSH 연결](https://archmond.net/?p=7932)할 수 있습니다.
+![Putty로 SSH 연결](images/rpi-lab/putty_connected.png)
 
 ## Step 1: 새로운 Azure IoT Edge device 만들기
 
@@ -53,9 +49,9 @@ SSH를 활용해서 가상머신에 연결해 봅니다.
 
 ### Step 1.1 : IoT Hub 선택
 
-VSCode의 Azure IoT Extension을 사용하여 IoT Hub에 연결할 수 있습니다. 연결을 위해서 Azure 구독에 로그인하고 IoT Hub를 선택해야 합니다. 
+VSCode의 Azure IoT Extension을 사용하여 IoT Hub에 연결할 수 있습니다. 연결을 위해서 Azure 구독에 로그인하고 IoT Hub를 선택해야 합니다.
 
-1. Visual Studio Code의 **Explorer** 를 선택합니다. 
+1. Visual Studio Code의 **Explorer** 를 선택합니다.
 
 1. Explorer 아래쪽에 **Azure IoT Hub Devices** 섹션을 펼칩니다.
 
@@ -107,14 +103,16 @@ Ubuntu 디바이스가 IoT Hub에 연결되기 위해서는 `디바이스 Connec
 
 **Get Device Info** 메뉴를 통해서 Connectoin String 외의 정보를 **Output** 윈도우에서 확인 할 수 있습니다.
 
-## Step 4 : Ubuntu에 Azure IoT Edge 런타임 설치하기
+## Step 4 : 라즈베리파이에 Azure IoT Edge 런타임 설치하기
 
-이번엔 Ubuntu 가상머신에 Azure IoT Edge 런타임을 설치해보겠습니다. [Linux(x64)에서 Azure IoT Edge 런타임 설치](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-install-iot-edge-linux) 문서를 따라서 진행합니다. 
+> 이전단계에서 Azure IoT Edge 런타임을 설치했다면 Step 5로 이동합니다.
+
+이번엔 라즈베리파이에 Azure IoT Edge 런타임을 설치해보겠습니다. [Linux(x64)에서 Azure IoT Edge 런타임 설치](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-install-iot-edge-linux) 문서를 따라서 진행합니다. 
 
 ### Step 4.1 : Microsoft 키 및 소프트웨어 리포지토리 피드 등록
 
 ```bash
-$ curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > ./microsoft-prod.list
+$ curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100    77  100    77    0     0    235      0 --:--:-- --:--:-- --:--:--   235
@@ -132,6 +130,7 @@ $ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > micro
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   983  100   983    0     0   2445      0 --:--:-- --:--:-- --:--:--  2445
+
 $ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
 ```
 
@@ -213,6 +212,7 @@ Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Successf
 Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Creating module edgeAgent...
 lines 1-19/19 (END) 
 ```
+
 ### Step 4.10 : 실행중인 모듈 확인 
 
 iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 
@@ -267,7 +267,7 @@ edgeHub          running          Up a minute      mcr.microsoft.com/azureiotedg
     ![AcrCreate2](images/IoTEnt-Lab/ACR-Create3.png)
 
 1. ACR Access Key  
-    포탈에서 ACR의 `Access Key`를 복사합니다. 
+    포탈에서 ACR의 `Access Key`를 복사합니다.
 
     ![AcrCreate4](images/IoTEnt-Lab/ACR-Create4.png)
 
@@ -356,17 +356,17 @@ edgeHub          running          Up a minute      mcr.microsoft.com/azureiotedg
     dotnet 명령으로 빌드합니다. 
 
     ```ps
-    dotnet publish -r win-x64
+    dotnet publish -r linux-arm
     ```
 
     바이너리는 아래 위치에 생성됩니다. 
-    `C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\win-x64`  
+    `C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\linux-arm`  
 
     예시 :
   
     ```powershell
     PS C:\repo> cd .\iotedge\edge-modules\SimulatedTemperatureSensor\
-    PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> dotnet publish -r ubuntu.18.04-x64
+    PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> dotnet publish -r linux-arm
     Microsoft (R) Build Engine version 16.0.450+ga8dc7f1d34 for .NET Core
     Copyright (C) Microsoft Corporation. All rights reserved.
   
@@ -449,16 +449,49 @@ Step 4에서 IoT Edge 런타임을 Linux 버전을 설치했기 때문에 이미
 아래 명령으로 컨테이너 이미지를 빌드 합니다. 
 
 ```ps
-docker build .\bin\Debug\netcoreapp2.1\win-x64\publish -t <Tag> -f <Dockerfile>
+docker build .\bin\Debug\netcoreapp2.1\linux-arm\publish -t <Tag> -f <Dockerfile>
 ```
 
 이미지 이름 **SimulatedTemperatureSensor**
 
 ```ps
-docker build .\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64\publish\ -t simulatedtemperaturesensor -f .\docker\linux\amd64\Dockerfile
+docker build .\bin\Debug\netcoreapp2.1\linux-arm\publish\ -t simulatedtemperaturesensor -f .\docker\linux\arm32v7\Dockerfile
+
+Sending build context to Docker daemon  75.84MB
+Step 1/8 : ARG base_tag=1.0.0-preview013-linux-arm32v7
+Step 2/8 : FROM azureiotedge/azureiotedge-module-base:${base_tag}
+1.0.0-preview013-linux-arm32v7: Pulling from azureiotedge/azureiotedge-module-base
+3447b717941c: Pull complete                                                                                             8a139bc00a59: Pull complete                                                                                             f2a88e45a074: Pull complete                                                                                             bc408458c703: Pull complete                                                                                             e30d031d4ae9: Pull complete                                                                                             5f9bdce703de: Pull complete                                                                                             5c3a99376e0f: Pull complete                                                                                             8488cfde5253: Pull complete                                                                                             Digest: sha256:04d072e4208eebb21a090820c8dc910cc70fc62270609b7ac2a2a0e0ec68458b
+Status: Downloaded newer image for azureiotedge/azureiotedge-module-base:1.0.0-preview013-linux-arm32v7
+ ---> c2dbed530906
+Step 3/8 : ARG EXE_DIR=.
+ ---> Running in dc197339a53f
+Removing intermediate container dc197339a53f
+ ---> f2d39370595c
+Step 4/8 : ENV MODULE_NAME "SimulatedTemperatureSensor.dll"
+ ---> Running in 2ada11fce451
+Removing intermediate container 2ada11fce451
+ ---> 1748beb3cf89
+Step 5/8 : WORKDIR /app
+ ---> Running in f012533703db
+Removing intermediate container f012533703db
+ ---> 096b6c50ff37
+Step 6/8 : COPY $EXE_DIR/ ./
+ ---> e277d4570542
+Step 7/8 : USER moduleuser
+ ---> Running in 1ef373f42f07
+Removing intermediate container 1ef373f42f07
+ ---> 6b3a6460b481
+Step 8/8 : CMD echo "$(date --utc +"[%Y-%m-%d %H:%M:%S %:z]"): Starting Module" &&     exec /usr/bin/dotnet SimulatedTemperatureSensor.dll
+ ---> Running in 0502fe4396a7
+Removing intermediate container 0502fe4396a7
+ ---> 4b0f61191305
+Successfully built 4b0f61191305
+Successfully tagged simulatedtemperaturesensor:latest
+SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
 ```
 
-아래 명령으로 이미지가 생성되었는지 확인 합니다. 
+아래 명령으로 이미지가 생성되었는지 확인 합니다.
 
 ```ps
 docker images
@@ -540,11 +573,9 @@ ACR에 이미지가 Push 되었는지 확인합니다.
 
 ![SimTempSensor2](images/IoTEnt-Lab/SimulatedTempSensor2.png)
 
-## Step 8 : Deploy to your Ubuntu Linux
+## Step 8 : Deploy to your 라즈베리파이
 
-이제 Azure IoT Edge 디바이스인 Ubuntu 가상머신에 Edge 모듈을 배포할 준비가 완료되었습니다. 이미지를 배포하기 위해서는 `Deployment Manifest`가 필요합니다. 
-
-여기에서는 Azure 포탈에서 `Deployment Manifest`를 만들어서 배포하겠습니다. 
+이제 Azure IoT Edge 디바이스인 Ubuntu 가상머신에 Edge 모듈을 배포할 준비가 완료되었습니다. 이미지를 배포하기 위해서는 `Deployment Manifest`가 필요합니다. 여기에서는 **Azure 포탈**에서 `Deployment Manifest`를 만들어서 배포하겠습니다. 
 
 ### Step 8.1 : IoT Edge 상세 페이지
 
@@ -610,22 +641,22 @@ Lab 2 와 마찬가지로 모듈 메시지가 IoT Hub로 전달되도록 설정�
 
 ### Step 8.6 : 배포 모니터링
 
-배포는 몇 분이 걸릴 수 있습ㄴ디ㅏ. **edgeAgent**의 로그를 통해서 진행상황을 체크할 ㅅ수 있습니다. 
+배포는 몇 분이 걸릴 수 있습니다. **edgeAgent**의 로그를 통해서 진행상황을 체크할 ㅅ수 있습니다. 
 
 Edge Agent 는 Azure IoT Edge 런타임의 일부로 Azure IoT Hub 와 통신하고 모듈 배포를 책임 집니다. 
 
 `iotedge logs` 명령을 통해서 배포상태를 체크합니다. 
 
-```ps
-iotedge logs -f edgeAgent
+```bash
+sudo iotedge logs -f edgeAgent
 ```
 
 Enter `Ctrl + c`를 눌러 모니터링을 끝낼 수 있습니다. `iotedge list` 명령을 통해서 모듈 리스트와 상태를 확인 할 수 있습니다. 
 
 예 :
 
-```ps
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> iotedge logs -f edgeAgent
+```bash
+$ iotedge logs -f edgeAgent
 [06/09/2019 03:32:14.668 PM] Edge Agent Main()
 2019-06-09 08:32:14.900 -07:00 [INF] - Starting module management agent.
 2019-06-09 08:32:15.077 -07:00 [INF] - Version - 1.0.7.1.22377503 (f7c51d92be8336bc6be042e1f1f2505ba01679f3)
@@ -666,7 +697,7 @@ PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> iotedge logs -f edge
 2019-06-09 08:32:57.513 -07:00 [INF] - Updated reported properties
 2019-06-09 08:33:02.740 -07:00 [INF] - Updated reported properties
 
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> iotedge list
+$ sudo iotedge list
 NAME             STATUS           DESCRIPTION      CONFIG
 edgeAgent        running          Up 4 minutes     mcr.microsoft.com/azureiotedge-agent:1.0
 edgeHub          running          Up 3 minutes     mcr.microsoft.com/azureiotedge-hub:1.0
@@ -680,3 +711,9 @@ mysimtempsensor  running          Up 3 minutes     iotbootcamp2019acr1.azurecr.i
 - `iotedge list` 
 - `iotedge logs -f <You Module Name>` 
 - `Device Explorer`
+
+## Step 10 : 메시지 전송 확인 
+
+Azure IoT Hub까지 메시지가 전달되는지 **Device Explorer**를 통해 확인 합니다. 
+
+![Device Explorer](images/rpi-lab/simtemp.png)

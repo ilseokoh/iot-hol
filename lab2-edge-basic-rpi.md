@@ -174,79 +174,125 @@ Connection String 두개 중에 하나를 복사해 둡니다.
 
 IoT Hub연결을 위한 설정을 위해 라즈베리파이에 접속합니다.
 
-## Step 5 : IoT Edge 런타임 설정
+## Step 5 : 라즈베리파이에 Azure IoT Edge 런타임 설치하기
 
-이번엔 라즈베리파이에 Azure IoT Edge 런타임을 설치하고 설정해 보겠습니다.
+> 이전단계에서 Azure IoT Edge 런타임을 설치했다면 Step 5로 이동합니다.
 
-### Step 5.1 : 준비
+이번엔 라즈베리파이에 Azure IoT Edge 런타임을 설치해보겠습니다. [Linux(x64)에서 Azure IoT Edge 런타임 설치](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-install-iot-edge-linux) 문서를 따라서 진행합니다. 
 
-- repository configuration 설치
-- generated list 복사
-- Microsoft GPG public key 설치
+### Step 5.1 : Microsoft 키 및 소프트웨어 리포지토리 피드 등록
 
 ```bash
-curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
-
-sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
-
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+$ curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    77  100    77    0     0    235      0 --:--:-- --:--:-- --:--:--   235
 ```
 
-### Step 5.2 : 컨테이너 런타임 설치
+### Step 5.2 : 생성된 목록에 복사
 
-Azure IoT Edge는 OCI 호환 컨테이너 런타임이 필요하고 Moby 엔진을 추천합니다. 
-
-apt 업데이트
 ```bash
-sudo apt-get update
+$ sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
 ```
-Moby 엔진 설치 
-```bash
-sudo apt-get install moby-engine
-```
-Moby command-line interface (CLI) 설치
-```bash
-sudo apt-get install moby-cli
-```
-
-### Step 5.3 : IoT Edge 런타임 설치
+### Step 5.3 : Microsoft GPG 공개 키를 설치
 
 ```bash
-sudo apt-get update
+$ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   983  100   983    0     0   2445      0 --:--:-- --:--:-- --:--:--  2445
 
-sudo apt-get install iotedge
+$ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
 ```
 
-### Step 5.4 : 디바이스 Connection String을 입력합니다.
-
-3.2 단계에서 복사해 놓은 Connection String을 /etc/iotedge/config.yaml에 붙여 넣습니다.
+### Step 5.4 : 컨테이너 런타임 설치
 
 ```bash
-sudo nano /etc/iotedge/config.yaml
+$ sudo apt-get update
+$ sudo apt-get install moby-engine
+$ sudo apt-get install moby-cli
+```
+
+### Step 5.5 : 모비 호환성을 위해 Linux 커널을 확인
+
+일부 오류가 보이는데 우선 무시하고 넘어갑니다.
+
+```bash
+$ curl -sSL https://raw.githubusercontent.com/moby/moby/master/contrib/check-config.sh -o check-config.sh
+$ chmod +x check-config.sh
+$ ./check-config.sh
+```
+
+### Step 5.6 : Azure IoT Edge 보안 데몬 설치
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install iotedge
+```
+
+### Step 5.7 : Azure IoT Edge 보안 데몬 구성 - 수동구성
+
+데몬은 /etc/iotedge/config.yaml에 있는 구성 파일을 사용하여 구성할 수 있습니다. 이 파일은 기본적으로 쓰기 금지되어 있습니다 편집하려면 관리자 권한이 필요합니다. 
+
+VSCode에서 복사해 놓은 디바이스 Connection String을 YAML파일에 입력해줍니다. 
+잘 사용하는 에디터를 이용해서 수정합니다. 
+
+```bash
+$ sudo nano /etc/iotedge/config.yaml
 ```
 
 ```yaml
-# Manual provisioning configuration
 provisioning:
   source: "manual"
   device_connection_string: "<ADD DEVICE CONNECTION STRING HERE>"
 
-# DPS TPM provisioning configuration
 # provisioning:
 #   source: "dps"
 #   global_endpoint: "https://global.azure-devices-provisioning.net"
 #   scope_id: "{scope_id}"
-#   attestation:
-#     method: "tpm"
-#     registration_id: "{registration_id}"
+#   registration_id: "{registration_id}"
 ```
 
-### Step 5.4 : iotedge 서비스 다시시작 
+파일을 저장하고 닫습니다.
+CTRL + X, Y, Enter
 
-Azure IoT Edge 서비스를 다시시작합니다. 
+### Step 5.8 : 데몬 다시시작
+
 ```bash
-sudo systemctl restart iotedge
+$ sudo systemctl restart iotedge
+```
+
+### Step 5.9 : 서비스 상태 확인  
+
+systemctl 명령을 이용해서 서비스 실행상태를 확인합니다.
+
+```bash
+$ systemctl status iotedge
+● iotedge.service - Azure IoT Edge daemon
+   Loaded: loaded (/lib/systemd/system/iotedge.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2019-06-24 05:51:26 UTC; 13s ago
+     Docs: man:iotedged(8)
+ Main PID: 5932 (iotedged)
+    Tasks: 9 (limit: 9513)
+   CGroup: /system.slice/iotedge.service
+           └─5932 /usr/bin/iotedged -c /etc/iotedge/config.yaml
+
+Jun 24 05:51:28 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:28Z [INFO] - Updating identity for module $edgeAgent
+Jun 24 05:51:28 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:28Z [INFO] - Pulling image mcr.microsoft.com/azureiotedge-agent:1.0...
+Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Successfully pulled image mcr.microsoft.com/azureiotedge-agent:1.0
+Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Creating module edgeAgent...
+lines 1-19/19 (END) 
+```
+
+### Step 5.10 : 실행중인 모듈 확인 
+
+iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 
+
+```bash 
+$ sudo iotedge list
+NAME             STATUS           DESCRIPTION      CONFIG
+edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedge-agent:1.0
+edgeHub          running          Up a minute      mcr.microsoft.com/azureiotedge-hub:1.0
 ```
 
 ## Step 6 : 'Simulated Temperature Sensor'를 마켓플레이스에서 Windows Server로 배포하기
