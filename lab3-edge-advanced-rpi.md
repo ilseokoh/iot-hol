@@ -1,4 +1,4 @@
-# Ubuntu + Azure IoT Edge - Advance Lab (60분)
+# Raspberry PI + Azure IoT Edge - Advance Lab (60분)
 
 Visual Studio Code (VSCode)는 개발자의 개발 속도를 향상시키는 파워풀한 크로스플랫폼 무료 개발환경입니다. 이번 실습에서는 IoT Edge의 개발 프로세스를 알아보면서 VSCode를 사용하여 IoT Edge 모듈을 배포해보겠습니다. 
 
