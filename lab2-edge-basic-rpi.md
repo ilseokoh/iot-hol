@@ -1,12 +1,12 @@
-# Windows Server 2019 + Azure IoT Edge (45분)
+# Raspberry PI + Azure IoT Edge (45분)
 
-많은 경우 Windows Server 2019 서버가 IoT Edge 게이트웨이 역할을 하면서 로컬의 디바이스와 센서들을 클라우드에 연결 할 수 있습니다. 이번 실습에서는 Windows 2019 가상컴퓨터에 IoT Edge를 설치해서 모듈을 배포해보겠습니다. 특히 Azure 마켓플레이스에 등록된 IoT Edge 모듈을 사용하는 방법도 살펴보겠습니다.
+라즈베리파이에 Azure IoT Edge를 설치하고 Azure IoT Hub를 통해서 모듈을 배포해보겠습니다. 특히 Azure 마켓플레이스에 등록된 IoT Edge 모듈을 사용하는 방법도 살펴보겠습니다.
 
 이번 실습을 통해서 
 
 1. Azure IoT Hub 만들기
 2. IoT Hub에 Azure IoT Edge 디바이스 생성
-3. Windows Server 2019에 Azure IoT Edge 런타임 설치
+3. 라즈베리파이에 Azure IoT Edge 런타임 설치
 4. Azure 마켓플레이스에 있는 모듈 설치하기
 
 ## 사전준비
@@ -14,41 +14,34 @@
 - Azure 구독  
 
   구독이 없으면 [무료 체험계정 만들기](https://azure.microsoft.com/ko-kr/free/)
-  
 
-## Step 0 : Windows Server 2019 가상머신 만들기 
+## Step 0 : 라즈베리파이 실습용 기기 준비
 
-Azure IoT Edge가 작동될 Windows Server 2019 가상머신을 Azure에 만듭니다.
+Azure IoT Edge가 작동될 라즈베리파이 기기를 준비합니다. 라즈베리파이에는 Rasbian 리눅스가 설치되어 있어야 합니다. 설치 방법은 [Setting up your Raspberry Pi](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up)를 참조 바랍니다.
 
-### Step 0-1 : Azure에 로그인 
+### Step 0-1 : 라즈베리파이 IP 확인
 
-[Azure 포탈](https://portal.azure.com)에 로그인합니다.
+라즈베리파이에 모니터와 키보드, 마우스를 연결하여 무선 네트워크를 연결하고 IP를 확인합니다.
 
-### Step 0-2 : Windows Server 2019 새로 만들기
+![WiFi 설정](images/rpi-lab/rpi-wifi-setup.png)
 
-포탈의 왼쪽 위에 "리소스 만들기" 선택하고 Windows Server로 검색해서 Windows Server를 선택합니다.
+![IP 확인](images/rpi-lab/rpi-wifi-setup-ip.png)
 
-![리소스 만들기](images/WinServer-Lab/new-vm.jpg)
+### Step 0-2 : SSH 설정 및 접속
 
-소프트웨어 플랜을 Windows Server 2019 Datacenter로 선택하고 만들기를 선택합니다. 
+라즈베리파이에 SSH를 연결할 수 있도록 설정합니다. 초기 아이디와 비밀번호는 pi/raspberry 입니다.
 
-![Windows Server 2019 Datacenter](images/WinServer-Lab/new-windows-2019.jpg)
+![SSH 설정](images/rpi-lab/raspberry_pi_configuration.png)
 
-### Step 0-3 : 가상머신 만들기
+[Putty](https://www.putty.org/) 등의 툴을 이용하여 SSH에 접속합니다.
 
-가상머신 만들기 문서를 따라서 진행합니다. 
+![Putty로 SSH 연결](images/rpi-lab/putty.jpg)
 
-[가상머신 만들기](https://docs.microsoft.com/ko-kr/azure/virtual-machines/windows/quick-create-portal#create-virtual-machine) 내용을 참조하여 Windows Server 2019 가상머신을 만듭니다.
-
-### Step 0-4 : 가상머신에 연결
-
-RDP를 활용해서 가상머신에 연결해 봅니다. 
-
-[가상머신에 연결](https://docs.microsoft.com/ko-kr/azure/virtual-machines/windows/quick-create-portal#connect-to-virtual-machine)
+![Putty로 SSH 연결](images/rpi-lab/putty_connected.png)
 
 ## Step 1 : IoT Hub 만들기
 
-[Azure 포탈](https://portal.azure.com)에서 Azure IoT Hub를 만듭니다. 
+[Azure 포탈](https://portal.azure.com)에서 Azure IoT Hub를 만듭니다.
 
 ### Step 1.1 : [Azure 포탈](https://portal.azure.com)에 로그인
 
@@ -84,7 +77,7 @@ IoT Hub는 가격과 관련된 Scale과 크기가 있습니다. 각 Scale tier�
 여기에서는 무료를 선택하고 `F1: Free tier for Pricing and scale tier` **Review + create** 를 클릭합니다.
 
 > [!NOTE]  
-> 무료 IoT Hub는 구독당 하나만 만들수 있습니다. 이미 F1 IoT Hub를 가지고 있다면 Standard 1 (S1)을 선택합니다. 
+> 무료 IoT Hub는 구독당 하나만 만들수 있습니다. 이미 F1 IoT Hub를 가지고 있다면 Standard 1 (S1)을 선택합니다.
 
 ![CreateIoTHub3](images/IoTHub-Lab/CreateIoTHub3.png)
 
@@ -110,11 +103,11 @@ IoT Hub는 가격과 관련된 Scale과 크기가 있습니다. 각 Scale tier�
 
 ## Step 2 : 새로운 Azure IoT Edge 디바이스 등록
 
-이번엔 Windows Server 2019 가상머신을 위한 새로운 Azure IOT Edge Device를 등록합니다. 
+이번엔 라즈베리파이를 위한 새로운 Azure IOT Edge Device를 등록합니다.
 
-### Step 2.1 : 생성한 IoT Hub에 들어갑니다. 
+### Step 2.1 : 생성한 IoT Hub에 들어갑니다.
 
-`Go to resource` 버튼을 눌러 IoT Hub에 들어갑니다. 
+`Go to resource` 버튼을 눌러 IoT Hub에 들어갑니다.
 
 ![CreateIoTEdge1.png](images/IoTHub-Lab/CreateIoTEdge1.png)
 
@@ -126,7 +119,7 @@ IoT Edge 메뉴를 선택합니다
 
 ### Step 2.3 : IoT Edge 디바이스 추가
 
-새로운 IoT Edge 디바이스를 추가합니다. 
+새로운 IoT Edge 디바이스를 추가합니다.
 
 Click **Add an IoT Edge device**  
 
@@ -136,8 +129,8 @@ Click **Add an IoT Edge device**
 
 디바이스 아이디는 IoT Edge 디바이스를 구분하는 ID로 사용됩니다. 
 
-1. 유일한 이름을 사용합니다.   
-  e.g. IoTHOLWindows2019-1
+1. 유일한 이름을 사용합니다.
+  e.g. IoTHOLRpi
 
 1. **Save** 클릭
 
@@ -145,7 +138,7 @@ Click **Add an IoT Edge device**
 
 ### Step 2.5 : 새로운 IoT Edge 디바이스 확인
 
-새로운 IoT Edge 디바이스를 **Refresh** 버튼을 눌러 확인합니다. 
+새로운 IoT Edge 디바이스를 **Refresh** 버튼을 눌러 확인합니다.
 
 ![CreateIoTEdge5.png](images/IoTHub-Lab/CreateIoTEdge5.png)
 
@@ -155,82 +148,106 @@ IoT Edge 디바이스를 IoT Hub에 연결하려면 **Connection String**이 필
 
 향후 사용을 위해서 복사해 놓습니다. 
 
-Reference : [https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/](https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/)
+참고문서 : [https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/](https://devblogs.microsoft.com/iotdev/understand-different-connection-strings-in-azure-iot-hub/)
 
 ### Step 3.1 : 디바이스 상세 보기
 
 **IoT Edge** 메뉴에서 디바이스 이름을 클릭하면 **Device Details** 페이지를 통해 IoT Edge 디바이스의 상세 정보를 볼 수 있습니다.
 
 > [!TIP]  
-> 각 디바이스마다 두개의 Connection String을 제공합니다. 
+> 각 디바이스마다 두개의 Connection String을 제공합니다.
 
 ![CreateIoTEdge6.png](images/IoTHub-Lab/CreateIoTEdge6.png)
 
 ### Step 3.2 : Connection String 복사
 
-Connection String 두개 중에 하나를 복사해 둡니다. 
+Connection String 두개 중에 하나를 복사해 둡니다.
 
 1. **Copy button** ![Copy](images/IoTHub-Lab/Copy-Icon.png) 을 누르면 클립보드에 복사됩니다.
   ![CreateIoTEdge7.png](images/IoTHub-Lab/CreateIoTEdge7.png)
 1. 텍스트 파일에 복사해 둡니다.
 
-## Step 4 : Windows Server 가상머신에 연결하기
+## Step 4 : 라즈베리파이 연결하기
 
 > [!IMPORTANT]  
-> Step 0에서 Windows Server 가상머신 만들때 ID/비밀번호를 알고 있어야 합니다.
+> Step 0에서 라즈베리파이에 SSH 또는 Desktop에 연결할 수 있어야 합니다.
 
-IoT Hub연결을 위한 설정을 위해 Windows Server 2019에 원격 데스크톱을 이용해서 접속합니다.
-
-### Step 4.1 : Remote Desktop을 이용하여 접속
-
-1. Step 0에서 만든 가상머신 속성 페이지에서 **Connect** 버튼을 눌러 다운로드 합니다. 다운로드한 파일을 실행해서 RDP에 접속합니다. 
-
-![접속 정보 다운로드](images/WinServer-Lab/portal-quick-start-9.png)
+IoT Hub연결을 위한 설정을 위해 라즈베리파이에 접속합니다.
 
 ## Step 5 : IoT Edge 런타임 설정
 
-이번엔 Widnows Server 2019에 Azure IoT Edge 런타임을 설치하고 설정해 보겠습니다. 
+이번엔 라즈베리파이에 Azure IoT Edge 런타임을 설치하고 설정해 보겠습니다.
 
-### Step 5.1 : PowerShell 을 관리자 모드로 실행
+### Step 5.1 : 준비
 
-PowerShell을 반드시 관리자 모드**Administrator**로 실행해야 합니다. 
+- repository configuration 설치
+- generated list 복사
+- Microsoft GPG public key 설치
 
-![PowerShellAdmin](images/WinServer-Lab/PowerShellAdmin.png)
+```bash
+curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list
 
-### Step 5.2 : Azure IoT Edge 런타임 설치
+sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
 
-아래 명령을 실행하면 Moby 런타임과 IoT Edge 런타임이 다운로드되고 컨테이너 기능이 활성화 됩니다. PowerShell 창에서 **Deploy-IoTEdge** 명령을 실행합니다.
-
-
-```powershell
-. {Invoke-WebRequest -useb aka.ms/iotedge-win} | Invoke-Expression; Deploy-IoTEdge -ContainerOs Windows
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
 ```
 
-### Step 5.3 : IoT Edge 런타임 초기화
+### Step 5.2 : 컨테이너 런타임 설치
 
-아래 명령을 통해 IoT Edge를 초기화 합니다. 이전 단계에서 복사해 놓은  `Connection String`을 사용합니다. 
+Azure IoT Edge는 OCI 호환 컨테이너 런타임이 필요하고 Moby 엔진을 추천합니다. 
 
-```powershell
-. {Invoke-WebRequest -useb aka.ms/iotedge-win} | Invoke-Expression; Initialize-IoTEdge -ContainerOs Windows
+apt 업데이트
+```bash
+sudo apt-get update
+```
+Moby 엔진 설치 
+```bash
+sudo apt-get install moby-engine
+```
+Moby command-line interface (CLI) 설치
+```bash
+sudo apt-get install moby-cli
+```
+
+### Step 5.3 : IoT Edge 런타임 설치
+
+```bash
+sudo apt-get update
+
+sudo apt-get install iotedge
 ```
 
 ### Step 5.4 : 디바이스 Connection String을 입력합니다.
 
-3.2 단계에서 복사해 놓은 Connection String을 붙여 넣습니다. 
+3.2 단계에서 복사해 놓은 Connection String을 /etc/iotedge/config.yaml에 붙여 넣습니다.
 
-Example :
-
-![IoTEdge-Installation](images/WinServer-Lab/IotEdge-Installation.png)
-
-### Step 5.5 : 런타임의 실행을 확인
-
-**Get-Service** 명령을 이용하여 Azure IoT Edge 런타임이 정상 실행중임을 확인 합니다.
-
-```powershell
-Get-Service iotedge
+```bash
+sudo nano /etc/iotedge/config.yaml
 ```
 
-![edge-running](images/WinServer-Lab/EdgeRunning.png)
+```yaml
+# Manual provisioning configuration
+provisioning:
+  source: "manual"
+  device_connection_string: "<ADD DEVICE CONNECTION STRING HERE>"
+
+# DPS TPM provisioning configuration
+# provisioning:
+#   source: "dps"
+#   global_endpoint: "https://global.azure-devices-provisioning.net"
+#   scope_id: "{scope_id}"
+#   attestation:
+#     method: "tpm"
+#     registration_id: "{registration_id}"
+```
+
+### Step 5.4 : iotedge 서비스 다시시작 
+
+Azure IoT Edge 서비스를 다시시작합니다. 
+```bash
+sudo systemctl restart iotedge
+```
 
 ## Step 6 : 'Simulated Temperature Sensor'를 마켓플레이스에서 Windows Server로 배포하기
 
@@ -260,9 +277,9 @@ Azure 포탈에서도 마켓플레이스를 제공합니다.
 
 | Parameter            | Description                                                                                                    | Example                 |
 | -------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| 구독         | Select your subscription                                                                                       | Azure Free Account         |
-| IoT Hub              | Select your IoT Hub to which the target device created in [the previous step](#step-24--device-id) is attached | IoTHOLHub       |
-| IoT Edge Device 이름 | Select the target IoT Edge Device created in [the previous step](#step-24--device-id)                          | IoTHOLServer2019-1 |
+| 구독         | 구독을 선택합니다.                                                                                       | Azure Free Account         |
+| IoT Hub              | 이전단계에서 만든 IoT Hub를 선택합니다.  | IoTHOLHub       |
+| IoT Edge Device 이름 | 이전단계에서 만든 IoT Edge 디바이스를 선택합니다.                          | IoTHOLRpi |
 
  **Create** 를 클릭하여 다음 단계로 넘어갑니다. 
 
@@ -270,7 +287,7 @@ Azure 포탈에서도 마켓플레이스를 제공합니다.
 
 ### Step 6.5 : 모듈 추가
 
-어떤경우에는 추가적인 정보를 제공하기도 합니다.
+어떤 경우에는 추가적인 정보를 제공하기도 합니다.
 
 **Next** 을 클릭하여 넘어갑니다.
 
@@ -307,25 +324,21 @@ Reference : [https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#
 
 모듈이 클라우드로 부터 IoT Hub를 통해 디바이스까지 배포가 되었는지 확인 합니다. 
 
-```powershell
-iotedge list
+```bash
+sudo iotedge list
 ```
-
-![View three modules on your device](./images/WinServer-Lab/iotedge-list-2.png)
 
 ### Step 7.2 : 메시지 전송 확인
 
 온도센서에서 클라우드로 보내는 메시지를 모듈 로그를 통해서 확인합니다. 
 
-```powershell
-iotedge logs SimulatedTemperatureSensor -f
+```bash
+sudo iotedge logs SimulatedTemperatureSensor -f
 ```
-
-   ![View the data from your module](./images/WinServer-Lab/iotedge-logs.png)
 
 ### Step 7.3 : IoT Hub에서 메시지 수신 확인 
 
-이번에는 **Device Explorer**를 통해서 IoT Hub가 받은 메시지를 확인해 보겠습니다. **Device Explorer**는 현재 Windows OS에서만 작동합니다. 
+이번에는 **Device Explorer**를 통해서 IoT Hub가 받은 메시지를 확인해 보겠습니다. **Device Explorer**는 현재 Windows OS에서만 작동합니다. **Device Explorer**의 설치는 [Device Explorer 설치링크](http://aka.ms/deviceexplorer)에서 다운로드 받아서 설치합니다. 
 
 IoT Hub에 접근하기 위해서는 다시 **Connection String**이 필요합니다. 이번에는 IoT Hub Connection String입니다. Device Connection String과 헷갈리면 안됩니다.
 
@@ -342,7 +355,7 @@ IoT Hub에 접근하기 위해서는 다시 **Connection String**이 필요합�
 1. **Update** 클릭
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer4.png)
 1. **Data** 탭 선택
-1. Windows Server 2019의 Device ID를 선택
+1. Device ID를 선택
 1. **Monitor** 클릭
 1. 메시지 수식 확인
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer5.png)
