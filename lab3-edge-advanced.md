@@ -215,13 +215,13 @@ lines 1-19/19 (END)
 ```
 ### Step 4.10 : 실행중인 모듈 확인 
 
-iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 
+iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 런타임이 모듈을 다운로드 받아서 설치하는 동안에는 edgeAgent가 보이지를 않습니다. 잠시 기다리면 됩니다.
 
 ```bash 
 $ sudo iotedge list
 NAME             STATUS           DESCRIPTION      CONFIG
 edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedge-agent:1.0
-edgeHub          running          Up a minute      mcr.microsoft.com/azureiotedge-hub:1.0
+
 ```
 
 ## Step 5 : Azure Container Registry (ACR) 만들기
