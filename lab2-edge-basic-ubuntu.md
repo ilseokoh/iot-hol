@@ -176,7 +176,7 @@ Connection String 두개 중에 하나를 복사해 둡니다.
 ## Step 4 : Ubuntu 가상머신에 연결하기
 
 > [!IMPORTANT]  
-> Step 0에서 Windows Server 가상머신 만들때 ID/비밀번호를 알고 있어야 합니다.
+> Step 0에서  가상머신 만들때 ID/비밀번호를 알고 있어야 합니다.
 
 IoT Hub연결을 위해 [Putty](https://www.putty.org/)와 같은 툴을 이용하여 SSH 연결합니다. 
 
