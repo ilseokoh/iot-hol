@@ -309,7 +309,7 @@ edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedg
 ```
 
 
-## Step 6 : 'Simulated Temperature Sensor'를 마켓플레이스에서 Windows Server로 배포하기
+## Step 6 : 'Simulated Temperature Sensor'를 마켓플레이스에서 Ubuntu Server로 배포하기
 
 Azure 마켓플레이스에는 마이크로소프트가 검증해 놓은 엔터프라이즈 환경에서 사용할 수 있는 다양한 Azure의 애플리케이션과 서비스가 있는 온라인 마켓입니다.  여기에는 미리 많들어 놓은 여러가지 [IoT Edge 모듈](https://aka.ms/iot-edge-marketplace)을 찾아볼 수 있습니다. 이중에서 온도센서 시뮬레이터를 사용해 보겠습니다. 
 
@@ -372,7 +372,7 @@ Reference : [https://docs.microsoft.com/en-us/azure/iot-edge/module-composition#
 
 ### Step 6.7 : 배포를 전송
 
-**Submit** 버튼을 눌러 temperature simulator를 IoT Edge 디바이스(Windows Server 2019)에 배포합니다. 
+**Submit** 버튼을 눌러 temperature simulator를 IoT Edge 디바이스(Ubuntu 18.40)에 배포합니다. 아래 스크릿샷에서 보이는 Json 데이터가 Deployment Manifest 입니다. 
 
 ![SimTempSensor3](images/IoTHub-Lab/SimulatedTempSensor3.png)
 
@@ -408,18 +408,24 @@ IoT Hub에 접근하기 위해서는 다시 **Connection String**이 필요합�
 
 1. Device Explorer 실행
     ![DeviceExplorer1](images/WinServer-Lab/DeviceExplorer1.png)
+
 1. **Shared Access Policies**  
     Shared Access Policies 메뉴를 클릭합니다.  
+
 1. **iothubowner** 클릭
     iothubowner를 클릭합니다. 
     ![DeviceExplorer2](images/WinServer-Lab/DeviceExplorer2.png)
+
 1. Connection String 복사
     ![DeviceExplorer3](images/WinServer-Lab/DeviceExplorer3.png)
+
 1. Device Explorer에 Connection String를 복사하여 입력
 1. **Update** 클릭
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer4.png)
+
 1. **Data** 탭 선택
 1. Windows Server 2019의 Device ID를 선택
+
 1. **Monitor** 클릭
 1. 메시지 수식 확인
     ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer5.png)
