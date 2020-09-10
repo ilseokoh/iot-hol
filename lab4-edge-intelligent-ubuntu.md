@@ -450,7 +450,7 @@ VSCode에서 `YoloModule` 컨테이너를 배포합니다.
 
   http://[Ubuntu 디바이스 IP]
 
-1. 비디오 스트림을 확인 할 수 있습니다.
+1. 비디오 스트림을 확인 할 수 있습니다. 영상이 나오지 않으면 Video URL을 변경해 봅니다.
 
     ![YouTube](images/IntelligentEdge/Youtube02.png)
 
