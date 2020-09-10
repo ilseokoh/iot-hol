@@ -356,11 +356,11 @@ edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedg
     dotnet 명령으로 빌드합니다. 
 
     ```ps
-    dotnet publish -r win-x64
+    dotnet publish -r ubuntu.18.04-x64
     ```
 
     바이너리는 아래 위치에 생성됩니다. 
-    `C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\win-x64`  
+    `C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64`  
 
     예시 :
   
@@ -449,7 +449,7 @@ Step 4에서 IoT Edge 런타임을 Linux 버전을 설치했기 때문에 이미
 아래 명령으로 컨테이너 이미지를 빌드 합니다. 
 
 ```ps
-docker build .\bin\Debug\netcoreapp2.1\win-x64\publish -t <Tag> -f <Dockerfile>
+docker build .\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64\publish -t <Tag> -f <Dockerfile>
 ```
 
 이미지 이름 **SimulatedTemperatureSensor**

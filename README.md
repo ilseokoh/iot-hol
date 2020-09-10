@@ -21,13 +21,17 @@
 ## Lab 2: Azure IoT Edge - Basic
 
 [Ubuntu 18.04 + Azure IoT Edge](lab2-edge-basic-ubuntu.md)
+
 [Raspberry PI + Azure IoT Edge](lab2-edge-basic-rpi.md)
+
 [Windows Server 2019 + Azure IoT Edge Lab](lab2-edge-basic-windows.md)
 
 ## Lab 3: Azure IoT Edge - Advanced
 
 [Ubuntu + Azure IoT Edge -Advanced Lab](lab3-edge-advanced-ubuntu.md)
+
 [Raspberry PI + Azure IoT Edge](lab3-edge-advanced-rpi.md)
+
 [Windows Server 2019 + Azure IoT Edge](lab3-edge-advanced-windows.md)
 
 ## Lab 4: Azure IoT Edge - Intelligent
