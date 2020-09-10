@@ -440,9 +440,9 @@ VSCode에서 `YoloModule` 컨테이너를 배포합니다.
 
 ### Step 8.2 : 배포결과 확인
 
-웹브라우저를 통해서 모듈이 잘 작동하는지 확인 합니다. Confirm the module is working as expected by accessing the web server.
+웹브라우저를 통해서 모듈이 잘 작동하는지 확인 합니다. 
 
-1. Azure Portal에서 Ubuntu 가상머신의 Public IP를 확인합니다.
+1. Azure Portal에서 Ubuntu 가상머신의 Public IP를 확인합니다. 가상 머신의 Inbound 80포트가 열려 있어야 합니다. [Azure Portal을 사용하여 가상 머신에 대한 포털을 여는 방법](https://docs.microsoft.com/ko-kr/azure/virtual-machines/windows/nsg-quickstart-portal)을 참조하여 열어줍니다.
   
   ![Ubuntu IP](images/IntelligentEdge/ubuntu-ip.jpg)
 
