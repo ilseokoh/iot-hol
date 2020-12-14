@@ -1,101 +1,97 @@
 # Lab 4 Function으로 이벤트 입력 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-We can ingest data into Azure Digital Twins through external compute resources, such as an Azure Function, that receives the data and uses the Digital Twins SDK to set properties.
+이제 Azure funtion과 같은 외부 Compute리소스에 Azure Digital Twin으로 데이터를 보내야 합니다. IoT Hub와 같은 곳에서 받은 데이터를 Digital Twin SDK 등을 통해서 ADT의 속성을 업데이트 할 수 있습니다. 
 
 ## Azure Function 만들기 
 
-1. Create a Azure storage account
+### 포탈에서 Azure Function App 만들기 
 
-    ```azurecli
-    az storage account create --name $functionstorage --location $location --resource-group $rgname --sku Standard_LRS
-    ```
+작업하고 있는 리소스그룹에 Azure Function App을 만들기 위해서 다시 Azure 포탈의 왼쪽 위 메뉴에서 "리소스만들기" 선택하고 "함수앱"을 선택합니다. 
 
-1. Create an Azure Function
+![포탈에서 Azure Function App 만들기](images/function-portal.png)
 
-    ```azurecli
-    az functionapp create --resource-group $rgname --consumption-plan-location $location --name $telemetryfunctionname --storage-account $functionstorage --functions-version 3
-    ```
+함수 앱 만들기에서 구독을 정확히 선택하고 작업중인 리소스 그룹을 선택합니다. 아래 값들을 설정하고 "검토 + 만들기"를 클릭합니다. 
+
+* 함수앱 이름: 예) adtholfunction003
+* 게시: 코드 
+* 런타임 스택: .NET Core 
+* 버전: 3.1
+* 지역: East US
+
+![Function App 생성](images/function-create.png)
+
+만들기를 클릭하여 Function 앱을 만듭니다. 
+
+![Function App 생성](images/function-create2.png)
 
 ## Function에서 ADT에 접근하도록 권한 설정 
 
-An Azure function requires a security token in order to authenticate with Azure Digital Twins. To make sure that this token is passed, you'll need to create a [Managed Service Identity (MSI)](../active-directory/managed-identities-azure-resources/overview.md) for the function app.
+Azure Function의 코드가 Azure Digital Twin에 접근하려면 보안 토근을 통해 인증을 해야 합니다. 여기에서는 [Managed Service Identity (MSI)](https://docs.microsoft.com/ko-kr/azure/active-directory/managed-identities-azure-resources/overview)를 Function 앱에 설정하여 사용합니다. 
 
-In this section, we'll create a system-managed identity and assign the function app's identity to the *Azure Digital Twins Data Owner* role for your Azure Digital Twins instance. The Managed Identity gives the function app permission in the instance to perform data plane activities. We'll also provide the the URL of Azure Digital Twins instance to the function by setting an environment variable.
+Azure Portal에서 system-managed identity를 만들고 Function App의 identity를 *Azure Digital Twin Data Owner* 역할을 할당합니다. 이렇게 하면 Managed Identity는 Function 앱에 권한을 부여하여 ADT에 접근 할 수 있도록 합니다. 
 
-1. Use the following command to create the system-managed identity. We'll also store the _principalId_ field in the a variable for use later.
+이전 스텝에서 생성한 Azure Function으로 접속합니다. "ID" 메뉴를 선택하여 아래와 같이 "시스템 할당항목"(System-managed identity)에서 상태를 "켜기"로 변경하고 저장을 클릭합니다. 
 
-    ```azurecli
-    $principalID = $(az functionapp identity assign -g $rgname -n $telemetryfunctionname  --query principalId)
-    ```
+![System managed identity on](images/function-system-identity.png)
 
-1. Use the _principalId_ value in the following command to assign the function app's identity to the _Azure Digital Twins Data Owner_ role for your Azure Digital Twins instance.
+이번에는 Azure Digital Twin으로 가서 "액세스 제어(IAM)" 메뉴에서 "역할 할당 추가" 버튼을 누르고 아래 그림과 같이 설정하고 저장을 클릭합니다.  
 
-    ```azurecli	
-    az dt role-assignment create --dt-name $dtname --assignee $principalID --role "Azure Digital Twins Data Owner"
-    ```
+* 역할: Azure Digital Twin 소유자
+* 다음에 대한 액세스 할당: 함수앱
+* 구독: 사용중인 구독선택
+* 선택: 생성한 함수앱 선택 
 
-1. Lastly, set the URL of your Azure Digital Twins as an environment variable
+![역할 할당](images/adt-assign-function.png)
 
-> [!TIP]
-> The Azure Digital Twins instance's URL is made by adding *https://* to the beginning of your Azure Digital Twins instance's *hostName* which you retrieved earlier.
-> You'll need to edit the command below in notepad and add the FULL url before pasting
+한번 더 확인을 위해서 다시 Azure Function으로 가서 "ID 메뉴를 선택한 후 **"Azure 역할 할당"**을 클릭하고 "+역할할당추가(미리보기)"를 선택합니다. 아래 그림과 같이 할당 된 것을 확인 할 수 있습니다. 
 
-```azurecli
-   az functionapp config appsettings set -g $rgname -n $telemetryfunctionname --settings "ADT_SERVICE_URL=https://<your-Azure-Digital-Twins-instance-hostname>"
-```
+![Assign 확인](images/adt-assign-function-confirm.png)
+
+
+더불어 Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 석택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
+
+![Function App Setting](images/function-app-setting.png)
+
+그리고 반드시 저장을 클릭해서 저장합니다. 
+
+![Function App Setting](images/function-save-config.png)
 
 ## Visual Studio Code로 Azure Function App 만들기 
 
-In this section, you use Visual Studio Code to create a local Azure Functions project in your chosen language. The function will be triggered by EventGrid.
+이번에는 Visual Studio Code를 이용하여 로컬 개발 환경에서 Azure Function 프로젝트를 만듭니다. 이 Function은 EventGrid에 의해서 트리거 됩니다. 
 
-1. Ensure you are signed into Azure using the correct account by examining the logon at the lower-right
+1. Visual Studio에서 Azure에 로그인 되어 있는지 왼쪽 아래를 확인합니다. Ensure you are signed into Azure using the correct account by examining the logon at the lower-right
 ![VSCode Logon](./images/vscode-logon.png)
-- If you need to change your account:
-    - Bring up the VS Code command pallet(Ctrl+Shift+P) and enter Azure: Sign out
-    - Then run Azure: Sign in
+- 계정을 변경하려면:
+    - VS Code command pallet(Ctrl+Shift+P)를 열어서 Azure: Sign out 를 입력하고
+    - Azure: Sign in 를 실행합니다. 
+
     ![VS Code Logon](./images/vscode-azure-account.png)
 
-1. Choose the Azure icon in the Activity bar, then in the **Azure: Functions** area, select the **Create new project...** icon.
+1. 왼쪽 Activity 바에서 Azure 아이콘을 선택하고  **Azure: Functions** 영역에서  **Create new project...** 아이콘을 선택합니다.
 
     ![Choose Create a new project](./images/create-new-project.png)
 
-1. Choose a directory location for your project workspace and choose **Select**.
+1. 프로젝트워크 스페이스로 사용할 적절한 디렉토리를 지정하고 **Select**를 선택합니다.
 
 >[!NOTE]
->This directoy should be new, empty, and unique for this Azure Function
+>디렉토리는 비어 있거나 새로 만들어야 합니다. \
 >
 
-1. Provide the following information at the prompts:
-    - **Select a language for your function project**: Choose `C#`.
-    - **Select a template for your project's first function**: Choose `Change template filter`.
+1. VSCode 프롬프트에 아래 정보를 선택하거나 입력합니다.:
+    - **Select a language for your function project**: `C#` 선택.
+    - **Select a template for your project's first function**: `Change template filter` 선택.
     - **Select a template filter**: Choose All
-    - **Select a template for your project's first function**: Choose `EventGridTrigger`.
-    - **Provide a function name**: Type `TwinsFunction`.
-    - **Provide a namespace**: Type `My.Function`.
+    - **Select a template for your project's first function**: `EventGridTrigger` 선택.
+    - **Provide a function name**: `TwinsFunction` 입력.
+    - **Provide a namespace**: `My.Function` 입력.
     - **When prompted for a storage account choose**: Skip for now
-    - **Select how you would like to open your project**: Choose `Add to workspace`.
+    - **Select how you would like to open your project**: `Add to workspace` 선택.
 
 ## Install Nuget Package
 
-In the Visual Studio Code Terminal, add the required Nuget packages by typing the following commands:
+Visual Studio Code 터미널(Terminal > New Termianl)에서 아래 명령을 이용하여 필요한 Nuget 패키지를 설치합니다. 
+
 
 ```dos
     dotnet add package Azure.DigitalTwins.Core --version 1.0.0
@@ -105,13 +101,13 @@ In the Visual Studio Code Terminal, add the required Nuget packages by typing th
 
 ## Event Grid 트리거 Azure Function 코딩 
 
-Now we'll add code that uses the ADT SDK to update a digital twin.
+이제 ADT SDK를 이용해서 코드를 작성하여 디지털 트윈을 업데이트 합니다. 
 
-1. In VS Code, open the file TwinsFunction.cs
-1. Replace the code in the Function App template with the sample provided:
+1. VS Code에서 TwinsFunction.cs을 열고
+1. 아래 코드를 탬플릿에 맞춰서 넣어줍니다. 
 
 >[!TIP]
->The namespace and function name must match.  If you changed them in the previous steps, make sure to do the same in the code sample.
+>namespace와 function 이름이 같아야 합니다. 이전 단계에서 다른 이름을 사용했다면 같은 이름을 사용해야 합니다. 
 
 ```csharp
 using Azure;
@@ -194,65 +190,73 @@ namespace My.Function
 
 ## Azure Function 배포 
 
-1. In the VSCode function extension, click on on **Deploy to Function App...**
+1. VSCode function extension에서 **Deploy to Function App...**을 선택합니다. 
 
     ![Choose Deploy to Function App](./images/deploy-to-function-app.png)
 
-- **Select subscription**: Choose `Concierge Subscription` if you're using the sandbox environment
-- **Select Function App in Azure**: Choose the function ending with `telemetryfunction`.
+- **Select subscription**: 실습에 사용중인 구독을 선택합니다. 
+- **Select Function App in Azure**: Function 이름을 선택합니다. `adtholfunction003`.
 
-1. When the deployment finishes, you'll be prompted to Start Streaming Logs
+1. 배포가 완료되면 아래 그림과 같이 Start Streaming Logs 창이 뜹니다.
   ![Stream Logs](./images/function-stream-logs.png)
-1. Click on **Stream Logs** to see the messages received by the Azure Function after the IoT Hub setup in the next step. There won't be any messages received until the IoT Hub is setup and a device sends messages.
-1. When prompted to *enable appication logging*, choose Yes.
+1. **Stream Logs** 를 선택하면 다음 단계를 진행한 후에 Azure Function의 로그를 확인 할 수 있습니다. 다음 단계에서 IoT Hub를 설정하고 디바이스에서 메시지를 보내야 로그를 확인 할 수 있습니다. 
+1. *enable appication logging*,  Yes를 선택합니다. 
     ![Application Logging](./images/application-logging.png)
-1. Alternatively, you can Stream Logs at a later time by right-clicking on the Azure Function in VS Code and choosing **Start Streaming Logs**
+1. 다른 방법으로는 VS Code 에서 Azure Function을 찾아 오른쪽 클릭 후 **Start Streaming Logs**를 선택하면 됩니다.
   ![Start Streaming Logs](./images/function-stream-logs-extension.png)
   
 ## IoT Hub 셋업 
 
-The data our Digital Twin needs comes from IoT devices that send their data to IoT Hub.  In this section, we'll create an IoT Hub and configure it to publish device telemetry to EventGrid.
+IoT 디바이스가 보내는 데이터는 IoT Hub를 통해서 디지털 트윈으로 입력됩니다. 이번에는 IoT Hub를 만들고 디바이스가 보내는 데이터를 Event Grid로 보내도록 설정합니다. 
 
-1. Run the following [command to create an IoT hub](https://docs.microsoft.com/cli/azure/iot/hub#az-iot-hub-create) in your resource group, using a globally unique name for your IoT hub:
+Azure Portal에서 다시 "+리소스 만들기"를 선택한 후 "사물 인터넷"탭에서 IoT Hub를 찾아서 선택합니다. "검토 + 만들기" 버튼을 눌러 IoT Hub를 생성합니다. 
 
-   ```azurecli-interactive
-   az iot hub create --name $dtname --resource-group $rgname --sku S1 -l $location
-   ```
+![IoT Hub 새로만들기](images/iothub-new.png)
 
-1. Create a device identity in IoT Hub with the following command.
+* 구독: 실습에 사용하는 구독 선택
+* 리소스 그룹: 실습에 사용하는 리소스 그룹 선택
+* 지역: 미국동부
+* IoT Hub이름: 예) adtholhothub003
 
-> [!Note] The Azure Function assumes the --device-id matches the --twin-id created when a Twin is initialized.
-    
-```azurecli
-az iot hub device-identity create --device-id GrindingStep --hub-name $dtname -g $rgname
-az iot hub device-identity connection-string show -d GrindingStep --hub-name $dtname
-```
+![IoT Hub 새로만들기](images/iothub-create.png)
 
-The output is information about the device that was created. Copy the device connection string for use later.
+![IoT Hub 새로만들기](images/iothub-create2.png)
+
+1. IoT Hub에 디바이스를 하나 만들어줍니다. 
+
+> [!Note] Azure function에서는 여기서 만드는 디바이스 아이디와 트윈 아이디가 같다는 가정으로 코드가 작성되어 있습니다. 따라서 디바이스 아이디를 변경하지 않도록 합니다.
+
+![IoT Hub 디바이스 만들기](images/iothub-device.png)
+
+Device Connection String을 저장해 둡니다. 
+
+![IoT Hub 디바이스 connection string](images/iothub-connstr.png)
 
 ## IoT Hub에서 Event Grid 설정
 
-In this section, you configure your IoT Hub to publish events as they occur.
+이번에는 IoT Hub에서 이벤트를 발생하도록 설정합니다. Azure 포탈에서 IoT Hub로 들어갑니다. "이벤트" 메뉴를 선택하고 "+이벤트 구독"을 클릭합니다. 아래와 같이 정보를 입력하고 만들기를 클릭합니다. 
 
-1. Configure IoT Hub to publish events to EventGrid
+![IoT Hub 이벤트 구독](images/iothub-event-new.png)
 
-```Azure CLI
-$iothub=$(az iot hub list -g $rgname --query [].id -o tsv)
-$function=$(az functionapp function show -n $telemetryfunctionname -g $rgname --function-name twinsfunction --query id -o tsv)
-az eventgrid event-subscription create --name IoTHubEvents --source-resource-id $iothub --endpoint $function --endpoint-type azurefunction --included-event-types Microsoft.Devices.DeviceTelemetry
-```
+* 이벤트 구독정보 이름: IoTHubEvents
+* 이벤트 스키마: Event Grid 스키마
+* 시스템 토픽 이름: adtholiothub003
+* 이벤트 형식 필터링: Device Telemetry 만 선택
+* 엔트포인트 유형: Azure 함수 
+* 엔트포인트: 엔드포인트 선택 누름 (구독, 리소스그룹, 합수앱, 슬롯, 기능(TwinsFunction) 선택)
+
+![IoT Hub 이벤트 구독 만들기](images/iothub-event-create.png)
+
 ## 시뮬레이션 디바이스에서 데이터 보내기
 
-1. Open the file ~\digital-twins-samples\HandsOnLab\SimulatedClient\Sensor.js
-1. Find the line **const deviceConnectionString = ""** and update it with the device connection string created earlier.
+1. 소스코드에서 "digital-twins-samples\HandsOnLab\SimulatedClient\Sensor.js"를 오픈합니다. 
+1. **const deviceConnectionString = ""** 을 찾아서 이전에 만든 IoT Hub 디바이스의 Connection String을 입력합니다. 
 
 >[!NOTE]
->if you lost the device connection string, you can retrieve it by running the command:
-> az iot hub device-identity connection-string show -d GrindingStep --hub-name $dtname -o tsv
+>디바이스 Connection String은 Azure 포탈 IoT Hub에서 "IoT Device"메뉴에서 "GrindingStep" 디바이스를 선택하면 확인할 수 있습니다. 
 
-![Device Connection String](./images/update-device-key.png)
 
-1. In the PowerShell window, navigate to the SimulatedClient folder in the repo and run the simulated client
+1. PowerShell(또는 Linux/Mac 에서는 Bash)를 열어서 "digital-twins-samples\HandsOnLab\SimulatedClient\" 폴더로 이동합니다. 아래 명령으로 시뮬레이터를 실행합니다. 
 
     ```Azure CLI
     cd C:\Users\username\repos\digital-twins-samples\handsonlab\SimulatedClient
@@ -260,26 +264,28 @@ az eventgrid event-subscription create --name IoTHubEvents --source-resource-id 
     node ./Sensor.js
     ```
 
-1. The simulated device will begin sending data.
+1. 시뮬레이션 디바이스가 메시지를 보내기 시작합니다. 
 
-At this point, you should see messages showing up in the Azure Function Log Stream that was configured previously.  The Azure Function Log Stream will show the telemetry being received from Event Grid and any errors connecting to Azure Digital Twins or updating the Twin.
+여기에서 이전 단계의 Azure Function 만든 후에 열어 두었던 Log Stream에 시뮬레이션 디바이스가 보낸 메시지 처리에 대한 로그를 확인 할 수 있습니다. 이 로그는 메시지가 IoT Hub를 거쳐 Event Grid로 보내진 메시지를 Azure Function이 받아서 처리하는 내용입니다. 
 
    ![Log Stream](./images/LogStream.png)
 
-## Azure CLI 로 디지털 트윈 데이터 확인
+## **옵션** Azure CLI 로 디지털 트윈 데이터 확인
 
-1. Look at the values in being updated in the Twin GrindingSensor by running the following command
+1. Azure Function까지 데이터가 전달되는 것을 확인 했으니 Azure Digital Twin에서도 데이터가 전달되는지 확인할 수 있습니다. [Azure CLI를 설치](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)하고 azure IoT Extention을 설치한 후 아래 명령을 실행합니다.  
 
-    ```azurecli
-     az dt twin show -n $dtname --twin-id GrindingStep
-    ```
+```azurecli
+az login
+az account show
+az account set -s <subscription id>
+az extension list
+az extension add --name azure-iot
+az extension update --name azure-iot
+```
 
-### Challenge: Simulate Fanning / Roasting and Moulding devices
+```azurecli
+az dt twin show -n <adt name> --twin-id GrindingStep
+```
 
-The Sensor.js file can be changed to send data as additional devices. The Azure Function has logic that evaluates the device type specified in the payload.  Change the value stored in deviceType and deviceConection string to send as Fanning and Moulding sensors.
+![ADT Log](./images/adt-log.png)
 
-![Sensor Type](./images/change-sensor.png)
-
-![Device Connection String](./images/update-device-key.png)
-
-> [!NOTE] Remember that the Azure Function assumes the --device-id matches the --twin-id created when a Twin is initialized.

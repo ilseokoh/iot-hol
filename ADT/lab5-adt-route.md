@@ -2,16 +2,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 ADT supports sending information about changes to ADT to external systems through ADT routes. In the following section, we'll configure ADT to send data to Event Hubs to be processed by an Azure Function.
 
 ## 이벤트 허브 만들기 
