@@ -67,13 +67,13 @@ ADT 모델은 DTDL(Digital Twin Definition Language)로 작성하고 가장 간�
 }
 ```
 
-실습에서는 초콜릿 공장을 시뮬레이션 하기위해 조금 더 복잡한 모델을 사용합니다. 모델은 github에서 받은 소스코드 중에 "digital-twins-samples/HandsOnLab/models" 폴더에 5개의 파일이 있습니다. 
+실습에서는 초콜릿 공장을 시뮬레이션 하기위해 조금 더 복잡한 모델을 사용합니다. 모델은 github에서 받은 소스코드 중에 "digital-twins-samples/HandsOnLab/models" 폴더에 7개의 파일이 있습니다. 
 
 * FactoryInterface.json
 * FactoryFloorInterface.json
 * ProductionLineInterface.json
 * ProductionStepInterface.json
-* ProductionStepGrinding.json
+* ProductionStepGrinding.json 외 2개의 공정에 대한 Interface
 
 ## [Lab 2 Azure Digital Twin Explorer 설정](lab2-setup-model.md)
 

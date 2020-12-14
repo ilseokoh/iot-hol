@@ -115,7 +115,7 @@ Lab 4에서 처럼 Visual Studio Code 에서 Function을 하나더 만들어서 
 - **When prompted for a storage account choose**: Skip for now
 
 
-1. TSIFunction.cs 을 열고 아래 코드를 붙여 넣습니다. 
+1. ProcessDTUpdatetoTSI.cs 을 열고 아래 코드를 붙여 넣습니다. 
 
 ```C#
 using Microsoft.Azure.EventHubs;

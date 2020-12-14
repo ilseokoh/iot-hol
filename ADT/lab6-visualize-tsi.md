@@ -40,8 +40,9 @@
 이제 데이터가 Time Series Insights로 들어오기 시작해서 분석할 준비가 되었다. 
 
 
-1. Azure 포탈에서 TSI 인스턴스로 들어간다.[Time Series Insights](https://ms.portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.TimeSeriesInsights%2Fenvironments) 
-1. Go To TSI explorer를 클릭한다. 
+1. Azure 포탈에서 TSI 인스턴스로 들어갑니다. [Time Series Insights](https://ms.portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.TimeSeriesInsights%2Fenvironments) 
+
+1. Go To TSI explorer를 클릭합니다.
 
   ![TSI Environment](./images/tsi-go-to-explorer.png)
 
@@ -53,6 +54,7 @@
     >
     > - 시뮬레이션 디바이스가 작동중이어야 합니다.
     > - Azure Function의 로그에서 오류가 보이지 않아야 합니다. 
+    > - 데이터가 표시되려면 약간의 시간이 필요할 수도 있습니다. 
  
 ![TSI Explorer](images/tsi-data.png)
 

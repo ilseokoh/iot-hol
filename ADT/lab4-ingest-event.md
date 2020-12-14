@@ -51,7 +51,7 @@ Azure Portal에서 system-managed identity를 만들고 Function App의 identity
 
 ![역할 할당](images/adt-assign-function.png)
 
-한번 더 확인을 위해서 다시 Azure Function으로 가서 "ID 메뉴를 선택한 후 **"Azure 역할 할당"**을 클릭하고 "+역할할당추가(미리보기)"를 선택합니다. 아래 그림과 같이 할당 된 것을 확인 할 수 있습니다. 
+한번 더 확인을 위해서 다시 Azure Function으로 가서 "ID 메뉴를 선택한 후 **"Azure 역할 할당"**을 선택합니다. 아래 그림과 같이 할당 된 것을 확인 할 수 있습니다. 
 
 ![Assign 확인](images/adt-assign-function-confirm.png)
 
@@ -303,7 +303,7 @@ Azure 포탈에서 IoT Hub로 들어갑니다. "이벤트" 메뉴를 선택하�
 
 여기에서 이전 단계의 Azure Function 만든 후에 열어 두었던 Log Stream에 시뮬레이션 디바이스가 보낸 메시지 처리에 대한 로그를 확인 할 수 있습니다. 이 로그는 메시지가 IoT Hub를 거쳐 Event Grid로 보내진 메시지를 Azure Function이 받아서 처리하는 내용입니다. 
 
-   ![Log Stream](./images/LogStream.png)
+   ![Log Stream](./images/function-stream-logs2.jpg)
 
 ## (**옵션**) Azure CLI 로 디지털 트윈 데이터 확인
 

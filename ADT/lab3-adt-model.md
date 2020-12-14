@@ -4,7 +4,7 @@
 
 Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니다. 
 
-왼쪽 "Model View" 탭에서 3번째 아이콘 Upload Model 아이콘을 선택하고 Lab 1에서 받아놓은 소스코드에서 "digital-twins-samples/HandsOnLab/models' 폴더의 6개 json 파일을 모두 선택하여 업로드 합니다. 
+왼쪽 "Model View" 탭에서 3번째 아이콘 Upload Model 아이콘을 선택하고 Lab 1에서 받아놓은 소스코드에서 "digital-twins-samples/HandsOnLab/models' 폴더의 7개 json 파일을 모두 선택하여 업로드 합니다. 
 
 ![ADT Model Upload](images/adt-model-upload.png)
 
@@ -36,7 +36,7 @@ Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니�
 
 ![New Twin Instance](images/adt-new-twin.png)
 
-아래 모델 ID(DTMI) - 트윈이름을 참조하여 트윈 인스턴스 4개를 만듭니다. 
+아래 모델 ID(DTMI) - 트윈이름을 참조하여 모델별로 "+" 아이콘을 클릭하여 트윈 인스턴스 4개를 만듭니다. 
 
 * dtmi:com:microsoft:iot:e2e:digital_factory:chocolate_factory;1 - **ChocolateFactory**
 * dtmi:com:microsoft:iot:e2e:digital_factory:floor;1 - **FactoryFloor**
