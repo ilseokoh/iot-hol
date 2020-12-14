@@ -1,4 +1,4 @@
-## Lab 2 - Azure Digital Twin Explorer 셋업
+# Lab 2 - Azure Digital Twin Explorer 셋업
 
 ADT 모델을 설정하는 방법은 여러가지가 있습니다. Azure CLI를 사용할 수도 있고 ADT REST API나 SDK를 사용할 수도 있습니다. 이 실습에서는 [Azure Digital Twin Explorer](https://github.com/Azure-Samples/digital-twins-explorer/tree/master/)을 사용하여 UI에서 모델을 업로드하고 설정을 하는 방법을 사용해보겠습니다. 
 
@@ -52,3 +52,16 @@ ADT Explorer(http://localhost:3000)가 실행되면 처음에 ADT URL 입력창�
 
 ![ADT URL](images/adt-explorer-setup.png)
 
+## 3000번 포트가 사용중이면 
+
+만약 로컬 PC에서 3000번 포트를 사용중이라면 포트를 변경하여 실행해야 정상작동합니다. 예를들어 아래 명령으로 8080포트를 사용하도록 설정할 수 있습니다. 
+
+윈도우 커멘트 프롬프트 (cmd)
+``` cmd
+set PORT=8080 && npm run start
+```
+
+Linux / Mac(bash)
+``` bash
+PORT=8080 npm run start
+```
