@@ -1,4 +1,4 @@
-# Lab 2 - Azure Digital Twin Explorer 셋업
+# Lab 2 - Azure Digital Twin Explorer 설정
 
 ADT 모델을 설정하는 방법은 여러가지가 있습니다. Azure CLI를 사용할 수도 있고 ADT REST API나 SDK를 사용할 수도 있습니다. 이 실습에서는 [Azure Digital Twin Explorer](https://github.com/Azure-Samples/digital-twins-explorer/tree/master/)을 사용하여 UI에서 모델을 업로드하고 설정을 하는 방법을 사용해보겠습니다. 
 

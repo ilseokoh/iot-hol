@@ -1,4 +1,4 @@
-# Lab 1
+# Lab 1 Azure Digital Twin 만들기
 
 ## Azure Digital Twin 만들기 
 Azure 포탈에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 

@@ -35,3 +35,15 @@ mkdir c:\users\username\repos
 cd c:\users\username\repos
 git clone https://github.com/Azure-Samples/digital-twins-samples/
 ```
+
+## [Lab 1 Azure Digital Twin 만들기](lab1-adt-basic.md)
+
+## [Lab 2 Azure Digital Twin Explorer 설정](lab2-setup-model.md)
+
+## [Lab 3 ADT 모델 만들기](lab3-adt-model.md)
+
+## [Lab 4 Function으로 이벤트 입력 ](lab4-ingest-event.md)
+
+## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅](lab5-adt-route.md)
+
+## [Lab 6 Time Series Insights로 Visualize](lab6-visualize-tsi.md)
