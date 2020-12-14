@@ -2,6 +2,10 @@
 
 이제 Azure funtion과 같은 외부 Compute리소스에 Azure Digital Twin으로 데이터를 보내야 합니다. IoT Hub와 같은 곳에서 받은 데이터를 Digital Twin SDK 등을 통해서 ADT의 속성을 업데이트 할 수 있습니다. 
 
+## 아키텍쳐 
+
+![실습 아키텍쳐](images/hol-architecture.png)
+
 ## Azure Function 만들기 
 
 ### 포탈에서 Azure Function App 만들기 
@@ -289,3 +293,6 @@ az dt twin show -n <adt name> --twin-id GrindingStep
 
 ![ADT Log](./images/adt-log.png)
 
+## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅](lab5-adt-route.md)
+
+## [실습 홈으로 가기

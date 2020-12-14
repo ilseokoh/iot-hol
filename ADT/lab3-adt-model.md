@@ -68,3 +68,7 @@ DTDL에서 상속은 extends 속성으로 표현됩니다.
 * ProductionLine - rel_runs_steps - GrindingStep
 
 ![Create Relationship](images/adt-select-relationship_done.png)
+
+## [Lab 4 Function으로 이벤트 입력 ](lab4-ingest-event.md)
+
+## [실습 홈으로 가기

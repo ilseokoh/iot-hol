@@ -2,6 +2,10 @@
 
 ADT는 ADT 라우팅을 통해서 외부 시스템에 ADT의 변경 정보를 보낼 수 있다. 이번 랩에서는 ADT에서 데이터를 이벤트 허브로 보내는 Azure Function을 만들어 보겠습니다. 
 
+## 아키텍쳐 
+
+![실습 아키텍쳐](images/hol-architecture.png)
+
 ## 이벤트 허브 만들기 
 
 1. 이벤트 허브 네임스페이스 생성
@@ -167,3 +171,7 @@ namespace My.Function
   ![Start Streaming Logs](./images/function-stream-logs-extension.png)
 
 여기까지 오면 Azure Digital Twins은 Twin Update 이벤트를 Event Hub(twins-evnet-hub)로 전송하고 Azure Function(ProcessDTUpdatetoTSI)이 처리하여 다시 이벤트허브(tsi-event-hub)로 전송한다. 
+
+## [Lab 6 Time Series Insights로 Visualize](lab6-visualize-tsi.md)
+
+## [실습 홈으로 가기

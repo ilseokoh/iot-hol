@@ -2,6 +2,10 @@
 
 이제 마지막으로 Azure Digital Twin에서 발생한 데이터를 Time Series Insights(TSI) 에 저장하고 그 내용을 살펴보는 과정입니다. 이렇게 과거 데이터를 TSI에 저장하여 분석할 수 있습니다. 
 
+## 아키텍쳐 
+
+![실습 아키텍쳐](images/hol-architecture.png)
+
 ## Time Series Insights(TSI) 만들기 
 
 아래 설정으로 TSI를 생성합니다. 
@@ -51,3 +55,5 @@
     > - Azure Function의 로그에서 오류가 보이지 않아야 합니다. 
  
 ![TSI Explorer](images/tsi-data.png)
+
+## [실습 홈으로 가기](README.md)
