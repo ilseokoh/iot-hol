@@ -174,4 +174,4 @@ namespace My.Function
 
 ## [Lab 6 Time Series Insights로 Visualize](lab6-visualize-tsi.md)
 
-## [실습 홈으로 가기
+## [실습 홈으로 가기](README.md)

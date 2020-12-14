@@ -71,4 +71,4 @@ DTDL에서 상속은 extends 속성으로 표현됩니다.
 
 ## [Lab 4 Function으로 이벤트 입력 ](lab4-ingest-event.md)
 
-## [실습 홈으로 가기
+## [실습 홈으로 가기](README.md)

@@ -64,4 +64,4 @@ ADT 모델은 DTDL(Digital Twin Definition Language)로 작성하고 가장 간�
 
 ## [Lab 2 Azure Digital Twin Explorer 설정](lab2-setup-model.md)
 
-## [실습 홈으로 가기
+## [실습 홈으로 가기](README.md)

@@ -295,4 +295,4 @@ az dt twin show -n <adt name> --twin-id GrindingStep
 
 ## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅](lab5-adt-route.md)
 
-## [실습 홈으로 가기
+## [실습 홈으로 가기](README.md)

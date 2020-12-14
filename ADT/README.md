@@ -62,7 +62,7 @@ git clone https://github.com/Azure-Samples/digital-twins-samples/
 
 ### 가격
 
-
+[Azure Digital Twins 가격](https://azure.microsoft.com/ko-kr/pricing/details/digital-twins/)
 
 ### Product Page
 

@@ -68,4 +68,4 @@ PORT=8080 npm run start
 
 ## [Lab 3 ADT 모델 만들기](lab3-adt-model.md)
 
-## [실습 홈으로 가기
+## [실습 홈으로 가기](README.md)
