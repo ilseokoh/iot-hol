@@ -1,52 +1,53 @@
 # Lab 6 Time Series Insights로 Visualize
 
+이제 마지막으로 Azure Digital Twin에서 발생한 데이터를 Time Series Insights(TSI) 에 저장하고 그 내용을 살펴보는 과정입니다. 이렇게 과거 데이터를 TSI에 저장하여 분석할 수 있습니다. 
+
 ## Time Series Insights(TSI) 만들기 
 
-1. The commands below will create a storage account (needed by TSI) and provision the TSI environment
+아래 설정으로 TSI를 생성합니다. 
 
-    ```azurecli
-    $storage="adtholtsitorage"+(get-random -maximum 10000)
-    $tsiname=$random+"tsienv"
-    az storage account create -g $rgname -n $storage --https-only -l $location
-    $key=$(az storage account keys list -g $rgname -n $storage --query [0].value --output tsv)
-    az timeseriesinsights environment longterm create -g $rgname -n $tsiname --location $location --sku-name L1 --sku-capacity 1 --data-retention 7 --time-series-id-properties '$dtId' --storage-account-name $storage --storage-management-key $key -l $location
-    ```
+* 구독: 실습에 사용중인 구독 
+* 리소스 그룹: 실습에 사용중인 리소스 그룹
+* 위치: 미국동부
+* 계층: Get2(L1)
+* 속성이름: $dtid
+* 스토리지 계정이름: adtholtsistorage003
+* Storage kind: StroageV2 / LRS 
+* 웜저장소 사용: 예
+* 데이터보존시간: 7
 
-1. After the TSI environment is provisioned, we need to setup an event source. We will use the Event Hub that receives the processed Twin Change events
+![Create TSI](./images/tsi-new.png) 
 
-    ```azurecli
-    $es_resource_id=$(az eventhubs eventhub show -n tsi-event-hub -g $rgname --namespace $ehnamespace --query id -o tsv)
-    $shared_access_key=$(az eventhubs namespace authorization-rule keys list -g $rgname --namespace-name $ehnamespace -n RootManageSharedAccessKey --query primaryKey --output tsv)
-    az timeseriesinsights event-source eventhub create -g $rgname --environment-name $tsiname -n tsieh --key-name RootManageSharedAccessKey --shared-access-key $shared_access_key --event-source-resource-id $es_resource_id --consumer-group-name '$Default' -l $location
-    ```
+이벤트 원본 탭에서 이벤트 허브에서 원본을 받도록 설정합니다. 
 
-1. Finally, configure permissions to access the data in the TSI environment.
+* 이벤트 원본: 예
+* 소스형식: Event Hubs 
+* 이름: tsieh 
+* 구독: 실습에 사용중인 구독 
+* Event Hubs 네임스페이스: 이전에 만든 EH 네임스페이스 선택 (adtholeh003)
+* Event Hubs 이름: tsi-event-hub
+* 액세스 정책이름: EHPolicy
+* 소비자 그룹: $Default 
 
-    ```azurecli
-    $id=$(az ad user show --id $username --query objectId -o tsv)
-    az timeseriesinsights access-policy create -g $rgname --environment-name $tsiname -n access1 --principal-object-id $id  --description "some description" --roles Contributor Reader
-    ```
+![Create TSI](./images/tsi-new-event.png)
 
 ## TSI 데이터 보기 
 
-Now, data should be flowing into your Time Series Insights instance, ready to be analyzed. Follow the steps below to explore the data coming in.
+이제 데이터가 Time Series Insights로 들어오기 시작해서 분석할 준비가 되었다. 
 
-1. Open your instance of [Time Series Insights](https://ms.portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.TimeSeriesInsights%2Fenvironments) in the Azure portal
-1. Click on Go to TSI Explorer at the top of the page.
+
+1. Azure 포탈에서 TSI 인스턴스로 들어간다.[Time Series Insights](https://ms.portal.azure.com/#blade/HubsExtension/BrowseResourceBlade/resourceType/Microsoft.TimeSeriesInsights%2Fenvironments) 
+1. Go To TSI explorer를 클릭한다. 
+
   ![TSI Environment](./images/tsi-go-to-explorer.png)
-1. In the explorer, you will see one Twin from Azure Digital Twins shown on the left. Select GrindingStep, select Chasis Temperature, and hit add.
-    ![TSI Explorer](images/tsi-plot-data.png)
 
-    >[!TIP] If you don't see data:
+3. TSI explorer 에서 왼쪽에 ADT의 트윈이 보일 것입니다. GrindingStep을 선택하고 "Chasis Temperature" 선택해보세요. 
+
+![TSI Explorer](images/tsi-plot-data.png)
+
+    >[!TIP] 데이터가 보이지 않는다면:
     >
-    > - make sure the simulated client is running:
-    > - Check for errors in the  
-    > - Check for errors in the 
-
-1. You should now be seeing the Chasis Temperature readings from a device named GrindingStep, as shown below.
+    > - 시뮬레이션 디바이스가 작동중이어야 합니다.
+    > - Azure Function의 로그에서 오류가 보이지 않아야 합니다. 
+ 
 ![TSI Explorer](images/tsi-data.png)
-
-## Challenge: Update Status of Production Line
-
-In the current scenario, the status of the production line is a property in the digital twin.  Think about how the status should be determined and updated using what you've learned.
-![Production Line Status](images/challange-prod-line-status.png)

@@ -75,6 +75,10 @@ Lab4에서 사용한 Azure Function App 에 Function 을 하나더 추가해서 
 
 ![Function 설정](./images/function-eh-connstr2.png)
 
+3. 반드시 변경내용을 저장하여 적용합니다. 
+
+![Function 설정 저장](./images/function-app-setting-save.png)
+
 ## Visual Studio Code에서 Azure Function 만들기
 
 Lab 4에서 처럼 Visual Studio Code 에서 Function을 하나더 만들어서 배포합니다. 
