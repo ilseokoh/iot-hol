@@ -1,23 +1,15 @@
-# Lab 1 Azure Digital Twin 만들기
-
-## 클론 Github Repo
-
-원하는 디렉토리에 소스를 클론 합니다. 
-
-``` bash
-mkdir c:\users\username\repos
-cd c:\users\username\repos
-git clone https://github.com/Azure-Samples/digital-twins-samples/
-```
+# Lab 1 Azure Digital Twin 만들기 (5분)
 
 ## Azure Digital Twin 만들기 
-Azure 포탈에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 
+[Azure 포탈](https://portal.azure.com)에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 
 
 ### 리소스 그룹 만들기 
 
-왼쪽의 전체 메뉴를 펼쳐서 "+ 리소스 만들기" 를 선택하고 리소스 그룹을 원하는 이름으로 **미국 동부(East US)** 지역에 만듭니다. (예 adtholrg)
+왼쪽의 전체 메뉴를 펼쳐서 "+ 리소스 만들기" 를 선택하고 "Resource Group"으로 검색해서 리소스 그룹을 원하는 이름으로 **미국 동부(East US)** 지역에 만듭니다. (예 adtholrg)
 
 ![리소스그룹 만들기](images/adt-rg.png)
+
+![리소스그룹 만들기](images/adt-rg2.png)
 
 ### Azure Digital Twins 만들기
 
@@ -35,7 +27,7 @@ Azure 포탈에 접속하여 Azure Digital Twin(ADT)를 만듭니다.
 
 ![ADT 이동](images/adt-goto-adt.png)
 
-Azure Digital Twin 서비스의 설정 등을 수정하기 위하여 내 계정에 "Azure Digital Twin Owner" 권한 설정하기 위해 "액세스 제어(IAM)" 메뉴에서 "역할 할당" 탭의 추가 버튼을 누릅니다. **역할 할당 추가"** 를 선택합니다. 
+Azure Digital Twin 서비스의 설정 등을 수정하기 위해서는 적절한 권한이 있어야 합니다. 내 계정에 "Azure Digital Twin Owner" 권한 설정하기 위해 "액세스 제어(IAM)" 메뉴에서 "역할 할당" 탭의 "+추가" 버튼을 누릅니다. **역할 할당 추가"** 를 선택합니다. 
 
 ![ADT 권한](images/adt-role.png)
 
@@ -44,6 +36,17 @@ Azure Digital Twin 서비스의 설정 등을 수정하기 위하여 내 계정�
 저장이 완료되면 역할 할당에 추가된 것을 확인합니다. 
 
 ![ADT 권한추가](images/adt-add-role.png)
+
+
+## 클론 Github Repo
+
+원하는 디렉토리에 소스를 클론 합니다. 
+
+``` bash
+mkdir c:\users\username\repos
+cd c:\users\username\repos
+git clone https://github.com/Azure-Samples/digital-twins-samples/
+```
 
 ## Azure Digital Twin 모델링 
 

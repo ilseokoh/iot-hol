@@ -1,6 +1,8 @@
-# Lab 2 - Azure Digital Twin Explorer 설정
+# Lab 2 - Azure Digital Twin Explorer 설정 (15분)
 
 ADT 모델을 설정하는 방법은 여러가지가 있습니다. Azure CLI를 사용할 수도 있고 ADT REST API나 SDK를 사용할 수도 있습니다. 이 실습에서는 [Azure Digital Twin Explorer](https://github.com/Azure-Samples/digital-twins-explorer/tree/master/)을 사용하여 UI에서 모델을 업로드하고 설정을 하는 방법을 사용해보겠습니다. 
+
+![ADT Explorer](images/adt-explorer.png)
 
 ADT Explorer를 실행하려면 Node.js 10+ 이 설치되어 있어야 합니다. 버전을 확인합니다. 
 
@@ -13,8 +15,6 @@ PS C:\Users\iloh\source\digital-twins-explorer> npm --version
 6.14.9
 ```
 
-![ADT Explorer](images/adt-explorer.png)
-
 ## ADT Explorer 설치 
 
 먼저 github에서 Azure Digital Twin Explorer 소스코드를 클론 합니다. 
@@ -25,14 +25,18 @@ git clone https://github.com/Azure-Samples/digital-twins-explorer.git
 
 client/src 폴더로 이동하여 npm install 을 실행합니다. 
 
+
+
 ``` powershell
 cd .\digital-twins-explorer\client\src\
 npm install
 ```
 
+> found 104 vulnerabilities (103 low, 1 high) vulnerabilities 경고가 발생할 수 있으나 > 무시하고 진행합니다. 
+
 ## ADT Explorer 실행
 
-npm run start 명령으로 애플리케이션을 실행합니다. 정상적으로 실행이 되었다면 웹 브라우저가 실행되면서 http://localhost:3000/ 에 접속합니다. 페이지가 정상적으로 표시될 때까지 기다립니다.
+npm run start 명령으로 애플리케이션을 실행합니다. 정상적으로 실행이 되었다면 웹 브라우저가 실행되면서 http://localhost:3000/ 에 접속합니다. 처음 실행할 때 시간이 걸릴 수 있습니다. 페이지가 정상적으로 표시될 때까지 기다립니다.
 
 ``` bash
 npm run start
@@ -52,7 +56,7 @@ ADT Explorer(http://localhost:3000)가 실행되면 처음에 ADT URL 입력창�
 
 ![ADT URL](images/adt-explorer-setup.png)
 
-## 3000번 포트가 사용중이면 
+## (옵션) 3000번 포트가 사용중이면 오류가 발생합니다.
 
 만약 로컬 PC에서 3000번 포트를 사용중이라면 포트를 변경하여 실행해야 정상작동합니다. 예를들어 아래 명령으로 8080포트를 사용하도록 설정할 수 있습니다. 
 

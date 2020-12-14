@@ -1,4 +1,4 @@
-# Lab 3 - ADT 모델 만들기
+# Lab 3 - ADT 모델 만들기 (10분)
 
 ## 모델 업로드
 
@@ -22,15 +22,13 @@ Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니�
 
 우리가 만들려고 하는 초콜릿 공장은 "Digital Factory"를 가장 상위 모델로 시작해서 "Digital Factory"는 "Factory Floor"를 가지고 있고 다시 "Production Line"으로 구성되어 있습니다. 즉, 계층 구조를 가지고 있고 마지막 계층에는 "Production Step" 이 있는데 공정별로 "Fanning/Roasting", "Grinding/Crushing", "Moulding" 스텝이 있습니다. 
 
-모델 설계에서는 "Factory Production Step"을 만들고 각 스텝은 "Production Step"을 상속받는 구조로 되어 있습니다. 
+모델 설계에서는 각 공정별로 "Factory Production Step"을 만들고 각 스텝은 "Production Step"을 상속받는 구조로 되어 있습니다. 
 
-DTDL에서 상속은 extends 속성으로 표현됩니다. 
-
-각 모델 DTDL을 살펴보고 구조를 살펴봅니다. 모든 모델은 DTMI (Digital Twin Model ID)를 가지고 있는 것도 확인 합니다. 
+각 모델 DTDL을 살펴보고 구조를 살펴봅니다. 모든 모델은 DTMI (Digital Twin Model ID)를 가지고 있는 것도 확인 합니다. DTDL에서 상속은 extends 속성으로 표현됩니다. 
 
 ## 트윈 인스턴스 만들기 
 
-이제 트윈 인스턴스를 만듭니다. 트윈 인스턴스는 마치 객체지향프로그래밍(OOP)에서 클래스(class)와 인스턴스(instance)의 관계와 같습니다. 클래스를 new 해서 인스턴스를 만들듯이 업로드 한 모델에서 여러개의 트윈 인스턴스를 생성할 수 있습니다. 
+이제 트윈 인스턴스를 만듭니다. 모델과 트윈 인스턴스는 마치 객체지향프로그래밍(OOP)에서 클래스(class)와 인스턴스(instance)의 관계와 같습니다. 클래스를 new 해서 인스턴스를 만들듯이 업로드 한 모델에서 여러개의 트윈 인스턴스를 생성할 수 있습니다. 
 
 역시 여러가지 방법(Azure CLI, REST API, SDK)으로 인스턴스를 생성할 수 있지만 ADT Explorer를 이용해서 인스턴스를 만들어 보겠습니다. 
 

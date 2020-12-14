@@ -1,4 +1,4 @@
-# Lab 5 ADT에서 다른 환경으로 데이터 라우팅
+# Lab 5 ADT에서 다른 환경으로 데이터 라우팅 (25분)
 
 ADT는 ADT 라우팅을 통해서 외부 시스템에 ADT의 변경 정보를 보낼 수 있다. 이번 랩에서는 ADT에서 데이터를 이벤트 허브로 보내는 Azure Function을 만들어 보겠습니다. 
 
@@ -19,20 +19,25 @@ Azure 포탈의 왼쪽 위 전체 메뉴에서 "리소스만들기"를 선택하
  * 구독: 실습에 사용하는 구독 선택
  * 리소스 그룹: 실습에 사용하는 리소스 그룹 선택
  * 네이스페이스 이름: 예)adtholeh003
- * 위치: alrnrehdqn
+ * 위치: 미국동부
  * 가격책정계층: 표준
 
  ![New Event Hub](./images/eh-create.png)
 
- 1. twins-event-hub / tsi-event-hub 이벤트 허브 생성
+### twins-event-hub / tsi-event-hub 이벤트 허브 생성
 
  Azure 포탈에서 이벤트 허브 네임스페이스로 들어와서 Event Hubs 메뉴를 선택한 후 "+이벤트 허브"를 클릭한다. twins-event-hub / tsi-event-hub 이름으로 2개의 이벤트 허브를 만듭니다. 
 
 ![New Event Hub](./images/eh-create2.png)
 
-2. twins-event-hub / tsi-event-hub 공유 액세스 정책 만들기
+### twins-event-hub / tsi-event-hub 공유 액세스 정책 만들기
 
 생성한 이벤트 허브에 각각 EHPolicy라는 이름으로 공유 액세스 정책을 만든다. 이 정책에는 보내기, 수신대기 권한을 부여합니다.  
+
+> 주의) 이벤트 허브 네임스페이스에도 공유 액세스 정책이 있습니다. 헷갈릴 수 있는데 이벤트 허브의 공유 엑세스 정책에 만들어야 합니다. 
+
+* 정책이름: EHPolicy
+* 보내기, 수신대기 선택
 
 ![New Event Hub](./images/eh-create-policy.png)
 
@@ -42,7 +47,7 @@ Azure 포탈의 왼쪽 위 전체 메뉴에서 "리소스만들기"를 선택하
 
 이제 ADT로 가서 위에서 만든 twins-event-hub 이벤트 허브로 연결되는 엔트포인트를 만들고 라우팅을 설정하여 메시지를 외부로 보내는 설정을 합니다. 
 
-1. ADT 엔드포인트 생성
+### ADT 엔드포인트 생성
 
 * 이름: EHEndpoint
 * 엔드포인트 유형: 이벤트 허브
@@ -50,7 +55,7 @@ Azure 포탈의 왼쪽 위 전체 메뉴에서 "리소스만들기"를 선택하
 
 ![ADT 엔드포인트 생성](./images/adt-endpoint.png)
 
-1. ADT 이벤트 경로 생성
+### ADT 이벤트 경로 생성
 
 이번에는 ADT에서 발생하는 이벤트 타입중에 "Microsoft.DigitalTwins.Twin.Update" 이벤트를 방금 생성한 엔트포인트로 보내는 설정을 합니다. 
 
@@ -67,19 +72,25 @@ Lab4에서 사용한 Azure Function App 에 Function 을 하나더 추가해서 
 
 먼저 Function에서 사용할 설정 값을 가져와서 Azure Function의 구성 설정에 업데이트 합니다. 
 
-1. ADT 이벤트 허브 Connetion String을 가져와 Azure Function 구성 설정에 넣어줍니다.
+### ADT 이벤트 허브 Connetion String을 가져와 Azure Function 구성 설정에 넣어줍니다.
+
+* 이름: EventHubAppSetting-Twins
+* 값: Endpoint=sb://<eh 이름>.servicebus.windows.net/;SharedAccessKeyName=EHPolicy;SharedAccessKey=eWgNkiIvy/zS3YAfo9eYWBlEzDwFSIBhyFfo0HmLww8=;EntityPath=**twins-event-hub**
 
 ![Event Hub connection String](./images/eh-connstr.png)
 
 ![Function 설정](./images/function-eh-connstr.png)
 
-2. TSI 이벤트 허브 Connection String을 가져와 Azure Function 구성 설정에 넣어줍니다.
+### TSI 이벤트 허브 Connection String을 가져와 Azure Function 구성 설정에 넣어줍니다.
+
+* 이름: EventHubAppSetting-TSI 
+* 값: Endpoint=sb:// <eh 이름>.servicebus.windows.net/;SharedAccessKeyName=EHPolicy;SharedAccessKey=lBaNIhFgi5YGX2ZsFu1f33YcHGPsGCYOgoJ2WpRTvE=;EntityPath=**tsi-event-hub**
 
 ![Event Hub connection String](./images/eh-connstr2.png)
 
 ![Function 설정](./images/function-eh-connstr2.png)
 
-3. 반드시 변경내용을 저장하여 적용합니다. 
+### 반드시 변경내용을 저장하여 적용합니다. 
 
 ![Function 설정 저장](./images/function-app-setting-save.png)
 

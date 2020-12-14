@@ -26,17 +26,17 @@
     * [Node.js 설치](https://nodejs.org/ko/download/)
     * [Azure CLI 설치(옵션)](https://docs.microsoft.com/ko-kr/cli/azure/install-azure-cli)
 
-## [Lab 1 Azure Digital Twin 만들기](lab1-adt-basic.md)
+## [Lab 1 Azure Digital Twin 만들기 (5분)](lab1-adt-basic.md)
 
-## [Lab 2 Azure Digital Twin Explorer 설정](lab2-setup-model.md)
+## [Lab 2 Azure Digital Twin Explorer 설정 (15분)](lab2-setup-model.md)
 
-## [Lab 3 ADT 모델 만들기](lab3-adt-model.md)
+## [Lab 3 ADT 모델 만들기 (10분)](lab3-adt-model.md)
 
-## [Lab 4 Function으로 이벤트 입력 ](lab4-ingest-event.md)
+## [Lab 4 Function으로 이벤트 입력 (25분)](lab4-ingest-event.md)
 
-## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅](lab5-adt-route.md)
+## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅 (25분)](lab5-adt-route.md)
 
-## [Lab 6 Time Series Insights로 Visualize](lab6-visualize-tsi.md)
+## [Lab 6 Time Series Insights로 Visualize (10분)](lab6-visualize-tsi.md)
 
 
 ## 참고자료
