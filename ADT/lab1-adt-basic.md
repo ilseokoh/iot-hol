@@ -1,5 +1,15 @@
 # Lab 1 Azure Digital Twin 만들기
 
+## 클론 Github Repo
+
+원하는 디렉토리에 소스를 클론 합니다. 
+
+``` bash
+mkdir c:\users\username\repos
+cd c:\users\username\repos
+git clone https://github.com/Azure-Samples/digital-twins-samples/
+```
+
 ## Azure Digital Twin 만들기 
 Azure 포탈에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 
 
