@@ -1,81 +1,102 @@
 # Lab 5 ADT에서 다른 환경으로 데이터 라우팅
 
-
-
-ADT supports sending information about changes to ADT to external systems through ADT routes. In the following section, we'll configure ADT to send data to Event Hubs to be processed by an Azure Function.
+ADT는 ADT 라우팅을 통해서 외부 시스템에 ADT의 변경 정보를 보낼 수 있다. 이번 랩에서는 ADT에서 데이터를 이벤트 허브로 보내는 Azure Function을 만들어 보겠습니다. 
 
 ## 이벤트 허브 만들기 
 
-1. Create two (2) event hubs.
+1. 이벤트 허브 네임스페이스 생성
 
-    ```azurecli
-    $ehnamespace = $dtname + "ehnamespace"
-    az eventhubs namespace create --name $ehnamespace --resource-group $rgname -l $location
-    az eventhubs eventhub create --name "twins-event-hub" --resource-group $rgname --namespace-name $ehnamespace
-    az eventhubs eventhub create --name "tsi-event-hub" --resource-group $rgname --namespace-name $ehnamespace
-    az eventhubs eventhub authorization-rule create --rights Listen Send --resource-group $rgname --namespace-name $ehnamespace --eventhub-name "twins-event-hub" --name EHPolicy
-    az eventhubs eventhub authorization-rule create --rights Listen Send --resource-group $rgname --namespace-name $ehnamespace --eventhub-name "tsi-event-hub" --name EHPolicy
-    ```
+Azure 포탈의 왼쪽 위 전체 메뉴에서 "리소스만들기"를 선택하고 "event Hub"로 검색하여 이벤트 허브 네임스페이스를 만듭니다. 
+
+ ![New Event Hub](./images/eh-new.png)
+
+아래 내용으로 이벤트 허브 네임스페이스를 생성한다. 
+
+ * 구독: 실습에 사용하는 구독 선택
+ * 리소스 그룹: 실습에 사용하는 리소스 그룹 선택
+ * 네이스페이스 이름: 예)adtholeh003
+ * 위치: alrnrehdqn
+ * 가격책정계층: 표준
+
+ ![New Event Hub](./images/eh-create.png)
+
+ 1. twins-event-hub / tsi-event-hub 이벤트 허브 생성
+
+ Azure 포탈에서 이벤트 허브 네임스페이스로 들어와서 Event Hubs 메뉴를 선택한 후 "+이벤트 허브"를 클릭한다. twins-event-hub / tsi-event-hub 이름으로 2개의 이벤트 허브를 만듭니다. 
+
+![New Event Hub](./images/eh-create2.png)
+
+2. twins-event-hub / tsi-event-hub 공유 액세스 정책 만들기
+
+생성한 이벤트 허브에 각각 EHPolicy라는 이름으로 공유 액세스 정책을 만든다. 이 정책에는 보내기, 수신대기 권한을 부여합니다.  
+
+![New Event Hub](./images/eh-create-policy.png)
+
+![New Event Hub](./images/eh-create-policy2.png)
 
 ## ADT 라우팅 만들기 
 
-1. Create an ADT endpoint
+이제 ADT로 가서 위에서 만든 twins-event-hub 이벤트 허브로 연결되는 엔트포인트를 만들고 라우팅을 설정하여 메시지를 외부로 보내는 설정을 합니다. 
 
-    ```azurecli
-    az dt endpoint create eventhub --endpoint-name EHEndpoint --eventhub-resource-group $rgname --eventhub-namespace $ehnamespace --eventhub "twins-event-hub" --eventhub-policy EHPolicy -n $dtname
-    ```
+1. ADT 엔드포인트 생성
 
-1. Create an ADT route
+* 이름: EHEndpoint
+* 엔드포인트 유형: 이벤트 허브
+* 이벤트 허브: 구독 / 네임스페이스 / 이벤트허브 (twins-evnet-hub) / 권한부여 규칙(EHPolicy)
 
-    ```azurecli
-    az dt route create -n $dtname --endpoint-name EHEndpoint --route-name EHRoute --filter "type = 'Microsoft.DigitalTwins.Twin.Update'"
-    ```
+![ADT 엔드포인트 생성](./images/adt-endpoint.png)
+
+1. ADT 이벤트 경로 생성
+
+이번에는 ADT에서 발생하는 이벤트 타입중에 "Microsoft.DigitalTwins.Twin.Update" 이벤트를 방금 생성한 엔트포인트로 보내는 설정을 합니다. 
+
+* 이름: EHRoute
+* 엔드포인트: EHEndpoint
+* 이벤트 유형: 트윈 업데이트
+
+![ADT 라우팅 생성](./images/adt-route.png)
+
 
 ## Azure Function 만들기 
 
-1. Create an Azure Function
+Lab4에서 사용한 Azure Function App 에 Function 을 하나더 추가해서 ADT에서 나온 이벤트를 Time Series Insight의 포멧으로 변환하여 다음 이벤트 허브로 전달하는 Azure Function을 만듭니다. 
 
-    ```azurecli
-        az functionapp create --resource-group $rgname --consumption-plan-location $location --runtime dotnet --functions-version 3 --name $twinupdatefunctionname --storage-account  $functionstorage
-      ```
+먼저 Function에서 사용할 설정 값을 가져와서 Azure Function의 구성 설정에 업데이트 합니다. 
 
-1. Add application config that stores the connection strings needed by the Azure Function
+1. ADT 이벤트 허브 Connetion String을 가져와 Azure Function 구성 설정에 넣어줍니다.
 
-    ```azurecli
-    $adtehconnectionstring=$(az eventhubs eventhub authorization-rule keys list --resource-group $rgname --namespace-name $ehnamespace --eventhub-name twins-event-hub --name EHPolicy --query primaryConnectionString -o tsv)
-    $tsiehconnectionstring=$(az eventhubs eventhub authorization-rule keys list --resource-group $rgname --namespace-name $ehnamespace --eventhub-name tsi-event-hub --name EHPolicy --query primaryConnectionString -o tsv)
-    az functionapp config appsettings set --settings "EventHubAppSetting-Twins=$adtehconnectionstring" -g $rgname -n $twinupdatefunctionname
-    az functionapp config appsettings set --settings "EventHubAppSetting-TSI=$tsiehconnectionstring" -g $rgname -n $twinupdatefunctionname
-    ```
+![Event Hub connection String](./images/eh-connstr.png)
+
+![Function 설정](./images/function-eh-connstr.png)
+
+2. TSI 이벤트 허브 Connection String을 가져와 Azure Function 구성 설정에 넣어줍니다.
+
+![Event Hub connection String](./images/eh-connstr2.png)
+
+![Function 설정](./images/function-eh-connstr2.png)
 
 ## Visual Studio Code에서 Azure Function 만들기
 
-Use Visual Studio Code to create a local Azure Functions project. Later in this article, you'll publish your function code to Azure.
+Lab 4에서 처럼 Visual Studio Code 에서 Function을 하나더 만들어서 배포합니다. 
 
-1. Choose the Azure icon in the Activity bar, then in the **Azure: Functions** area, select the **Create new project...** icon.
+1. Visual Studio Code 메뉴에서 View > Command Palette를 선택하거나 Ctrl+Shift+P를 누릅니다. (Mac: Cmd+shift+P) "Azure Function: Create Function..." 을 선택합니다.  
 
-    ![Choose Create a new project](./images/create-new-project.png)
+![VSCode new fucntion](images/vscode-new-function.png)
 
-1. Choose a directory location for your project workspace and choose **Select**.
+1. 아래 내용으로 설정하여 Function을 만듭니다. 
 
->[!NOTE]
->This directoy should be new, empty, and unique for this Azure Function
->
+- **Select a template for your project's first function**: Choose `EventHubTrigger`.
+- **Provide a function name**: Type `ProcessDTUpdatetoTSI`.
+- **Provide a namespace**: Type `My.Function`.
+- **Select setting from local.settings.json**: Hit Enter
+- **Select subscription**: Select the subscription you're using
+- **Select an event hub namespace**: Choose the eventhub namespace that begins with `adtholfunction003`
+- **Select an event hub**: Choose `twins-event-hub`
+- **Select an event hub policy**: Choose `EHPolicy`
+- **When prompted for a storage account choose**: Skip for now
 
-1. Provide the following information at the prompts:
-    - **Select a language for your function project**: Choose `C#`.
-    - **Select a template for your project's first function**: Choose `EventHubTrigger`.
-    - **Provide a function name**: Type `TSIFunction`.
-    - **Provide a namespace**: Type `TSIFunctionsApp`.
-    - **Select setting from local.settings.json**: Hit Enter
-    - **Select subscription**: Select the subscription you're using
-    - **Select an event hub namespace**: Choose the eventhub namespace that begins with `adthol`
-    - **Select an event hub**: Choose `twins-event-hub`
-    - **Select an event hub policy**: Choose `EHPolicy`
-    - **When prompted for a storage account choose**: Skip for now
-    - **Select how you would like to open your project**: Choose `Add to workspace`.
-1. Open the file TSIFunction.cs
-1. Replace the code with the code sample below.
+
+1. TSIFunction.cs 을 열고 아래 코드를 붙여 넣습니다. 
 
 ```C#
 using Microsoft.Azure.EventHubs;
@@ -87,7 +108,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Collections.Generic;
 
-namespace TSIFunctionsApp
+namespace My.Function
 {
     public static class ProcessDTUpdatetoTSI
     { 
@@ -124,21 +145,21 @@ namespace TSIFunctionsApp
 
 ```
 
-## Azure Function 배포 및 Stream Logs 확인
+## Azure Function 배포 
 
-1. In the VSCode function extension, click on on **Deploy to Function App...**
-    ![Choose Deploy to Function App...](./images/deploy-to-function-app.png)
+1. VSCode function extension에서 **Deploy to Function App...**을 선택합니다. 
 
-    - **Select subscription**: Choose your subscription
-    - **Select Function App in Azure**: Choose the function that ends in `twinupdatefunction`.
-    - **If prompted to overwrite a previous deployment**: Click `Deploy`
-    ![Overwrite Function](./images/overwrite-twin-function.png)
+    ![Choose Deploy to Function App](./images/deploy-to-function-app.png)
 
-1. When the deployment finishes, you'll be prompted to Start Streaming Logs
-  ![STream Logs](./images/function-stream-logs.png)
-1. Click on **Stream Logs** to see the Twin Update messages received by the Azure Function.
+- **Select subscription**: 실습에 사용중인 구독을 선택합니다. 
+- **Select Function App in Azure**: Function 이름을 선택합니다. `adtholfunction003`.
 
-    - Alternatively, you can Stream Logs at a later time by right-clicking on the Azure Function in VS Code and choosing **Start Streaming Logs**
-  ![Choose Deploy to Function App...](./images/function-stream-logs-extension.png)
+1. 배포가 완료되면 아래 그림과 같이 Start Streaming Logs 창이 뜹니다.
+  ![Stream Logs](./images/function-stream-logs.png)
+1. **Stream Logs** 를 선택하면 다음 단계를 진행한 후에 Azure Function의 로그를 확인 할 수 있습니다. 다음 단계에서 IoT Hub를 설정하고 디바이스에서 메시지를 보내야 로그를 확인 할 수 있습니다. 
+1. *enable appication logging*,  Yes를 선택합니다. 
+    ![Application Logging](./images/application-logging.png)
+1. 다른 방법으로는 VS Code 에서 Azure Function을 찾아 오른쪽 클릭 후 **Start Streaming Logs**를 선택하면 됩니다.
+  ![Start Streaming Logs](./images/function-stream-logs-extension.png)
 
-At this point, Azure Digital Twins should be sending the Twin Updates it receives to an Event Hub whose events are processed by the Azure Function.  The Azure Function formats the events and published them to another Event Hub where can be ingested by Time Series Insights.
+여기까지 오면 Azure Digital Twins은 Twin Update 이벤트를 Event Hub(twins-evnet-hub)로 전송하고 Azure Function(ProcessDTUpdatetoTSI)이 처리하여 다시 이벤트허브(tsi-event-hub)로 전송한다. 
