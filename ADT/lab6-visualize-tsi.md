@@ -4,7 +4,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture.png)
+![실습 아키텍쳐](images/hol-architecture-6.png)
 
 ## Time Series Insights(TSI) 만들기 
 

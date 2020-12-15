@@ -1,5 +1,9 @@
 # Lab 1 Azure Digital Twin 만들기 (5분)
 
+## 아키텍쳐 
+
+![실습 아키텍쳐](images/hol-architecture-3.png)
+
 ## Azure Digital Twin 만들기 
 [Azure 포탈](https://portal.azure.com)에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 
 

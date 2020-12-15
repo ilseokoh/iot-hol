@@ -1,5 +1,9 @@
 # Lab 3 - ADT 모델 만들기 (10분)
 
+## 아키텍쳐 
+
+![실습 아키텍쳐](images/hol-architecture-3.png)
+
 ## 모델 업로드
 
 Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니다. 

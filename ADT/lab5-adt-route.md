@@ -4,7 +4,7 @@ ADT는 ADT 라우팅을 통해서 외부 시스템에 ADT의 변경 정보를 �
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture.png)
+![실습 아키텍쳐](images/hol-architecture-5.png)
 
 ## 이벤트 허브 만들기 
 

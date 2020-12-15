@@ -4,7 +4,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture.png)
+![실습 아키텍쳐](images/hol-architecture-4.png)
 
 ## Azure Function 만들기 
 
