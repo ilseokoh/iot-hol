@@ -14,7 +14,7 @@
 * 리소스 그룹: 실습에 사용중인 리소스 그룹
 * 위치: 미국동부
 * 계층: Get2(L1)
-* 속성이름: $dtid
+* 속성이름: $dtId **(대소문자 주의)**
 * 스토리지 계정이름: adtholtsistorage003
 * Storage kind: StroageV2 / LRS 
 * 웜저장소 사용: 예
