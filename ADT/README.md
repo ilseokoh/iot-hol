@@ -11,6 +11,10 @@
 
 또한 작업에 문제가 생길 때 원인을 분석하기 위하여 모든 데이터를 모아야 합니다. 
 
+## Azure Digital Twin 개용 
+
+[디지털 트윈을 활용한 IoT 솔루션 구축.pdf](./adt-intro.pdf)
+
 ## 아키텍쳐 
 
 ![실습 아키텍쳐](images/hol-architecture.png)
