@@ -50,10 +50,6 @@
 
 [두산 풍력발전 디지털 트윈](https://customers.microsoft.com/en-us/story/848311-doosan-manufacturing-azure-digital-twins)
 
-### 가격
-
-[Azure Digital Twins 가격](https://azure.microsoft.com/ko-kr/pricing/details/digital-twins/)
-
 ### Product Page
 
 [Azure Digital Twins](https://azure.microsoft.com/en-us/services/digital-twins/)
@@ -93,9 +89,17 @@
 
 ### Ignite On-Demand Content
 Azure IoT services, roadmap and vision: from connected assets to connected environments
+
 Sam George, Microsoft Ignite
+
 [Azure IoT services, roadmap and vision: from connected assets to connected environments](https://myignite.microsoft.com/sessions/8c90945c-eec6-43ed-b16a-3adf3c2ba37a)
 
 Ask the Expert: Azure IoT: From connected assets to connected environments with Digital Twins
+
 Christian Schormann, Ines Khelifi, Paul DeCarlo, Microsoft Ignite
+
 [Ask the Expert: Azure IoT: From connected assets to connected environments with Digital Twins](https://myignite.microsoft.com/sessions/aec5687c-d153-47e7-9dc5-5f2e3f536f0c)
+
+### 가격
+
+[Azure Digital Twins 가격](https://azure.microsoft.com/ko-kr/pricing/details/digital-twins/)
