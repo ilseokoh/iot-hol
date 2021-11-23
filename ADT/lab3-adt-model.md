@@ -6,7 +6,7 @@
 
 ## 모델 업로드
 
-Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니다. 
+Lab 2의 ADT Explorer에 접속합니다. 
 
 왼쪽 "Model View" 탭에서 3번째 아이콘 Upload Model 아이콘을 선택하고 Lab 1에서 받아놓은 소스코드에서 "digital-twins-samples/HandsOnLab/models' 폴더의 7개 json 파일을 모두 선택하여 업로드 합니다. 
 
@@ -55,7 +55,7 @@ Lab 2의 ADT Explorer를 실행하여 http://localhost:3000으로 접속합니�
 
 ![relationship has floors](images/rel_has_floors.png)
 
-이 관계를 이용해서 트윈 인스턴스 간의 관계를 맺어줍니다. ADT Explore에서는 From 인스턴스를 클릭하고 Ctrl 키를 누른채 to 인스턴스를 클릭한 후 Graph view 상단의 "Add Relationship" 아이콘이 활성화 되면 클릭합니다. 
+이 관계를 이용해서 트윈 인스턴스 간의 관계를 맺어줍니다. ADT Explore에서는 From 인스턴스를 클릭하고 Ctrl 키를 누른채 to 인스턴스를 클릭한 후 오른쪽 마우스 클릭하여 "Add Relationship" 메뉴를 클릭합니다. 
 
 ![Create Relationship](images/adt-select-relationship.png)
 

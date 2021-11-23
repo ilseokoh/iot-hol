@@ -27,12 +27,11 @@
     * [VS Code C# Extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
     * [VS Code Azure Function Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
     * [Git 설치](https://git-scm.com/downloads)
-    * [Node.js 설치](https://nodejs.org/ko/download/)
     * [Azure CLI 설치(옵션)](https://docs.microsoft.com/ko-kr/cli/azure/install-azure-cli)
 
 ## [Lab 1 Azure Digital Twin 만들기 (5분)](lab1-adt-basic.md)
 
-## [Lab 2 Azure Digital Twin Explorer 설정 (15분)](lab2-setup-model.md)
+## [Lab 2 Azure Digital Twin Explorer (1분)](lab2-setup-model.md)
 
 ## [Lab 3 ADT 모델 만들기 (10분)](lab3-adt-model.md)
 

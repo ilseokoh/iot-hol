@@ -21,26 +21,15 @@
 
 ![ADT 만들기](images/adt-portal.png)
 
-**미국 동부 (East US)** 지역에 adthol003 등의 이름으로 Azure Digitla Twin 리소스를 만듭니다. 
+**미국 동부 (East US)** 같이 ADT가 있는 지역에 adthol003 등의 이름으로 Azure Digitla Twin 리소스를 만듭니다. (현재는 한국 데이터센터는 미지원)
 
 ![ADT 만들기](images/adt-adt.png)
 
-### "Azure Digital Twin Owner" 권한 설정
+Networking은 **Public endpoint (공용 액세스)**로 선택하고 **고급** 탭에서 **시스템 관리 ID 켜기**를 선택합니다. 
 
-방금 생성한 Azure Digital Twin으로 이동합니다. 
+![시스템 관리 ID 켜기](images/adt-system-managed-identity.png)
 
-![ADT 이동](images/adt-goto-adt.png)
-
-Azure Digital Twin 서비스의 설정 등을 수정하기 위해서는 적절한 권한이 있어야 합니다. 내 계정에 "Azure Digital Twin Owner" 권한 설정하기 위해 "액세스 제어(IAM)" 메뉴에서 "역할 할당" 탭의 "+추가" 버튼을 누릅니다. **역할 할당 추가"** 를 선택합니다. 
-
-![ADT 권한](images/adt-role.png)
-
-역할 할당 추가 메뉴에서 역할을 "Azure Digital Twin 소유자"로 선택하고 사용자, 그룹 또는 서비스주체 중에서 내 이메일등으로 검색하여 선택하고 저장을 누릅니다. 
-
-저장이 완료되면 역할 할당에 추가된 것을 확인합니다. 
-
-![ADT 권한추가](images/adt-add-role.png)
-
+검토 + 만들기 탭에서 **만들기**를 선택합니다.  
 
 ## 클론 Github Repo
 
@@ -79,6 +68,6 @@ ADT 모델은 DTDL(Digital Twin Definition Language)로 작성하고 가장 간�
 * ProductionStepInterface.json
 * ProductionStepGrinding.json 외 2개의 공정에 대한 Interface
 
-## [Lab 2 Azure Digital Twin Explorer 설정](lab2-setup-model.md)
+## [Lab 2 Azure Digital Twin Explorer](lab2-setup-model.md)
 
 ## [실습 홈으로 가기](README.md)

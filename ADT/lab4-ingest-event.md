@@ -51,9 +51,9 @@ Azure Portal에서 system-managed identity를 만들고 Function App의 identity
 
 ![역할 할당](images/adt-assign-function.png)
 
-한번 더 확인을 위해서 다시 Azure Function으로 가서 "ID 메뉴를 선택한 후 **"Azure 역할 할당"**을 선택합니다. 아래 그림과 같이 할당 된 것을 확인 할 수 있습니다. 
+![역할 할당 2](images/adt-assign-function2.png)
 
-![Assign 확인](images/adt-assign-function-confirm.png)
+![역할 할당 2](images/adt-assign-function3.png)
 
 ### Azure Function 환경변수 설정
 
@@ -94,9 +94,8 @@ Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azu
 1. VSCode 프롬프트에 아래 정보를 선택하거나 입력합니다.
 
     - **Select a language for your function project**: `C#` 선택.
-    - **Select a template for your project's first function**: `Change template filter` 선택.
-    - **Select a template filter**: All 선택
-    - **Select a template for your project's first function**: `EventGridTrigger` 선택.
+    - **Select a .NET runtime**: .NET Core 3
+    - **Select a template for your project's first function**: Azure Event Grid Trigger
     - **Provide a function name**: `TwinsFunction` 입력.
     - **Provide a namespace**: `My.Function` 입력.
     - **When prompted for a storage account choose**: Skip for now
@@ -108,8 +107,8 @@ Visual Studio Code 터미널(Terminal > New Termianl)에서 아래 명령을 이
 
 
 ```dos
-    dotnet add package Azure.DigitalTwins.Core --version 1.0.0
-    dotnet add package Azure.identity --version 1.2.2
+    dotnet add package Azure.DigitalTwins.Core
+    dotnet add package Azure.identity
     dotnet add package System.Net.Http
 ```
 
@@ -136,6 +135,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace My.Function
 {
@@ -147,7 +147,7 @@ namespace My.Function
         private static readonly HttpClient httpClient = new HttpClient();
 
         [FunctionName("TwinsFunction")]
-        public async void Run([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
+        public async Task Run([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
         {
             log.LogInformation(eventGridEvent.Data.ToString());
             if (adtInstanceUrl == null) log.LogError("Application setting \"ADT_SERVICE_URL\" not set");
@@ -218,6 +218,7 @@ namespace My.Function
     ![Application Logging](./images/application-logging.png)
 1. 다른 방법으로는 VS Code 에서 Azure Function을 찾아 오른쪽 클릭 후 **Start Streaming Logs**를 선택하면 됩니다.
   ![Start Streaming Logs](./images/function-stream-logs-extension.png)
+  
   
 ## IoT Hub 셋업 
 
