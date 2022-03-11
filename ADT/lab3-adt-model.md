@@ -30,6 +30,8 @@ Lab 2의 ADT Explorer에 접속합니다.
 
 각 모델 DTDL을 살펴보고 구조를 살펴봅니다. 모든 모델은 DTMI (Digital Twin Model ID)를 가지고 있는 것도 확인 합니다. DTDL에서 상속은 extends 속성으로 표현됩니다. 
 
+상세한 DTDL 스펙은 [Digital Twins Definition Language (DTDL) version 2](https://github.com/Azure/opendigitaltwins-dtdl/blob/master/DTDL/v2/dtdlv2.md) 문서에서 확인할 수 있습니다. 
+
 ## 트윈 인스턴스 만들기 
 
 이제 트윈 인스턴스를 만듭니다. 모델과 트윈 인스턴스는 마치 객체지향프로그래밍(OOP)에서 클래스(class)와 인스턴스(instance)의 관계와 같습니다. 클래스를 new 해서 인스턴스를 만들듯이 업로드 한 모델에서 여러개의 트윈 인스턴스를 생성할 수 있습니다. 
