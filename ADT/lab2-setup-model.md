@@ -12,14 +12,13 @@ ADT 모델을 설정하는 방법은 여러가지가 있습니다. Azure CLI를 
 
 방금 만든 ADT 리소스로 이동하여 개요 메뉴에서 **Open Azure Digital Twins Explorer(미리보기)**를 클릭하여 ADT Explorer를 열어봅니다. 
 
-![ADT Explorer 열기](open-adt-explorer.png)
+![ADT Explorer 열기](images/open-adt-explorer.png)
 
 ## ADT Explorer URL 오류 발생시 조치 
-
-URL 오류가 발생하면 
+ 
 ![ADT Explorer URL오류](images/adt-explorer-url-error.png)
 
-Azure Portal 에서 https:// 를 포함한 URL을 복사합니다. 
+URL 오류가 발생하면 Azure Portal 에서 https:// 를 포함한 URL을 복사합니다. 
 
 ![ADT URL 복사](images/adt-explorer-setup2.png)
 
