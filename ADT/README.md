@@ -17,7 +17,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture.png)
+![실습 아키텍쳐](images/hol-architecture_update.png)
 
 ## 사전준비 내용 
 1. Azure 구독: 구독이 없으면 [체험계정 만들기](https://azure.microsoft.com/ko-kr/free/)
