@@ -1,4 +1,4 @@
-# Lab 6 Time Series Insights로 Visualize (10분)
+# Lab 6 Azure Data Explorer로 Visualize (10분)
 
 이제 마지막으로 Azure Digital Twin에서 발생한 데이터를 Time Series Insights(TSI) 에 저장하고 그 내용을 살펴보는 과정입니다. 이렇게 과거 데이터를 TSI에 저장하여 분석할 수 있습니다. 
 
