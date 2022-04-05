@@ -4,7 +4,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture-4.png)
+![실습 아키텍쳐](images/hol-architecture-4_update.png)
 
 ## Azure Function 만들기 
 
@@ -57,7 +57,7 @@ Azure Portal에서 system-managed identity를 만들고 Function App의 identity
 
 ### Azure Function 환경변수 설정
 
-Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 석택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
+Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 선택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
 
 * 이름: ADT_SERVICE_URL
 * 값: https:// digital twin url
