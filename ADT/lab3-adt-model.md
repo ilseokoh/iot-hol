@@ -2,7 +2,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture-3.png)
+![실습 아키텍쳐](images/hol-architecture-3_updated.png)
 
 ## 모델 업로드
 
