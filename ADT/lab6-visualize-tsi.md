@@ -62,6 +62,8 @@ Azure Digital Twins 데이터 시뮬레이터의 샘플 디지털 트윈 데이�
 
 브라우저에서 Azure Digital Twins 데이터 시뮬레이터 웹 어플리케이션에 연결 합니다.
 
+* [Azure Digital Twins Data Simulator](https://explorer.digitaltwins.azure.net/tools/data-pusher?eid=adthol-km0406.api.sea.digitaltwins.azure.net&tid=72f988bf-86f1-41af-91ab-2d7cd011db47)
+
 Azure Digital Twins 인스턴스 URL를 입력한 후 "Generate environment" 버튼을 클릭 합니다.
 
 ![ADT Simulator접속](./images/adx_12.png)
