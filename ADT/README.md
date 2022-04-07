@@ -22,10 +22,11 @@
 ## 사전준비 내용 
 1. Azure 구독: 구독이 없으면 [체험계정 만들기](https://azure.microsoft.com/ko-kr/free/)
 1. 실습용 노트북 준비: Windows 10 PC (또는 Linux / Mac 가능) + 개발환경 설치 
-    * [.NET Core 3.1](https://dotnet.microsoft.com/download) 설치
+    * [.NET 6.0](https://dotnet.microsoft.com/download) 설치
     * [Visual Studio Code](https://code.visualstudio.com/) 설치
     * [VS Code C# Extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
     * [VS Code Azure Function Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+    * [Node.js](https://nodejs.org/) 설치
     * [Git 설치](https://git-scm.com/downloads)
     * [Azure CLI 설치(옵션)](https://docs.microsoft.com/ko-kr/cli/azure/install-azure-cli)
 
