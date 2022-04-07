@@ -18,15 +18,15 @@
 
 * 함수앱 이름: 예) adtholfunction003
 * 게시: 코드 
-* 런타임 스택: .NET Core 
-* 버전: 3.1
+* 런타임 스택: .NET
+* 버전: 6
 * 지역: East US
 
-![Function App 생성](images/function-create.png)
+![Function App 생성](images/functions_01.png)
 
 만들기를 클릭하여 Function 앱을 만듭니다. 
 
-![Function App 생성](images/function-create2.png)
+![Function App 생성](images/functions_02.png)
 
 ## Function에서 ADT에 접근하도록 권한 설정 
 
@@ -154,9 +154,10 @@ namespace My.Function
             try
             {
                 //Authenticate with Digital Twins
-                ManagedIdentityCredential cred = new ManagedIdentityCredential("https://digitaltwins.azure.net");
-                DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred, new DigitalTwinsClientOptions { Transport = new HttpClientTransport(httpClient) });
+                var cred = new DefaultAzureCredential();
+                DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
                 log.LogInformation($"ADT service client connection created.");
+                
                 if (eventGridEvent != null && eventGridEvent.Data != null)
                 {
                     log.LogInformation(eventGridEvent.Data.ToString());
