@@ -94,7 +94,7 @@ Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azu
 1. VSCode 프롬프트에 아래 정보를 선택하거나 입력합니다.
 
     - **Select a language for your function project**: `C#` 선택.
-    - **Select a .NET runtime**: .NET Core 3
+    - **Select a .NET runtime**: .NET 6
     - **Select a template for your project's first function**: Azure Event Grid Trigger
     - **Provide a function name**: `TwinsFunction` 입력.
     - **Provide a namespace**: `My.Function` 입력.
