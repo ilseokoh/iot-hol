@@ -25,7 +25,7 @@
 
 "Azure Digital Twins 데이터 소유자 역할 담당"을 체크하면 리소스 생성시 자동으로 "Azure Digital Twins 데이터 소유자" 권한이 부여 됩니다.
 
-![ADT 만들기](images/adt_000.png)
+![ADT 만들기](images/adt_0.png)
 
 Networking은 **Public endpoint (공용 액세스)**로 선택하고 **고급** 탭에서 **시스템 관리 ID 켜기**를 선택합니다. 
 
