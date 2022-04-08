@@ -33,7 +33,7 @@ Azure Data Explorer를 생성하여 Azure Digital Twins에서 전송하는 데�
 
 보내기 페이지에서 Event Hub 정보를 입력 합니다.
 
-![ADX DataHistory보내기](./images/adx_007.png)
+![ADX DataHistory보내기](./images/adt_007.png)
 
 저장소 페이지에서 Azure Data Explorer 정보를 입력 합니다.
 
