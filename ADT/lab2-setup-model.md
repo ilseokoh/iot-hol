@@ -31,7 +31,7 @@ ADT Explorer에 설정합니다.
 ![ADT Explorer Permission 에러](images/adt-explorer-permission-error.png)
 
 
-## Azure Digital Twins 데이터 소유자 권한 추가
+## Azure Digital Twins 데이터 소유자 권한 추가 (리소스 생성시 권한추가 하였을 경우 Skip)
 
 Azure Digital Twin 리소스 생성시 "Azure Digital Twins 데이터 소유자 권한추가" 체크하여 생성 하였을 경우 아래 권한 부여 Skip 가능합니다.
 
