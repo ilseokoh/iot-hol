@@ -56,21 +56,9 @@ Azure Data Explorer를 생성하여 Azure Digital Twins에서 전송하는 데�
 
 Data History 연결이 완료된 후에 기존에 생성한 트윈 데이터가 Azure Data Explorer에 저장 되어 데이터를 확인 할 수 있습니다.
 
-Azure Digital Twins 데이터 시뮬레이터의 샘플 디지털 트윈 데이터를 사용하여 여러 트윈에 원격 분석을 조절하여 테스트 할 수 있습니다.
+Data History 연결 후 최초 데이터가 Azure Data Explorer에 저장되기 까지 최대 몇분 정도 소요될 수 있습니다.
 
-샘플 그래프 만들기
-
-브라우저에서 Azure Digital Twins 데이터 시뮬레이터 웹 어플리케이션에 연결 합니다.
-
-* [Azure Digital Twins Data Simulator](https://explorer.digitaltwins.azure.net/tools/data-pusher?eid=adthol-km0406.api.sea.digitaltwins.azure.net&tid=72f988bf-86f1-41af-91ab-2d7cd011db47)
-
-Azure Digital Twins 인스턴스 URL를 입력한 후 "Generate environment" 버튼을 클릭 합니다.
-
-![ADT Simulator접속](./images/adx_12.png)
-
-시뮬레이션이 준비되면 "Start simulation"을 선택하여 시뮬레이션된 데이터를 Azure Digital Twins 인스턴스로 푸시합니다.
-
-![ADT Simulator접속](./images/adx_13.png)
+### 샘플 그래프 만들기
 
 Event Hubs Namespace 화면에서 Azure Digital Twins에서 들어오는 메시지와 Azure Data Explorer로 보내는 메시지 전송을 차트로 확인 합니다.
 
@@ -96,11 +84,48 @@ Azure Data Explorer에 생성된 데이터베이스 하단의 테이블 이름�
 | count
  ```
  
+![ADX QueryCount](./images/adx_vis_02.png)
+  
  처음 100개 데이터 쿼리 결과 보기
  ```bash
 <table_name>
 | limit 100
  ```
+![ADX QueryLimit](./images/adx_vis_03.png)
+  
+ Azure Digital Twins의 트윈 노드와 연결 하여 Azure Data Explorer에서 쿼리를 통해 시각화 하기
+ ```bash
+let ADTendpoint = "<ADT-instance>";
+let ADTquery = ```SELECT STEP_GRINDING.$dtId as tid
+FROM DIGITALTWINS FACTORY 
+JOIN STEP_GRINDING RELATED FACTORY.rel_runs_steps 
+WHERE FACTORY.$dtId = 'ProductionLine'
+AND IS_OF_MODEL(STEP_GRINDING , 'dtmi:com:microsoft:iot:e2e:digital_factory:production_step_grinding;1')```;
+evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
+| extend Id = tostring(tid)
+| join kind=inner (<table_name>) on Id
+| extend val_double = todouble(Value)
+| where Key in ("PowerUsage")
+| render timechart with (ycolumns = val_double)
+ ```
+
+![ADX Visualization가시화](./images/adx_vis_04.png)
+  
+### Azure Digital Twins 데이터 시뮬레이터 활용하여 분석하기
+
+Azure Digital Twins 데이터 시뮬레이터의 샘플 디지털 트윈 데이터를 사용하여 여러 트윈에 원격 분석을 조절하여 테스트 할 수 있습니다..
+  
+브라우저에서 Azure Digital Twins 데이터 시뮬레이터 웹 어플리케이션에 연결 합니다.
+
+* [Azure Digital Twins Data Simulator](https://explorer.digitaltwins.azure.net/tools/data-pusher?eid=adthol-km0406.api.sea.digitaltwins.azure.net&tid=72f988bf-86f1-41af-91ab-2d7cd011db47)
+
+Azure Digital Twins 인스턴스 URL를 입력한 후 "Generate environment" 버튼을 클릭 합니다.
+
+![ADT Simulator접속](./images/adx_12.png)
+
+시뮬레이션이 준비되면 "Start simulation"을 선택하여 시뮬레이션된 데이터를 Azure Digital Twins 인스턴스로 푸시합니다.
+
+![ADT Simulator접속](./images/adx_13.png)
 
  아래 쿼리를 실행하여 Salt machine 두대의 데이터 흐름을 가시화 합니다.
  <ADT-instance> 와 <table_name>을 변경하여 실행합니다.
