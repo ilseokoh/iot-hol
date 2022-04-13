@@ -2,7 +2,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture-3.png)
+![실습 아키텍쳐](images/hol-architecture-3_updated.png)
 
 ## Azure Digital Twin 만들기 
 [Azure 포탈](https://portal.azure.com)에 접속하여 Azure Digital Twin(ADT)를 만듭니다. 
@@ -23,7 +23,9 @@
 
 **미국 동부 (East US)** 같이 ADT가 있는 지역에 adthol003 등의 이름으로 Azure Digitla Twin 리소스를 만듭니다. (현재는 한국 데이터센터는 미지원)
 
-![ADT 만들기](images/adt-adt.png)
+"Azure Digital Twins 데이터 소유자 역할 담당"을 체크하면 리소스 생성시 자동으로 "Azure Digital Twins 데이터 소유자" 권한이 부여 됩니다.
+
+![ADT 만들기](images/adt_0.png)
 
 Networking은 **Public endpoint (공용 액세스)**로 선택하고 **고급** 탭에서 **시스템 관리 ID 켜기**를 선택합니다. 
 

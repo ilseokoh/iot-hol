@@ -4,7 +4,7 @@
 
 ## 아키텍쳐 
 
-![실습 아키텍쳐](images/hol-architecture-4.png)
+![실습 아키텍쳐](images/hol-architecture-4_update.png)
 
 ## Azure Function 만들기 
 
@@ -18,15 +18,15 @@
 
 * 함수앱 이름: 예) adtholfunction003
 * 게시: 코드 
-* 런타임 스택: .NET Core 
-* 버전: 3.1
+* 런타임 스택: .NET
+* 버전: 6
 * 지역: East US
 
-![Function App 생성](images/function-create.png)
+![Function App 생성](images/functions_01.png)
 
 만들기를 클릭하여 Function 앱을 만듭니다. 
 
-![Function App 생성](images/function-create2.png)
+![Function App 생성](images/functions_02.png)
 
 ## Function에서 ADT에 접근하도록 권한 설정 
 
@@ -57,7 +57,7 @@ Azure Portal에서 system-managed identity를 만들고 Function App의 identity
 
 ### Azure Function 환경변수 설정
 
-Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 석택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
+Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 선택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
 
 * 이름: ADT_SERVICE_URL
 * 값: https:// digital twin url
@@ -94,7 +94,7 @@ Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azu
 1. VSCode 프롬프트에 아래 정보를 선택하거나 입력합니다.
 
     - **Select a language for your function project**: `C#` 선택.
-    - **Select a .NET runtime**: .NET Core 3
+    - **Select a .NET runtime**: .NET 6
     - **Select a template for your project's first function**: Azure Event Grid Trigger
     - **Provide a function name**: `TwinsFunction` 입력.
     - **Provide a namespace**: `My.Function` 입력.
@@ -154,9 +154,10 @@ namespace My.Function
             try
             {
                 //Authenticate with Digital Twins
-                ManagedIdentityCredential cred = new ManagedIdentityCredential("https://digitaltwins.azure.net");
-                DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred, new DigitalTwinsClientOptions { Transport = new HttpClientTransport(httpClient) });
+                var cred = new DefaultAzureCredential();
+                DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
                 log.LogInformation($"ADT service client connection created.");
+                
                 if (eventGridEvent != null && eventGridEvent.Data != null)
                 {
                     log.LogInformation(eventGridEvent.Data.ToString());
