@@ -14,7 +14,7 @@ Azure Data Explorer를 선택하여 생성합니다.
 
 ![ADX 생성](./images/adx_01.png)
 
-기본 클러스터 정보를 다음과 같이 입력하여 "검토 + 만들기"를 선택하여 서비스를 생성 합니다.
+기본 클러스터 정보를 다음과 같이 입력하여 "검토 + 만들기"를 선택하여 서비스를 생성 합니다. ADX 생성은 약 10분 정도 걸립니다. 
 
 ![ADX 생성정보](./images/adx_03.png)
 
@@ -56,7 +56,7 @@ Azure Data Explorer를 생성하여 Azure Digital Twins에서 전송하는 데�
 
 Data History 연결이 완료된 후에 기존에 생성한 트윈 데이터가 Azure Data Explorer에 저장 되어 데이터를 확인 할 수 있습니다.
 
-Data History 연결 후 최초 데이터가 Azure Data Explorer에 저장되기 까지 최대 몇분 정도 소요될 수 있습니다.
+Data History 연결 후 최초 데이터가 Azure Data Explorer에 저장되기 까지 최대 몇 분 정도 소요될 수 있습니다.
 
 ### 샘플 그래프 만들기
 
@@ -99,7 +99,7 @@ let ADTendpoint = "<ADT-instance>";
 let ADTquery = ```SELECT STEP_GRINDING.$dtId as tid
 FROM DIGITALTWINS FACTORY 
 JOIN STEP_GRINDING RELATED FACTORY.rel_runs_steps 
-WHERE FACTORY.$dtId = 'ProductionLine'
+WHERE FACTORY.$dtId = 'ProductionLine1'
 AND IS_OF_MODEL(STEP_GRINDING , 'dtmi:com:microsoft:iot:e2e:digital_factory:production_step_grinding;1')```;
 evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
 | extend Id = tostring(tid)

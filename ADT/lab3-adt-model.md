@@ -18,7 +18,7 @@ Lab 2의 ADT Explorer에 접속합니다.
 
 ## 모델 살펴보기 
 
-모델은 [JSON-LD](https://json-ld.org/) 형식의 [DTDL](https://github.com/Azure/opendigitaltwins-dtdl) 로 만드는데 ADT의 모델에서 가장상위 타입은 Interface입니다. 
+모델은 [JSON-LD](https://json-ld.org/) 형식의 [DTDL](https://github.com/Azure/opendigitaltwins-dtdl) 로 만드는데 ADT의 모델에서 가장 상위 타입은 Interface입니다. 
 
 모델의 DTDL 내용은 json파일을 에디터로 열어서 볼 수 있습니다. ADT Explore에서도 각 모델에서 정보 아이콘을 눌려 확인 할 수 있습니다. 
 

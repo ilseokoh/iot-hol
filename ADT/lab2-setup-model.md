@@ -4,10 +4,6 @@ ADT 모델을 설정하는 방법은 여러가지가 있습니다. Azure CLI를 
 
 ![ADT Explorer](images/adt-explorer.png)
 
-아직은 모델도 없고 Graph도 없습니다. 
-
-![ADT Explorer](images/adt-explorer-preview.png)
-
 ## ADT Explorer 열기 
 
 방금 만든 ADT 리소스로 이동하여 개요 메뉴에서 **Open Azure Digital Twins Explorer(미리보기)**를 클릭하여 ADT Explorer를 열어봅니다. 

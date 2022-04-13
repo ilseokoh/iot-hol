@@ -57,7 +57,7 @@ Azure Portal에서 system-managed identity를 만들고 Function App의 identity
 
 ### Azure Function 환경변수 설정
 
-Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 선택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
+다시 Azure Function앱으로 돌아가서 Azure Digital Twin의 URL을 Function의 환경변수에 설정해줍니다. Azure Function에서 "구성" 메뉴를 선택하고 "+ 새 애플리케이션 설정"을 클릭하고 아래 그림과 같이 ADT_SERVICE_URL 을 Azure Digital Twin의 호스트 이름에 https:// 를 붙여서 설정해 줍니다. 
 
 * 이름: ADT_SERVICE_URL
 * 값: https:// digital twin url
@@ -306,6 +306,49 @@ Azure 포탈에서 IoT Hub로 들어갑니다. "이벤트" 메뉴를 선택하�
 여기에서 이전 단계의 Azure Function 만든 후에 열어 두었던 Log Stream에 시뮬레이션 디바이스가 보낸 메시지 처리에 대한 로그를 확인 할 수 있습니다. 이 로그는 메시지가 IoT Hub를 거쳐 Event Grid로 보내진 메시지를 Azure Function이 받아서 처리하는 내용입니다. 
 
    ![Log Stream](./images/function-stream-logs2.jpg)
+
+여기까지 정리를 해봅시다. 
+1. 디바이스 시뮬레이터가 작동하면서 IoT Hub에 데이터를 주기적으로 전송합니다. 전송하는 데이터는 디바이스 시뮬레이터 실행창에서 확인 할 수 있습니다. 
+```
+Sending message: {"DeviceType":"GrindingSensor","FanSpeed":10.755963222834675,"Force":303.092214561818,"ChasisTemperature":208.97079295100806,"PowerUsage":64.86738185901395,"Vibration":103,"RoastingTime":54}
+```
+1. 디바이스 시뮬레이터가 보낸 데이터는 IoT Hub가 받습니다. IoT Hub 는 Event 설정에 의해서 Telemetry 메시지를 Event Grid로 보내고 Event Grid는 Azure Function 앱의 TwinsFunction을 트리거 하고 Function 코드가 실행됩니다. Function 코드에서는 메시지를 분석하고 ADT에 로그인하고 디바이스 타입에 따라서 updateTwinData.AppendAdd 메서드를 이용하여 ADT의 디지털트윈의 속성을 업데이트 합니다. 이때 ADT의 dtId 와 IoT Hub의 deviceId가 같아서 즉시 업데이트 할 수 있습니다.
+
+TwinsFunction의 로그
+```
+2022-04-13T04:12:21.235 [Information] Executing 'TwinsFunction' (Reason='EventGrid trigger fired at 2022-04-13T04:12:21.2353072+00:00', Id=e0620bcb-bf7e-49d2-be12-05482f93d9d3)
+2022-04-13T04:12:21.235 [Information] {
+  "properties": {
+    "vibrationAlert": "false"
+  },
+  "systemProperties": {
+    "iothub-content-type": "application/json",
+    "iothub-content-encoding": "utf-8",
+    "iothub-connection-device-id": "GrindingStep",
+    "iothub-connection-auth-method": "{\"scope\":\"device\",\"type\":\"sas\",\"issuer\":\"iothub\",\"acceptingIpFilterRule\":null}",
+    "iothub-connection-auth-generation-id": "637854191445300197",
+    "iothub-enqueuedtime": "2022-04-13T04:12:20.937Z",
+    "iothub-message-source": "Telemetry"
+  },
+  "body": {
+    "DeviceType": "GrindingSensor",
+    "FanSpeed": 13.638898087439077,
+    "Force": 302.67780059445596,
+    "ChasisTemperature": 204.64182447825223,
+    "PowerUsage": 75.05453674609814,
+    "Vibration": 141,
+    "RoastingTime": 50
+  }
+}
+2022-04-13T04:12:21.236 [Information] ADT service client connection created.
+...
+2022-04-13T04:12:21.236 [Information] Device:GrindingStep DeviceType is:GrindingSensor
+2022-04-13T04:12:21.270 [Information] Executed 'TwinsFunction' (Succeeded, Id=e0620bcb-bf7e-49d2-be12-05482f93d9d3, Duration=35
+```
+
+3. 디지털 트윈의 속성이 업데이트된 것은 Digital Twin Explorer에서 확인 할 수 있습니다. 
+
+![Digital Twin 속성 업데이트](./images/adt-update-props.png)
 
 ## (**옵션**) Azure CLI 로 디지털 트윈 데이터 확인
 
