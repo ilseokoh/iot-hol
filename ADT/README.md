@@ -40,7 +40,7 @@
 
 ## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅 (25분)](lab5-adt-route.md)
 
-## [Lab 6 Azure Data Explorer로 Visualize (10분)](lab6-visualize-tsi.md)
+## [Lab 6 Azure Data Explorer로 Visualize (10분)](lab6-visualize-adx.md)
 
 
 ## 참고자료

@@ -63,6 +63,6 @@ Azure 포탈의 왼쪽 위 전체 메뉴에서 "리소스만들기"를 선택하
 
 ![ADT 라우팅 생성](./images/adt-route.png)
 
-## [Lab 6 Azure Data Explorer로 Visualize](lab6-visualize-tsi.md)
+## [Lab 6 Azure Data Explorer로 Visualize](lab6-visualize-adx.md)
 
 ## [실습 홈으로 가기](README.md)
