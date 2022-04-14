@@ -30,17 +30,17 @@
     * [Git 설치](https://git-scm.com/downloads)
     * [Azure CLI 설치(옵션)](https://docs.microsoft.com/ko-kr/cli/azure/install-azure-cli)
 
-## [Lab 1 Azure Digital Twin 만들기 (5분)](lab1-adt-basic.md)
+## [Lab 1 Azure Digital Twin 만들기 (10분)](lab1-adt-basic.md)
 
-## [Lab 2 Azure Digital Twin Explorer (1분)](lab2-setup-model.md)
+## [Lab 2 Azure Digital Twin Explorer (10분)](lab2-setup-model.md)
 
 ## [Lab 3 ADT 모델 만들기 (10분)](lab3-adt-model.md)
 
-## [Lab 4 Function으로 이벤트 입력 (25분)](lab4-ingest-event.md)
+## [Lab 4 Function으로 이벤트 입력 (30분)](lab4-ingest-event.md)
 
-## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅 (25분)](lab5-adt-route.md)
+## [Lab 5 ADT에서 다른 환경으로 데이터 라우팅 (30분)](lab5-adt-route.md)
 
-## [Lab 6 Azure Data Explorer로 Visualize (10분)](lab6-visualize-adx.md)
+## [Lab 6 Azure Data Explorer로 Visualize (30분)](lab6-visualize-adx.md)
 
 
 ## 참고자료
