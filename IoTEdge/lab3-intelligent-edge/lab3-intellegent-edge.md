@@ -198,3 +198,20 @@ Lab2까지 완료했다면 이미 Azure IoT Edge를 관리 및 배포하고 개�
     <6> 2022-06-23 07:53:20.039 +00:00 [INF] - Module 'classifier' scheduled to restart after 40s (35s left).
     <6> 2022-06-23 07:53:20.176 +00:00 [INF] - Updated reported properties
     ```
+
+1. 디바이스에 모듈 배포 
+
+    배포 확인 
+    ```
+    $ iotedge list
+    NAME             STATUS           DESCRIPTION                CONFIG
+    cameraCapture    running          Up 2 minutes               edgeholacr004.azurecr.io/cameracapture:0.0.1-amd64
+    classifier       failed           Failed (1) 25 seconds ago  edgeholacr004.azurecr.io/classifier:0.0.1-amd64
+    edgeAgent        running          Up 2 hours                 mcr.microsoft.com/azureiotedge-agent:1.2
+    edgeHub          running          Up 2 hours                 mcr.microsoft.com/azureiotedge-hub:1.2
+    ```
+
+1. 분류 결과 보기
+
+    ```
+    ```
