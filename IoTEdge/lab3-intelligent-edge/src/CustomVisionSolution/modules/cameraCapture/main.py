@@ -57,7 +57,7 @@ def main(imagePath, imageProcessingEndpoint):
             classification = sendFrameForProcessing(imagePath, imageProcessingEndpoint)
             if classification:
                 send_to_hub(classification)
-            time.sleep(10)
+            time.sleep(1000)
 
     except KeyboardInterrupt:
         print ( "IoT Edge module sample stopped" )

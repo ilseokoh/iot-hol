@@ -1,7 +1,7 @@
 FROM amd64/python:3.7-slim-buster
 
 WORKDIR /app
-ADD ./test_image.jpg .
+ADD test_image.jpg ./
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
