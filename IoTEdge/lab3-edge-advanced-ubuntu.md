@@ -13,220 +13,39 @@ Visual Studio Code (VSCode)는 개발자의 개발 속도를 향상시키는 파
 
 - [Visual Studio Code 설치](https://code.visualstudio.com/download)
 - Visual Studio 용 Azure IoT Hub Toolkit, Azure IoT Edge
-  ![Azure IoT Edge Extension](images/Register-device-vscode/extension.png)
+
 - Lab 2에서 만든 Azure IoT Hub
 - .Net Core 설치
-    [https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer)
+    [Download .NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
-## Step 0: Ubuntu 가상머신 만들기
+## Step 0 : VS Code 설정
 
-실습에서 Edge 디바이스로 사용될 Ubuntu 가상머신을 만듭니다. 
+본 실습에서는 VS Code를 사용하겠습니다. 2가지 확장(Extension)을 설치합니다. 
 
-### Step 0-1 : Azure에 로그인
+1. Azure IoT Hub TooKit
+1. Azure IoT Edge
 
-[Azure 포탈](https://portal.azure.com)에 로그인합니다.
+![Azure IoT Edge Extension](images/Register-device-vscode/extension.png)
 
-### Step 0-2 : Ubuntu 서버 새로 만들기
+확장설치가 끝나면 메뉴에서 "보기 > 명령 팔레트" 를 선택하거나 Ctrl + Shift + P 를 누릅니다. 
 
-포탈의 왼쪽 위에 "리소스 만들기" 선택하고 Ubuntu로 검색해서
-Ubuntu Server 18.04 선택합니다.
+명령 팔레트에서 "Azure: 로그인" 명령을 검색하여 실행합니다. 표시되는 메시지에 따라 Azure 계정에 로그인합니다.
 
-![리소스 만들기](images/linux-lab/new-ubuntu.png)
+![Azure 로그인](images/Register-device-vscode/vscode-signin.png)
 
-### Step 0-3 : 리눅스 가상머신 만들기
+다시 명령 팔레트에서 "Azure: IoT Hub" 선택을 선택합니다. 지시에 따라 Azure 구독 및 IoT Hub를 선택합니다.
 
-가상머신 만들기 문서를 따라서 진행합니다. SSH 공개키에 익숙하지 않으면 암호를 선택하고 아이디와 비밀번호를 입력합니다. 
+![Azure select iot hub](images/Register-device-vscode/vscode-select-iothub.png)
 
-[가상머신 만들기](https://docs.microsoft.com/ko-kr/azure/virtual-machines/linux/quick-create-portal#create-virtual-machine) 내용을 참조하여 Ubuntu 가상머신을 만듭니다.
+왼쪽의 작업 표시줄에서 아이콘을 선택하거나 보기>탐색기를 선택하여 Visual Studio Code의 탐색기 섹션을 엽니다.
 
-### Step 0-4 : 가상머신에 SSH 연결
+탐색기 섹션 맨 아래에서 축소된 Azure IoT Hub/디바이스 메뉴를 확장합니다. 명령 팔레트를 통해 선택한 IoT Hub와 연결된 디바이스 및 IoT Edge 디바이스가 표시됩니다.
 
-SSH를 활용해서 가상머신에 연결해 봅니다.
+![Azure iot hub](images/Register-device-vscode/vscode-iothub.png)
 
-[가상머신에 연결](https://docs.microsoft.com/ko-kr/azure/virtual-machines/linux/quick-create-portal#connect-to-virtual-machine)
+## Step 1 : Azure Container Registry (ACR) 만들기
 
-[Putty를 사용하여 SSH 연결](https://archmond.net/?p=7932)할 수 있습니다.
-
-## Step 1: 새로운 Azure IoT Edge device 만들기
-
-이번엔 Azure 포탈 대신 Visual Studio Code의 Azure IoT Extension을 통해서 Azure IoT Edge 디바이스를 만들어보겠습니다. 
-
-### Step 1.1 : IoT Hub 선택
-
-VSCode의 Azure IoT Extension을 사용하여 IoT Hub에 연결할 수 있습니다. 연결을 위해서 Azure 구독에 로그인하고 IoT Hub를 선택해야 합니다. 
-
-1. Visual Studio Code의 **Explorer** 를 선택합니다. 
-
-1. Explorer 아래쪽에 **Azure IoT Hub Devices** 섹션을 펼칩니다.
-
-1. **Select IoT Hub**.를 선택합니다. 
-
-1. Azure 에 로그인 합니다. 
-    Azure 로그인 창을 따라서 Azure에 로그인 합니다.
-
-    ![Expand Azure IoT Hub Devices section](./images/Register-device-vscode/azure-iot-hub-devices.png)
-
-1. 구독과 IoT Hub를 선택합니다. 
-    VSCode의 상단에 표시되는 창을 통해서 구독과 이전 실습에서 만든 IoT Hub를 선택합니다. 
-
-    ![SelectSubscriptionAndHub](images/Register-device-vscode/azure-iot-hub-devices2.png)
-
-## Step 2 : 디바이스 생성
-
-이번엔 VSCode를 이용해 Azure IoT Edge 디바이스를 만들어 봅니다. 
-
-1. VSCode의 Explorer창에서, **AZURE IOT HUB** 섹션을 찾습니다. 
-
-1. **...** 을 클릭하여 팝업 메뉴를 표시합니다. 
-
-1. **Create IoT Edge Device**를 선택
-
-    ![VSCode-IoTEdge1](images/IoTEnt-Lab/VSCode-IoTEdgeDevice1.png)
-
-1. 텍스트 박스가 열리면 디바이스 아이디를 입력합니다.
-
-    ![VSCode-IoTEdge2](images/IoTEnt-Lab/VSCode-IoTEdgeDevice2.png)
-
-1. 새로운 IoT Edge 디바이스가 생성된 것을 **AZURE IOT HUB** 섹션에서 확인 합니다. 
-
-    ![VSCode-IoTEdge3](images/IoTEnt-Lab/VSCode-IoTEdgeDevice3.png)
-
-**output** 창에서 디바이스 ID와 디바이스 Connection String이 표시된 결과 메시지를 확인 할 수 있습니다. 
-
-## Step 3 : 디바이스 Connection String 복사
-
-Ubuntu 디바이스가 IoT Hub에 연결되기 위해서는 `디바이스 Connection String`이 필요합니다. 
-
-1. **Azure IoT Hub Devices** 섹션의 새로 만든 디바이스에서 오른쪽 클릭을 합니다. 
-
-2. **Copy Device Connection String** 선택
-
-    ![VSCode-IoTEdge4](images/IoTEnt-Lab/VSCode-IoTEdgeDevice4.png)
-
-디바이스 connection string 이 클립보드로 복사됩니다. 
-
-**Get Device Info** 메뉴를 통해서 Connectoin String 외의 정보를 **Output** 윈도우에서 확인 할 수 있습니다.
-
-## Step 4 : Ubuntu에 Azure IoT Edge 런타임 설치하기
-
-이번엔 Ubuntu 가상머신에 Azure IoT Edge 런타임을 설치해보겠습니다. [Linux(x64)에서 Azure IoT Edge 런타임 설치](https://docs.microsoft.com/ko-kr/azure/iot-edge/how-to-install-iot-edge-linux) 문서를 따라서 진행합니다. 
-
-### Step 4.1 : Microsoft 키 및 소프트웨어 리포지토리 피드 등록
-
-```bash
-$ curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > ./microsoft-prod.list
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100    77  100    77    0     0    235      0 --:--:-- --:--:-- --:--:--   235
-```
-
-### Step 4.2 : 생성된 목록에 복사
-
-```bash
-$ sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
-```
-### Step 4.3 : Microsoft GPG 공개 키를 설치
-
-```bash
-$ curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   983  100   983    0     0   2445      0 --:--:-- --:--:-- --:--:--  2445
-$ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
-```
-
-### Step 4.4 : 컨테이너 런타임 설치
-
-```bash
-$ sudo apt-get update
-$ sudo apt-get install moby-engine
-$ sudo apt-get install moby-cli
-```
-
-### Step 4.5 : 모비 호환성을 위해 Linux 커널을 확인
-
-일부 오류가 보이는데 우선 무시하고 넘어갑니다.
-
-```bash
-$ curl -sSL https://raw.githubusercontent.com/moby/moby/master/contrib/check-config.sh -o check-config.sh
-$ chmod +x check-config.sh
-$ ./check-config.sh
-```
-
-### Step 4.6 : Azure IoT Edge 보안 데몬 설치
-
-```bash
-$ sudo apt-get update
-$ sudo apt-get install iotedge
-```
-
-### Step 4.7 : Azure IoT Edge 보안 데몬 구성 - 수동구성
-
-데몬은 /etc/iotedge/config.yaml에 있는 구성 파일을 사용하여 구성할 수 있습니다. 이 파일은 기본적으로 쓰기 금지되어 있습니다 편집하려면 관리자 권한이 필요합니다. 
-
-VSCode에서 복사해 놓은 디바이스 Connection String을 YAML파일에 입력해줍니다. 
-잘 사용하는 에디터를 이용해서 수정합니다. 
-
-```bash
-$ sudo nano /etc/iotedge/config.yaml
-```
-
-```yaml
-provisioning:
-  source: "manual"
-  device_connection_string: "<ADD DEVICE CONNECTION STRING HERE>"
-
-# provisioning:
-#   source: "dps"
-#   global_endpoint: "https://global.azure-devices-provisioning.net"
-#   scope_id: "{scope_id}"
-#   registration_id: "{registration_id}"
-```
-
-파일을 저장하고 닫습니다.
-CTRL + X, Y, Enter
-
-### Step 4.8 : 데몬 다시시작
-
-```bash
-$ sudo systemctl restart iotedge
-```
-
-### Step 4.9 : 서비스 상태 확인  
-
-systemctl 명령을 이용해서 서비스 실행상태를 확인합니다.
-
-```bash
-$ systemctl status iotedge
-● iotedge.service - Azure IoT Edge daemon
-   Loaded: loaded (/lib/systemd/system/iotedge.service; enabled; vendor preset: enabled)
-   Active: active (running) since Mon 2019-06-24 05:51:26 UTC; 13s ago
-     Docs: man:iotedged(8)
- Main PID: 5932 (iotedged)
-    Tasks: 9 (limit: 9513)
-   CGroup: /system.slice/iotedge.service
-           └─5932 /usr/bin/iotedged -c /etc/iotedge/config.yaml
-
-Jun 24 05:51:28 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:28Z [INFO] - Updating identity for module $edgeAgent
-Jun 24 05:51:28 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:28Z [INFO] - Pulling image mcr.microsoft.com/azureiotedge-agent:1.0...
-Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Successfully pulled image mcr.microsoft.com/azureiotedge-agent:1.0
-Jun 24 05:51:35 UbuntuIoT iotedged[5932]: 2019-06-24T05:51:35Z [INFO] - Creating module edgeAgent...
-lines 1-19/19 (END) 
-```
-### Step 4.10 : 실행중인 모듈 확인 
-
-iotedge 명령으로 배포되고 실행중인 모듈 리스트를 확인합니다. 런타임이 모듈을 다운로드 받아서 설치하는 동안에는 edgeAgent가 보이지를 않습니다. 잠시 기다리면 됩니다.
-
-```bash 
-$ sudo iotedge list
-NAME             STATUS           DESCRIPTION      CONFIG
-edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedge-agent:1.0
-
-```
-
-## Step 5 : Azure Container Registry (ACR) 만들기
-
-우리가 만든 도커이미지를 배포하기 위해서는 이미지를 컨테이너 레지스트리에 푸시 해야 합니다. 일단 이미지가 레지스트리에 올라가면 직접 IoT Edge 디바이스에 배포할 수 있습니다. Azure 에서는 Private 컨테이너 레지스트리인 Azure Container Registry(ACR)를 제공하는데 ACR을 만들어보겠습니다. 
+우리가 만든 Azure IoT Edge 모듈을   배포하기 위해서는 이미지를 컨테이너 레지스트리에 푸시 해야 합니다. 일단 이미지가 레지스트리에 올라가면 직접 IoT Edge 디바이스에 배포할 수 있습니다. Azure 에서는 Private 컨테이너 레지스트리인 Azure Container Registry(ACR)를 제공하는데 ACR을 만들어보겠습니다. 
 
 ### Step 5.1 : Azure Container Registry 만들기
 
@@ -245,20 +64,25 @@ edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedg
 
 |Parameter  |Description  |Example  |
 |---------|---------|---------|
-|Registry Name     | Unique name within Azure and 5-50 alphanumeric characters only | IoTHOL2019acr1         |
-|Subscription     | Your subscription         |         |
-|Resource Group     | Select the resource group used for your IoT Hub         | IoTHOL2019         |
-|Location     | Select the same region as your IoT Hub         | Korea Central         |
-|Admin user     | This enables "User Name" and "Password" to access ACR.  Set to **Enable** | Enabled          |
-|SKU     | Tier of ACR.  Different tier gives different storage size limit, etc.  Set to **Basic** for this lab         | Basic        |
+|Registry Name     |  URL로 사용 유일해야 함(5-50 alphanumeric characters only) | IoTHOL2019acr1         |
+|구독     | 내구독 선택         |         |
+|리소스그룹     | 현재 작업중인 리소스 그룹         | IoTHOL2019         |
+|지역     | Korea Central         | Korea Central         |
+|SKU     | 기본기능만 있는 Basic         | Basic        |
 
 ### Step 5.3 : ACR 배포를 시작
 
 **Create** 를 클릭하여 배포를 시작합니다. 
 
+생성이 되면 생성된 ACR 의 "Access Key"메뉴로 들어가서 "Admin User"를 Enable 시킵니다. 그러면 비밀번호가 생성되고 docker login 으로 연결할 수 있습니다. 
+
+![AcrCreate2](images/IoTEnt-Lab/ACR-Create2-1.png)
+
 ### Step 5.4 : ACR에 로그인
 
 후반부에 우리가 만든 컨테이너 이미지를 푸시 하기 위해서는 ACR에 로그인을 해야 합니다. 
+
+> 개발하는 환경에 docker desktop (윈도우의 경우) 이 실행되어야 합니다. 
 
 1. VSCode open Terminal  
 
@@ -273,410 +97,201 @@ edgeAgent        running          Up 2 minutes     mcr.microsoft.com/azureiotedg
 
 1. ACR에 아래 명령으로 로그인
 
-    ```bash
-    docker login <Your ACR Login Server Name> -u <Your ACR user name> -p <Your ACR password>
-    ```
+```bash
+docker login <Your ACR Login Server Name> -u <Your ACR user name> -p <Your ACR password>
+```
   
-    예시 :
+예시 :
 
-    ![AcrCreate5](images/IoTEnt-Lab/ACR-Create5.png)
+```bash
+docker login edgeholacr004.azurecr.io -u edgeholacr004 -p ysWlA=A6h+xEqVO5+aKz6Az1231CmHae
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+Login Succeeded
+```
+
+![AcrCreate5](images/IoTEnt-Lab/ACR-Create5.png)
 
 관련자료 :
 
 - ACR Authentication : [https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication)
 
-## Step 6 : IoT Edge 모듈 샘플코드 준비
+## Step 6 : IoT Edge 모듈 프로젝트 만들기
 
-이번엔 샘플 코드를 통해서 모듈을 빌드해보겠습니다. 
+이번엔 VS Code 에서 새 모듈 프로젝트를 만들어보겠습니다. 여러 프로그래밍 언어를 지원하지만 여기에서는 C#으로 해보겠습니다. 물론 C# 을 잘 몰라도 따라 할 수 있습니다. 
 
-- Github에서 `Simulated Temperature Sensor` 샘플 코드를 다운로드
-- 컴파일 / 빌드
-- Azure Container Registry로 업로드
-- 컨테이너를 배포
+### Step 6.1 : 프로젝트 템플릿 만들기
 
-샘플코드 리파지토리 : [IoT Edge Samples](https://github.com/Azure/iotedge)
+VS Code 명령 팔레트(Ctrl+Shift+P)에서 "Azure IoT Edge: 새 IoT Edge 솔루션" 을 선택하고 아래 내용에 따라 단계별로 선택해줍니다. 
 
-### Step 6.1 : 소스코드 다운로드
+![Azure IoT Edge: 새 IoT Edge 솔루션](images/Register-device-vscode/vscode-new-iot-edge.png)
 
-아래 명령으로 Github에서 `Simulated Temperature Sensor` 소스코드를 다운로드 합니다. 
 
-1. Console (CMD)이나 VSCode terminal 을 열기
-1. git 명령 실행
-    예 : C:\Repo 위치로 클론
-  
-    ```powershell  
-    cd C:\Repo
-    git clone https://github.com/Azure/iotedge
-    ```
+|Parameter  |Description  |
+|---------|---------|
+|폴더 선택| 저장할 폴더 선택|
+|솔루션 이름| 솔루션 이름을 지정|
+|모듈 템플릿| C# 모듈|
+|모듈 이름|  모듈의 이름. SampleModule 사용|
+|Docker 이미지 리포지토리 | 위에서 만든 레지스트리를 설정합니다. <레지스트리 이름>.azurecr.io/samplemodule |
 
-    ![SimTempSensor1](images/IoTEnt-Lab/SimulatedTempSensor1.png)
 
-### Step 6.2 : 샘플 빌드
+![Azure IoT Edge: 새 IoT Edge 솔루션](images/Register-device-vscode/image-repository.png)
 
-.NET 코어를 이용하여 빌드 합니다. 
+### Step 6.2 : 프로젝트 생성된 파일
 
-> [!NOTE]  
-> 아래 명령을 통해서 dotnet 코어가 설치되어 있는지 확인 할 수 있습니다. 
->
-> ```ps  
-> PS C:\repo> dotnet --version  
-> 2.2.204  
-> PS C:\repo>  
-> ```
->
-> 이 명령은 .NET Core SDK의 버전을 보여줍니다. 
+VS Code 창에 새 솔루션이 로드되면 생성된 다음 파일을 살펴보고 이해합니다.
 
-참조 : [https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.107-windows-x64-installer)
+1. .vscode 폴더에는 모듈 디버그에 사용되는 launch.json이라는 파일이 포함되어 있습니다.
 
-### Step 6.3 : Simulated Temperature Sensor 모듈 컴파일
+1. modules 폴더에는 솔루션의 각 모듈용 폴더가 포함되어 있습니다. 현재는 SampleModule 또는 모듈에 지정한 다른 이름의 폴더만 있을 것입니다. SampleModule 폴더에는 주 프로그램 코드, 모듈 메타데이터 및 여러 개의 Docker 파일이 포함되어 있습니다.
 
-컨테이너 모듈을 Azure IoT Edge에 배포하기 전에 컴파일하고 로컬에서 실행시켜봐야 합니다. 
+1. .env 파일은 컨테이너 레지스트리의 자격 증명을 저장합니다. 이러한 자격 증명은 IoT Edge 디바이스와 공유되므로 이러한 디바이스에서 컨테이너 이미지를 끌어올 수 있습니다.
 
-1. `SimulatedTemperatureSensor` 디렉토리로 이동  
-    `SimulatedTemperatureSensor` 코드가 있는 디렉토리로 이동합니다. 
-    소스코드는 이런 위치에 있습니다.  `<SampleRoot>\edge-modules\SimulatedTemperatureSensor`
+1. deployment.debug.template.json 파일 및 deployment.template.json 파일은 배포 매니페스트를 만드는 데 도움이 되는 템플릿입니다. 배포 매니페스트는 디바이스에 배포하려는 모듈, 구성 방법 및 모듈끼리 및 모듈-클라우드 간에 통신하는 방법을 정확히 정의하는 파일입니다. 템플릿 파일은 일부 값에 대해 포인터를 사용합니다. 템플릿을 실제 배포 매니페스트로 변환하는 경우 포인터가 다른 솔루션 파일에서 가져온 값으로 대체됩니다. 배포 템플릿에서 두 가지 일반적인 자리 표시자를 찾습니다.
 
-    예 : C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor
+    * 레지스트리 자격 증명 섹션에서 주소는 솔루션을 만들 때 제공한 정보로 자동 채워집니다. 단, 사용자 이름 및 암호는 .env 파일에 저장된 변수를 참조합니다. 이 구성은 보안을 위한 것입니다. .env 파일은 Git에서 무시되지만 배포 템플릿은 무시되지 않기 때문입니다.
+    * SampleModule 섹션에서 컨테이너 이미지는 솔루션을 만들 때 이미지 리포지토리를 제공한 경우에도 채워지지 않습니다. 이 자리 표시자는 SampleModule 폴더 내에 있는 module.json 파일을 가리킵니다. 해당 파일로 이동하면 이미지 필드에 리포지토리가 포함되어 있을 뿐만 아니라 컨테이너의 버전 및 플랫폼으로 구성된 태그 값도 포함되어 있는 것을 볼 수 있습니다. 개발 주기의 일환으로 버전을 수동으로 반복할 수 있으며 이 섹션 뒷부분에서 소개한 전환기를 사용하여 컨테이너 플랫폼을 선택합니다.
 
-    ```powershell
-    PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> dir
-  
-        Directory: C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor
-  
-    Mode                LastWriteTime         Length Name
-    ----                -------------         ------ ----
-    d-----        5/20/2019   8:01 PM                config
-    d-----        5/20/2019   8:01 PM                docker
-    d-----        5/20/2019   8:01 PM                src
-    -a----        5/20/2019   8:01 PM           2958 SimulatedTemperatureSensor.csproj
+### Step 6.3: IoT Edge 런타임 버전 설정
 
-    ```
+![IoT Edge 런타임 버전 설정](images/Register-device-vscode/vscode-edge-runtime.png)
 
-1. 샘플코드 빌드
-    dotnet 명령으로 빌드합니다. 
+여기에서는 **1.2**를 선택합니다. 
 
-    ```ps
-    dotnet publish -r ubuntu.18.04-x64
-    ```
+### Step 6.4: IoT Edge 에이전트에 레지스트리 자격 증명 제공
 
-    바이너리는 아래 위치에 생성됩니다. 
-    `C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64`  
+컨테이너 레지스트리의 Username Password를 설정합니다. 
 
-    예시 :
-  
-    ```powershell
-    PS C:\repo> cd .\iotedge\edge-modules\SimulatedTemperatureSensor\
-    PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> dotnet publish -r ubuntu.18.04-x64
-    Microsoft (R) Build Engine version 16.0.450+ga8dc7f1d34 for .NET Core
-    Copyright (C) Microsoft Corporation. All rights reserved.
-  
-      Restore completed in 6.21 sec for C:\repo\iotedge\edge-util\src\Microsoft.Azure.Devices.Edge.Util\Microsoft.Azure.Devices.Edge.Util.csproj.
-      Restore completed in 8.48 sec for C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\SimulatedTemperatureSensor.csproj.
-      Restore completed in 8.59 sec for C:\repo\iotedge\edge-modules\ModuleLib\Microsoft.Azure.Devices.Edge.ModuleUtil.csproj.
-      Microsoft.Azure.Devices.Edge.Util -> C:\repo\iotedge\edge-util\src\Microsoft.Azure.Devices.Edge.Util\bin\Debug\netstandard2.0\Microsoft.Azure.Devices.Edge.Util.dll
-      Microsoft.Azure.Devices.Edge.ModuleUtil -> C:\repo\iotedge\edge-modules\ModuleLib\bin\Debug\netcoreapp2.1\Microsoft.Azure.Devices.Edge.ModuleUtil.dll
-      SimulatedTemperatureSensor -> C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\win-x64\SimulatedTemperatureSensor.dll
-      SimulatedTemperatureSensor -> C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor\bin\Debug\netcoreapp2.1\win-x64\publish\
-      ```
+![Azure IoT Edge: 새 IoT Edge 솔루션](images/Register-device-vscode/vscode-env-registry.png)
 
-## Step 7: Simulated Temperature Sensor 컨테이너
+### Step 6.5: 대상 아키텍처 선택
 
-온도센서 모듈이 Edge 모듈로 작동하기 위해서는 컨테이너 이미지로 만들어야 합니다. 
+현재 Visual Studio Code에서는 Linux AMD64 및 ARM32v7 디바이스용 C# 모듈을 개발할 수 있습니다. 
 
-아래 내용에 주의를 기울여야 합니다.
+컨테이너는 아키텍처 유형별로 다르게 빌드되고 실행되므로 각 솔루션에서 대상으로 지정할 아키텍처를 선택해야 합니다. 기본값은 Linux AMD64입니다. 
 
-1. Container Type
-1. Container Image Name
-1. Container Tag
-1. Dockerfile  
-    Dockerfile 은 컨테이너 이미지를 어떻게 만드는지에 대하여 기술되어 있습니다. 
+실습에서는 Ubuntu 머신이므로 **amd64**로 선택합니다.
 
-컨테이너 이미지 이름은 두개의 파트로 이뤄져 있습니다. 
+![대상 아키텍처 선택](images/Register-device-vscode/select-architecture.png)
 
-### Container Type
+### Step 6.6: 샘플 코드 검토
 
-두가지 타입이 있습니다.
+만든 솔루션 템플릿에는 IoT Edge 모듈용 샘플 코드가 포함되어 있습니다. 이 샘플 모듈은 메시지 수신한 후 전달합니다. 파이프라인 기능은 IoT Edge의 중요한 개념인 모듈이 서로 통신하는 방식을 보여 줍니다.
 
-- Linux container
-- Windows Container
+각 모듈의 코드에는 여러 개의 입력 및 출력 큐가 선언될 수 있습니다. 디바이스에서 실행되는 IoT Edge 허브는 모듈 중 하나의 출력에 있는 메시지를 하나 이상의 모듈 입력으로 라우팅합니다. 입력 및 출력을 선언하는 특정 언어는 코드마다 다르지만 개념은 모든 모듈에서 동일합니다. 모듈 간 라우팅에 대한 자세한 내용은 [경로 선언](https://docs.microsoft.com/ko-kr/azure/iot-edge/module-composition?view=iotedge-2020-11#declare-routes)을 참조하세요.
 
-여기서는 Linux Container를 사용합니다. 
+프로젝트 템플릿과 함께 제공되는 샘플 C# 코드는 .NET용 IoT Hub SDK에서 [ModuleClient 클래스](https://docs.microsoft.com/ko-KR/dotnet/api/microsoft.azure.devices.client.moduleclient)를 사용합니다.
 
-### Container Image Name
+1. modules/SampleModule/ 폴더 내에 있는 Program.cs 파일을 엽니다.
 
-이미지 이름은 슬래시로 분리되어 있는데 첫번째 파트는 레지스트리 호스트 이름입니다. 
+1. program.cs에서 SetInputMessageHandlerAsync 메서드를 찾습니다.
 
-예 : myazureregistry.azurecr.io/myimage
+1. SetInputMessageHandlerAsync 메서드는 들어오는 메시지를 수신하는 입력 큐를 설정합니다. 이 메서드를 검토하고 이 메서드가 input1이라는 입력 큐를 초기화하는 방법을 확인합니다.
 
-규칙 :
+![SetInputMessageHandlerAsync](images/Register-device-vscode/declare-input-queue.png)
 
-- Lowercase letters
-- Digits
-- Separators (`.`, `_`, `-`)
+1. 다음으로 SendEventAsync 메서드를 찾습니다.
 
-### Container Tag
+1. SendEventAsync 메서드는 수신된 메시지를 처리하며, 해당 메시지를 전달할 출력 큐를 설정합니다. 이 메서드를 검토하고 이 메서드가 output1이라는 출력 큐를 초기화하는 모습을 살펴보세요.
 
-태그로 특정 이미지를 구분합니다. 보통 버전번호와 함께 사용됩니다.
+![SendEventAsync](images/Register-device-vscode/declare-output-queue.png)
 
-규칙 :
+1. deployment.template.json 파일을 엽니다.
 
-- 영문자 대소문자
-- 숫자
-- Underscores (`_`), Periods (`.`), and dashes (`-`)
+1. $edgeAgent의 원하는 속성 중에서 modules 속성을 찾습니다.
 
-### Step 7.1 : Container Type
+1. 여기에는 두 개의 모듈이 표시되어야 합니다. 하나는 SimulatedTemperatureSensor 모듈로, 모듈을 테스트하는 데 사용할 수 있는 시뮬레이트된 온도 데이터를 제공하기 위해 기본적으로 모든 템플릿에 포함되어 있습니다. 다른 하나는 SampleModule로, 이 솔루션의 일부로 생성한 모듈입니다.
 
-Step 4에서 IoT Edge 런타임을 Linux 버전을 설치했기 때문에 이미지를 만드는 환경도 **Linux Container**가 되어야 합니다. 
 
-1. Docker for Desktop 설정 열기  
+![SendEventAsync](images/Register-device-vscode/deployment-routes.png)
 
-    Taskbar에서 `Docker Desktop` 아이콘을 오른쪽 클릭하고 메뉴를 표시합니다. 
+## Step 7: 솔루션 빌드 및 푸시
 
-    ![Docker1](images/IoTEnt-Lab/Docker1.png)
+### Step 7.1: 빌드 및 푸시
 
-1. **Switch to Windows containers...**  메뉴가 보이면 현재 Linux Container 입니다. 만약 Switch to Linux containers 가 표시되면 클릭 합니다. 
-  
-    ![Docker2](images/IoTEnt-Lab/Docker2.png)
+이제 Visual Studio Code에서 컨테이너 레지스트리에 액세스할 수 있으므로 솔루션 코드를 컨테이너 이미지로 전환해야 합니다.
 
-1. Confirm Warning  
+1. Visual Studio Code 탐색기에서 deployment.template.json 파일을 마우스 오른쪽 단추로 클릭하고 IoT Edge 솔루션 빌드 및 푸시를 선택합니다. 
 
-    ![Docker3](images/IoTEnt-Lab/Docker3.png)
-  
-1. Docker Desktop이 container type을 변경할 때 까지 기다립니다. 
+    빌드 및 푸시 명령은 세 가지 작업을 시작합니다. 먼저, 배포 템플릿 및 기타 솔루션 파일의 정보로 작성된 전체 배포 매니페스트를 포함하는 config라는 새 폴더를 솔루션에 만듭니다. 둘째, docker build를 실행하여 대상 아키텍처의 적절한 dockerfile을 기준으로 컨테이너 이미지를 빌드합니다. 그런 다음, docker push를 실행하여 컨테이너 레지스트리에 이미지 리포지토리를 푸시합니다.
 
-### Step 7.2 : 컨테이너 이미지 빌드
+    이 프로세스는 처음에는 몇 분 정도 걸릴 수 있지만 다음번에 명령을 실행할 때는 더 빨라집니다.
 
-아래 명령으로 컨테이너 이미지를 빌드 합니다. 
+![빌드 및 푸시](images/Register-device-vscode/build-and-push-modules.png)
 
-```ps
-docker build .\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64\publish -t <Tag> -f <Dockerfile>
+2. 새로 만든 config 폴더에서 deployment.amd64.json 파일을 엽니다. 파일 이름은 대상 아키텍처를 반영하므로 다른 아키텍처를 선택한 경우에는 달라집니다.
+
+3. 이제 자리 표시자가 있는 두 매개 변수가 적절한 값으로 채워졌는지 확인합니다. registryCredentials 섹션에는 .env 파일에서 끌어온 레지스트리 사용자 이름과 암호 섹션에 표시됩니다. SampleModule에는 module.json 파일의 이름, 버전 및 아키텍처 태그가 있는 전체 이미지 리포지토리가 포함됩니다.
+
+4. SampleModule 폴더에서 module.json 파일을 엽니다.
+
+5. 모듈 이미지의 버전 번호를 변경합니다. ($schema-version이 아닌 버전) 예를 들어, 모듈 코드가 약간 수정된 것처럼 패치 버전 번호를 0.0.2로 늘립니다. module.json 파일을 저장합니다.
+
+6. deployment.template.json 파일을 다시 마우스 오른쪽 단추로 클릭하고 IoT Edge 솔루션 빌드 및 푸시를 다시 선택합니다.
+
+7. deployment.amd64.json 파일을 다시 엽니다. 빌드 및 푸시 명령을 다시 실행할 때는 새 파일이 생성되지 않은 것을 알 수 있습니다. 대신, 변경 내용을 반영하도록 동일한 파일이 업데이트되었습니다. 이제 SampleModule 이미지는 컨테이너의 0.0.2 버전을 가리킵니다.
+
+8. 빌드 및 푸시 명령이 어떤 작업을 수행했는지를 추가로 확인하려면 Azure Portal로 이동한 후 컨테이너 레지스트리로 이동합니다.
+
+9. 컨테이너 레지스트리에서 리포지토리를 선택하고 samplemodule을 선택합니다. 이미지의 두 버전이 레지스트리에 푸시되었는지 확인합니다.
+
+![빌드 및 푸시](images/Register-device-vscode/view-repository-versions.png)
+
+
+문제가 있다면 확인 
+* 컨테이너 레지스트리에서 복사한 자격 증명을 사용하여 docker login 명령을 실행했나요? 이러한 자격 증명은 Azure에 로그인하는 데 사용하는 자격 증명과 다릅니다.
+
+* 컨테이너 리포지토리가 올바른가요? 컨테이너 레지스트리 이름과 모듈 이름이 올바른가요? SampleModule 폴더에서 module.json 파일을 열어 확인합니다. 리포지토리 값은 <레지스트리 이름>.azurecr.io/samplemodule과 같습니다.
+모듈에 SampleModule 이외의 이름을 사용한 경우 해당 이름이 솔루션 전체에서 일관되나요?
+* 머신에서 빌드하는 것과 같은 유형의 컨테이너가 실행되고 있나요? 이 자습서는 Linux IoT Edge 디바이스에 대한 내용을 제공하므로 Visual Studio Code는 사이드바에 amd64 또는 arm32v7을 표시해야 하고 Docker Desktop에서는 Linux 컨테이너가 실행되고 있어야 합니다.
+
+## Step 8 : 디바이스에 모듈 배포
+
+이제 빌드한 컨테이너 이미지를 디바이스에 배포해야 하므로 컨테이너 레지스트리에 저장되어 있는지 확인합니다. IoT Edge 디바이스가 작동되고 실행 중인지 확인합니다.
+
+1. Visual Studio Code 탐색기의 Azure IoT Hub 섹션에서 디바이스를 확장하여 IoT 디바이스 목록을 표시합니다.
+
+1. 배포하려는 IoT Edge 디바이스를 마우스 오른쪽 단추로 클릭한 다음, 단일 디바이스용 배포 만들기를 선택합니다.
+
+
+![create-deployment](images/Register-device-vscode/create-deployment.png)
+
+3. 파일 탐색기에서 config 폴더로 이동한 후 deployment.amd64.json 파일을 선택합니다.
+
+    deployment.template.json 파일은 컨테이너 레지스트리 자격 증명 또는 모듈 이미지 값을 포함하지 않으므로 사용하지 않도록 합니다. Linux ARM32 디바이스를 대상으로 하는 경우 배포 매니페스트 이름이 deployment.arm32v7.json으로 지정됩니다.
+
+4. 배포되어 실행 중인 모듈의 목록을 보려면 디바이스 아래에서 모듈을 확장합니다. 새로고침 단추를 클릭합니다. 새 SimulatedTemperatureSensor 및 SampleModule 모듈이 디바이스에서 실행되는 것을 볼 수 있습니다.
+
+    두 모듈이 모두 시작하는 데 몇 분 정도 걸릴 수 있습니다. IoT Edge 런타임은 새 배포 매니페스트를 받고, 컨테이너 런타임에서 모듈 이미지를 끌어온 후 각 새 모듈을 시작해야 합니다.
+
+![create-deployment](images/Register-device-vscode/view-running-modules.png)
+
+
+## 9: 디바이스에서 메시지 보기
+
+SampleModule 코드는 입력 큐의 메시지를 받고 출력 큐를 통해 메시지를 전달합니다. 배포 매니페스트는 SimulatedTemperatureSensor에서 SampleModule로 메시지를 제공한 후 SampleModule에서 IoT Hub로 메시지를 전달하는 경로를 선언했습니다. Azure IoT Tools for Visual Studio Code를 사용하여 개별 디바이스에서 IoT Hub에 도착하는 메시지를 볼 수 있습니다.
+
+1. Visual Studio Code 탐색기에서 모니터링하려는 IoT Edge 디바이스를 마우스 오른쪽 단추로 클릭한 다음, 기본 제공 이벤트 엔드포인트 모니터링 시작을 선택합니다.
+
+1. Visual Studio Code의 출력 창에서 IoT Hub에 메시지가 도착하는 것을 확인합니다.
+
+![create-deployment](images/Register-device-vscode/view-d2c-messages.png)
+
+## 10: 가상머신(Edge 디바이스) 배포 확인 
+
+이제 다시 가상머신으로 돌아가겠습니다. SSH 연결을 통해 접속합니다. 아래 명령을 통해 배포가 잘 되었는지 확인합니다. 
+
+
+```bash
+$ iotedge list
+
+NAME                        STATUS           DESCRIPTION      CONFIG
+SampleModule                running          Up 2 minutes     edgeholacr004.azurecr.io/samplemodule:0.0.2-amd64
+SimulatedTemperatureSensor  running          Up 2 minutes     mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0
+edgeAgent                   running          Up 3 minutes     mcr.microsoft.com/azureiotedge-agent:1.2
+edgeHub                     running          Up 2 minutes     mcr.microsoft.com/azureiotedge-hub:1.2
 ```
 
-이미지 이름 **SimulatedTemperatureSensor**
-
-```ps
-docker build .\bin\Debug\netcoreapp2.1\ubuntu.18.04-x64\publish\ -t simulatedtemperaturesensor -f .\docker\linux\amd64\Dockerfile
+```base
+iotedge logs SampleModule
 ```
-
-아래 명령으로 이미지가 생성되었는지 확인 합니다. 
-
-```ps
-docker images
-```
-
-예 :
-
-```ps
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> docker images
-REPOSITORY                              TAG                      IMAGE ID            CREATED             SIZE
-simulatedtemperaturesensor              latest                   088860719e39        4 seconds ago       398MB
-mcr.microsoft.com/dotnet/core/runtime   2.1.10-nanoserver-1809   d6a221ed7eed        4 weeks ago         321MB
-```
-
-### Step 7.3 : 이미지 Tag
-
-`docker tag` 커멘드를 이용해서 ACR에 푸시하기위한 태그이름으로 변경해줍니다. 
-
-```ps
-docker tag <Source Image>[:TAG] <Target Image>[:TAG]
-```
-
-예 : Using the image just built, tag them with **simtemp**:0.0.1
-
-```ps
-docker tag simulatedtemperaturesensor:latest iothol2019acr1.azurecr.io/simtemp:0.0.1
-```
-
-또는 이미지 아이디(IMAGE ID)를 이용해서 같은 명령을 수행할 수 있습니다. 
-
-```ps
-docker tag 088860719e39 iotbootcamp2019acr1.azurecr.io/simtemp:0.0.1
-```
-
-### Step 7.4 : 이미지 Push
-
-이제 이미지를 빌드하고 태깅했으므로 업로드(push)할 준비가 다 되었습니다. 
-
-`docker push` 명령으로 ACR에 push 합니다. 
-
-```ps
-docker push <Your Tagged Image Name>
-```
-
-Example :
-
-```ps
-docker push iotbootcamp2019acr1.azurecr.io/simtemp:0.0.1
-```
-
-Example Output :
-
-```ps
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> docker push iotbootcamp2019acr1.azurecr.io/simtemp:0.0.1
-The push refers to repository [iotbootcamp2019acr1.azurecr.io/simtemp]
-da499279ea2b: Pushed
-416b2cdadff0: Pushed
-b366e64214b3: Pushed
-f354c3635730: Pushed
-146252efae6c: Pushed
-6eaf1cf63dfc: Pushed
-a2bb3d322957: Pushed
-761ff3ef5aab: Pushed
-5c3e3ab9e119: Pushed
-273db4b66a2d: Skipped foreign layer
-0.0.1: digest: sha256:ce4d56e9a062f7a77e8008d1e57eceda455555f8083194fec30fffc302c56598 size: 2507
-```
-
-### Step 7.5 : ACR에 이미지가 Push 되었는지 확인
-
-ACR에 이미지가 Push 되었는지 확인합니다. 
-
-1. [Azure Portal](https://portal.azure.com)에 로그인 
-1. ACR 로 이동
-1. **Repositories** 메뉴로 이동  
-1. 이미지가 있는지 태그와 함께 확인
-
-예를들어 `simtemp` 이름과 태그 `0.0.1` 확인
-
-![SimTempSensor2](images/IoTEnt-Lab/SimulatedTempSensor2.png)
-
-## Step 8 : Deploy to your Ubuntu Linux
-
-이제 Azure IoT Edge 디바이스인 Ubuntu 가상머신에 Edge 모듈을 배포할 준비가 완료되었습니다. 이미지를 배포하기 위해서는 `Deployment Manifest`가 필요합니다. 
-
-여기에서는 Azure 포탈에서 `Deployment Manifest`를 만들어서 배포하겠습니다. 
-
-### Step 8.1 : IoT Edge 상세 페이지
-
-1. [Azure Portal](https://portal.azure.com)에 로그인
-1. IoT Hub의 IoT Edge Device ID로 이동
-
-    **IoT Hub** -> **IoT Edge** -> **Ubuntu Device ID**
-
-    ![SimTempSensor3](images/IoTEnt-Lab/SimulatedTempSensor3.png)
-
-    > [!NOTE]  
-    > 이 단계에서는 런타임 에러를 볼 수 있습니다. 
-    > 이는 아직 아무것도 배포를 하지 않았기 때문에 발생합니다. 
-
-1. **Device details** 상세 페이지로 가서 **Set modules** 클릭
-
-    ![SimTempSensor4](images/IoTEnt-Lab/SimulatedTempSensor4.png)
-
-### Step 8.2 : 컨테이너 레지스트리 셋팅
-
-IoT Edge 런타임이 ACR에서 이미지를 Pull 해야하기 때문에 아래 정보를 입력해줍니다. 
-
-Refer to [Step 5.4 : Login to your ACR](#step-54--login-to-your-acr)
-
-|Parameter  |Description  |Example  |
-|---------|---------|---------|
-|Name     | Name of this setting | BootCampACR   |
-|Address     | Your ACR Login Server Address        | iotbootcamp2019acr1.azurecr.io         |
-|User Name   | Your ACR Admin User Name       | iotbootcamp2019acr1        |
-|Password     | Your ACR Password        |         |
-
-![SimTempSensor5](images/IoTEnt-Lab/SimulatedTempSensor5.png)
-
-### Step 8.3 : Add Module
-
-다음은 배포할 모듈을 지정해 줍니다.
-
-1. **+Add** 클릭
-1. **IoT Edge Module** 선택
-1. 모듈 이름 입력  
-    이 이름은 Azure IoT Edge가 사용하는 이름입니다. (vs. Module name)
-1. 이미지의 URL
-    태그를 포함한 풀 이미지 이름을 입력합니다.
-1. **Save** 클릭
-1. **Next** 클릭
-
-![SimTempSensor6](images/IoTEnt-Lab/SimulatedTempSensor6.png)
-
-### Step 8.4 : 메시지 라우팅 설정
-
-Lab 2 와 마찬가지로 모듈 메시지가 IoT Hub로 전달되도록 설정합니다. 
-
-기본값으로 두고 **Next**를 클릭합니다. 
-
-### Step 8.5 : Submit
-
-포탈이 만든 `Deployment Manifest`를 검토합니다.
-
-> [!WARNING]  
-> Deployment Manifest는 ACR의 아이디 패스워드를 포함하고 있음. 
-
-**Submit**을 클릭합니다. 
-
-### Step 8.6 : 배포 모니터링
-
-배포는 몇 분이 걸릴 수 있습ㄴ디ㅏ. **edgeAgent**의 로그를 통해서 진행상황을 체크할 ㅅ수 있습니다. 
-
-Edge Agent 는 Azure IoT Edge 런타임의 일부로 Azure IoT Hub 와 통신하고 모듈 배포를 책임 집니다. 
-
-`iotedge logs` 명령을 통해서 배포상태를 체크합니다. 
-
-```ps
-iotedge logs -f edgeAgent
-```
-
-Enter `Ctrl + c`를 눌러 모니터링을 끝낼 수 있습니다. `iotedge list` 명령을 통해서 모듈 리스트와 상태를 확인 할 수 있습니다. 
-
-예 :
-
-```ps
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> iotedge logs -f edgeAgent
-[06/09/2019 03:32:14.668 PM] Edge Agent Main()
-2019-06-09 08:32:14.900 -07:00 [INF] - Starting module management agent.
-2019-06-09 08:32:15.077 -07:00 [INF] - Version - 1.0.7.1.22377503 (f7c51d92be8336bc6be042e1f1f2505ba01679f3)
-2019-06-09 08:32:15.078 -07:00 [INF] -
-        █████╗ ███████╗██╗   ██╗██████╗ ███████╗
-       ██╔══██╗╚══███╔╝██║   ██║██╔══██╗██╔════╝
-       ███████║  ███╔╝ ██║   ██║██████╔╝█████╗
-       ██╔══██║ ███╔╝  ██║   ██║██╔══██╗██╔══╝
-       ██║  ██║███████╗╚██████╔╝██║  ██║███████╗
-       ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-
- ██╗ ██████╗ ████████╗    ███████╗██████╗  ██████╗ ███████╗
- ██║██╔═══██╗╚══██╔══╝    ██╔════╝██╔══██╗██╔════╝ ██╔════╝
- ██║██║   ██║   ██║       █████╗  ██║  ██║██║  ███╗█████╗
- ██║██║   ██║   ██║       ██╔══╝  ██║  ██║██║   ██║██╔══╝
- ██║╚██████╔╝   ██║       ███████╗██████╔╝╚██████╔╝███████╗
- ╚═╝ ╚═════╝    ╚═╝       ╚══════╝╚═════╝  ╚═════╝ ╚══════╝
-
-2019-06-09 08:32:15.200 -07:00 [INF] - Started operation refresh twin config
-2019-06-09 08:32:15.226 -07:00 [INF] - Edge agent attempting to connect to IoT Hub via Amqp_Tcp_Only...
-2019-06-09 08:32:15.822 -07:00 [INF] - Created persistent store at C:\Windows\TEMP\edgeAgent
-2019-06-09 08:32:16.326 -07:00 [INF] - Edge agent connected to IoT Hub via Amqp_Tcp_Only.
-2019-06-09 08:32:16.693 -07:00 [INF] - Obtained Edge agent twin from IoTHub with desired properties version 2 and reported properties version 4.
-2019-06-09 08:32:17.398 -07:00 [INF] - Plan execution started for deployment 2
-2019-06-09 08:32:17.432 -07:00 [INF] - Executing command: "Command Group: (
-  [Create module mysimtempsensor]
-  [Start module mysimtempsensor]
-)"
-2019-06-09 08:32:17.434 -07:00 [INF] - Executing command: "Create module mysimtempsensor"
-2019-06-09 08:32:47.091 -07:00 [INF] - Executing command: "Start module mysimtempsensor"
-2019-06-09 08:32:48.152 -07:00 [INF] - Executing command: "Command Group: (
-  [Create module edgeHub]
-  [Start module edgeHub]
-)"
-2019-06-09 08:32:48.152 -07:00 [INF] - Executing command: "Create module edgeHub"
-2019-06-09 08:32:56.393 -07:00 [INF] - Executing command: "Start module edgeHub"
-2019-06-09 08:32:57.177 -07:00 [INF] - Plan execution ended for deployment 2
-2019-06-09 08:32:57.513 -07:00 [INF] - Updated reported properties
-2019-06-09 08:33:02.740 -07:00 [INF] - Updated reported properties
-
-PS C:\repo\iotedge\edge-modules\SimulatedTemperatureSensor> iotedge list
-NAME             STATUS           DESCRIPTION      CONFIG
-edgeAgent        running          Up 4 minutes     mcr.microsoft.com/azureiotedge-agent:1.0
-edgeHub          running          Up 3 minutes     mcr.microsoft.com/azureiotedge-hub:1.0
-mysimtempsensor  running          Up 3 minutes     iotbootcamp2019acr1.azurecr.io/simtemp:0.0.1
-```
-
-## Step 9 : 모듈 확인
-
-아래 순서로 모듈의 상태를 확인 해 봅니다. [Lab 2](lab2-edge-basic.md#step-7--temperature-simulator-모듈-배포-확인) 
-
-- `iotedge list` 
-- `iotedge logs -f <You Module Name>` 
-- `Device Explorer`

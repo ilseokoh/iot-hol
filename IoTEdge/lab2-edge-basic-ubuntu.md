@@ -464,6 +464,8 @@ IoT Hub에 접근하기 위해서는 다시 **Connection String**이 필요합�
 1. **Telemetry** 탭 선택
 1. 이제 우리가 작업중인 Azure IoT Edge 디바이스가 보입니다. 클릭해서 들어가면 Telemetry 메뉴가 있습니다. **Start**를 클릭합니다. 
 
+![DeviceExplorer6](images/WinServer-Lab/DeviceExplorer5.png)
+
 1. **Monitor** 클릭
-1. 메시지 수식 확인
-    ![DeviceExplorer4](images/WinServer-Lab/DeviceExplorer5.png)
+메시지 수식 확인
+    ![DeviceExplorer6](images/WinServer-Lab/DeviceExplorer6.png)
