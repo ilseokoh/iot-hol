@@ -17,23 +17,38 @@
 
 ![](images/IntelligentEdge/vscode-extension.png)
 
+## Linux 가상머신 실습 (2022.06.23 업데이트)
 
-## Lab 2: Azure IoT Edge - Basic
+### Lab 1: Azure IoT Edge - Basic
 
-[Ubuntu 18.04 + Azure IoT Edge](lab2-edge-basic-ubuntu.md)
+[Ubuntu 18.04 + Azure IoT Edge](lab1-edge-basic-ubuntu.md)
 
-[Raspberry PI + Azure IoT Edge](lab2-edge-basic-rpi.md)
+### Lab 2: Azure IoT Edge - Advanced
 
-[Windows Server 2019 + Azure IoT Edge Lab](lab2-edge-basic-windows.md)
+[Ubuntu + Azure IoT Edge -Advanced Lab](lab2-edge-advanced-ubuntu.md)
 
-## Lab 3: Azure IoT Edge - Advanced
+### Lab 3: Azure IoT Edge - Intelligent
 
-[Ubuntu + Azure IoT Edge -Advanced Lab](lab3-edge-advanced-ubuntu.md)
+[Building Intelligent Edge Device](lab3-edge-intelligent-ubuntu.md)
 
-[Raspberry PI + Azure IoT Edge](lab3-edge-advanced-rpi.md)
 
-[Windows Server 2019 + Azure IoT Edge](lab3-edge-advanced-windows.md)
+## Raspberry PI 실습
 
-## Lab 4: Azure IoT Edge - Intelligent
+### Lab 1: Azure IoT Edge - Basic
 
-[Building Intelligent Edge Device](lab4-edge-intelligent-ubuntu.md)
+[Raspberry PI + Azure IoT Edge](lab1-edge-basic-rpi.md)
+
+### Lab 2: Azure IoT Edge - Advanced
+
+[Raspberry PI + Azure IoT Edge](lab2-edge-advanced-rpi.md)
+
+
+## Windows Server 실습
+
+### Lab 1: Azure IoT Edge - Basic
+
+[Windows Server 2019 + Azure IoT Edge Lab](lab1-edge-basic-windows.md)
+
+### Lab 2: Azure IoT Edge - Advanced
+
+[Windows Server 2019 + Azure IoT Edge](lab2-edge-advanced-windows.md)
