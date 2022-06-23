@@ -27,11 +27,6 @@
 
 [Ubuntu + Azure IoT Edge -Advanced Lab](lab2-edge-advanced-ubuntu.md)
 
-### Lab 3: Azure IoT Edge - Intelligent
-
-[Building Intelligent Edge Device](lab3-edge-intelligent-ubuntu.md)
-
-
 ## Raspberry PI 실습
 
 ### Lab 1: Azure IoT Edge - Basic
