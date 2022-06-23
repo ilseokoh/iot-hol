@@ -36,4 +36,4 @@
 
 ## Lab 4: Azure IoT Edge - Intelligent
 
-[Building Intelligent Edge Device](lab4-edge-intelligent.md)
+[Building Intelligent Edge Device](lab4-edge-intelligent-ubuntu.md)
