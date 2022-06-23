@@ -13,7 +13,7 @@
       * Azure IoT Edge
       * Azure IoT Hub Toolkit
       * Docker
-    * [.NET Core 2.2 설치](https://dotnet.microsoft.com/download/dotnet-core/2.2)
+    * [.NET Core 6 설치](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ![](images/IntelligentEdge/vscode-extension.png)
 
@@ -26,6 +26,10 @@
 ### Lab 2: Azure IoT Edge - Advanced
 
 [Ubuntu + Azure IoT Edge -Advanced Lab](lab2-edge-advanced-ubuntu.md)
+
+### Lab 3: Azure IoT Edge -Intellegent 
+
+[Azure IoT Edge -Intellegent](lab3/lab3-intellegent-edge.md)
 
 ## Raspberry PI 실습
 
